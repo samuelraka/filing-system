@@ -14,13 +14,13 @@ include_once "../layouts/master/header.php";
         <!-- Main content -->
         <div class="p-6 mt-16 overflow-y-auto">
             <!-- Header with search and add user button -->
-            <div class="flex justify-between items-center">
-                <h2 class="text-lg font-medium text-gray-900">Arsip Aktif</h2>
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-medium text-slate-700">Arsip Aktif</h2>
             </div>
 
             <!-- Filters -->
-            <div class="flex justify-between items-center my-3">
-                <a href="tambah_aktif.php" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center">
+            <div class="flex justify-between items-center mb-5">
+                <a href="tambah_aktif.php" class="bg-cyan-600 hover:bg-cyan-600/90 text-white px-4 py-2 rounded-md flex items-center">
                     <svg class="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
                     </svg>
@@ -28,7 +28,7 @@ include_once "../layouts/master/header.php";
                 </a>
                 <div class="flex items-center gap-x-4">
                     <div class="flex items-center">
-                        <button id="filtersBtn" class="border border-gray-300 bg-white text-gray-700 px-4 py-2 rounded-md flex items-center">
+                        <button id="filtersBtn" class="border border-gray-300 bg-white text-slate-700 px-4 py-2 rounded-md flex items-center hover:bg-gray-100">
                             <svg class="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
                             </svg>
@@ -41,7 +41,7 @@ include_once "../layouts/master/header.php";
                                 <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                             </svg>
                         </div>
-                        <input type="text" id="searchInput" placeholder="Nomor Berkas, Kode Klasifikasi, Uraian Arsip, Nomor Kotak" class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <input type="text" id="searchInput" placeholder="Nomor Berkas, Kode Klasifikasi, Uraian Arsip, Nomor Kotak" class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0092B8]">
                     </div>
                 </div>
             </div>
@@ -132,18 +132,61 @@ include_once "../layouts/master/header.php";
 <script>
 // Sample data for the table
 const userData = [
-    { id: 1, enterprise: 'Company name 1', phone: '+1 926 25 35 965', department: 'Commercial', name: 'Michael Jones', role: 'Manager', status: 'Active' },
-    { id: 2, enterprise: 'Company name 2', phone: '+1 926 25 35 965', department: 'Production', name: 'Michael Jones', role: 'Manager', status: 'Inactive' },
-    { id: 3, enterprise: 'Company name 3', phone: '+1 926 25 35 965', department: 'Supply', name: 'Michael Jones', role: 'Admin', status: 'Active' },
-    { id: 4, enterprise: 'Company name 4', phone: '+1 926 25 35 965', department: 'Design', name: 'Michael Jones', role: 'Technical user', status: 'Inactive' },
-    { id: 5, enterprise: 'Company name 5', phone: '+1 926 25 35 965', department: 'Marketing', name: 'Michael Jones', role: 'Manager', status: 'Inactive' },
-    { id: 6, enterprise: 'Company name 6', phone: '+1 926 25 35 965', department: 'Production', name: 'Michael Jones', role: 'Admin', status: 'Active' },
-    { id: 7, enterprise: 'Company name 7', phone: '+1 926 25 35 965', department: 'Supply', name: 'Michael Jones', role: 'Technical user', status: 'Inactive' },
-    { id: 8, enterprise: 'Company name 8', phone: '+1 926 25 35 965', department: 'Design', name: 'Michael Jones', role: 'Manager', status: 'Active' },
-    { id: 9, enterprise: 'Company name 9', phone: '+1 926 25 35 965', department: 'Commercial', name: 'Michael Jones', role: 'Technical user', status: 'Active' },
-    { id: 10, enterprise: 'Company name 10', phone: '+1 926 25 35 965', department: 'Marketing', name: 'Michael Jones', role: 'Manager', status: 'Active' },
-    { id: 11, enterprise: 'Company name 11', phone: '+1 926 25 35 965', department: 'Commercial', name: 'Michael Jones', role: 'Manager', status: 'Active' },
-    { id: 12, enterprise: 'Company name 12', phone: '+1 926 25 35 965', department: 'Commercial', name: 'Michael Jones', role: 'Manager', status: 'Active' },
+    {
+        id: 1,
+        nomorBerkas: 'A-001',
+        nomorItem: 'IT-1001',
+        kodeKlasifikasi: '101.2',
+        uraian: 'Surat Keputusan Direktur',
+        tanggal: '2023-01-10',
+        jumlahItem: 5,
+        skaad: 'Lengkap',
+        keterangan: 'Arsip penting'
+    },
+    {
+        id: 2,
+        nomorBerkas: 'A-002',
+        nomorItem: 'IT-1002',
+        kodeKlasifikasi: '102.3',
+        uraian: 'Laporan Tahunan',
+        tanggal: '2022-12-05',
+        jumlahItem: 3,
+        skaad: 'Tidak Lengkap',
+        keterangan: 'Perlu verifikasi'
+    },
+    {
+        id: 3,
+        nomorBerkas: 'A-003',
+        nomorItem: 'IT-1003',
+        kodeKlasifikasi: '103.4',
+        uraian: 'Dokumen Kontrak',
+        tanggal: '2021-07-21',
+        jumlahItem: 2,
+        skaad: 'Lengkap',
+        keterangan: 'Sudah diverifikasi'
+    },
+    {
+        id: 4,
+        nomorBerkas: 'A-004',
+        nomorItem: 'IT-1004',
+        kodeKlasifikasi: '104.5',
+        uraian: 'Berita Acara',
+        tanggal: '2024-02-15',
+        jumlahItem: 4,
+        skaad: 'Lengkap',
+        keterangan: '-'
+    },
+    {
+        id: 5,
+        nomorBerkas: 'A-005',
+        nomorItem: 'IT-1005',
+        kodeKlasifikasi: '105.6',
+        uraian: 'Memo Internal',
+        tanggal: '2023-11-30',
+        jumlahItem: 1,
+        skaad: 'Tidak Lengkap',
+        keterangan: 'Butuh lampiran'
+    }
 ];
 
 // Variables for pagination
@@ -158,9 +201,6 @@ const prevPageBtn = document.getElementById('prevPage');
 const nextPageBtn = document.getElementById('nextPage');
 const perPageSelect = document.getElementById('perPage');
 const searchInput = document.getElementById('searchInput');
-const departmentFilter = document.getElementById('departmentFilter');
-const statusFilter = document.getElementById('statusFilter');
-const approverFilter = document.getElementById('approverFilter');
 const actionMenu = document.getElementById('actionMenu');
 
 // Function to render table rows
@@ -174,29 +214,14 @@ function renderTable() {
     paginatedData.forEach(user => {
         const row = document.createElement('tr');
         row.innerHTML = `
-            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">${user.enterprise}</td>
-            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${user.phone}</td>
-            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">${user.department}</td>
-            <td class="px-3 py-4 whitespace-nowrap">
-                <a href="#" class="text-sm text-blue-600 hover:underline">${user.name}</a>
-            </td>
-            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">${user.role}</td>
-            <td class="px-3 py-4 whitespace-nowrap">
-                <div class="flex items-center">
-                    <span class="text-sm text-gray-900 mr-2">${user.status}</span>
-                    <div class="relative inline-block w-10 align-middle select-none">
-                        <input type="checkbox" id="toggle-${user.id}" class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer" ${user.status === 'Active' ? 'checked' : ''}>
-                        <label for="toggle-${user.id}" class="toggle-label block overflow-hidden h-6 rounded-full bg-gray-300 cursor-pointer"></label>
-                    </div>
-                </div>
-            </td>
-            <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                <button class="action-button text-gray-500 hover:text-gray-700" data-user-id="${user.id}">
-                    <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                    </svg>
-                </button>
-            </td>
+            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">${user.nomorBerkas}</td>
+            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">${user.nomorItem}</td>
+            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">${user.kodeKlasifikasi}</td>
+            <td class="px-3 py-4 whitespace-nowrap">${user.uraian}</td>
+            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">${user.tanggal}</td>
+            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">${user.jumlahItem}</td>
+            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">${user.skaad}</td>
+            <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">${user.keterangan}</td>
         `;
         tableBody.appendChild(row);
     });
@@ -241,25 +266,18 @@ function updatePagination() {
 // Function to filter data
 function filterData() {
     const searchTerm = searchInput.value.toLowerCase();
-    const departmentValue = departmentFilter.value;
-    const statusValue = statusFilter.value;
-    
     filteredData = userData.filter(user => {
-        // Search filter
-        const matchesSearch = 
-            user.enterprise.toLowerCase().includes(searchTerm) ||
-            user.name.toLowerCase().includes(searchTerm) ||
-            user.role.toLowerCase().includes(searchTerm);
-        
-        // Department filter
-        const matchesDepartment = departmentValue === 'all' || user.department.toLowerCase() === departmentValue;
-        
-        // Status filter
-        const matchesStatus = statusValue === 'all' || user.status.toLowerCase() === statusValue;
-        
-        return matchesSearch && matchesDepartment && matchesStatus;
+        // Search filter for all fields
+        return (
+            (user.nomorBerkas && user.nomorBerkas.toLowerCase().includes(searchTerm)) ||
+            (user.nomorItem && user.nomorItem.toLowerCase().includes(searchTerm)) ||
+            (user.kodeKlasifikasi && user.kodeKlasifikasi.toLowerCase().includes(searchTerm)) ||
+            (user.uraian && user.uraian.toLowerCase().includes(searchTerm)) ||
+            (user.tanggal && user.tanggal.toLowerCase().includes(searchTerm)) ||
+            (user.skaad && user.skaad.toLowerCase().includes(searchTerm)) ||
+            (user.keterangan && user.keterangan.toLowerCase().includes(searchTerm))
+        );
     });
-    
     currentPage = 1;
     renderTable();
 }
@@ -287,9 +305,6 @@ perPageSelect.addEventListener('change', () => {
 });
 
 searchInput.addEventListener('input', filterData);
-departmentFilter.addEventListener('change', filterData);
-statusFilter.addEventListener('change', filterData);
-approverFilter.addEventListener('change', filterData);
 
 // Handle action menu
 document.addEventListener('click', (e) => {

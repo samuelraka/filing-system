@@ -18,7 +18,7 @@ include_once "../layouts/master/header.php";
                 <div class="flex flex-col space-y-4">
                     <!-- Header -->
                     <div class="flex justify-between items-center mb-8">
-                        <a href="semua-arsip.php" class="flex items-center text-2xl border-b">
+                        <a href="aktif.php" class="flex items-center text-2xl border-b">
                             <svg class="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
                             </svg>
@@ -102,7 +102,7 @@ include_once "../layouts/master/header.php";
 
                         <!-- File Upload -->
                         <div>
-                            <label for="fileUpload" class="block text-sm font-medium text-gray-700 mb-1">Upload Dokumen PDF</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Upload Dokumen PDF</label>
                             <div class="flex flex-col space-y-2">
                                 <div class="flex items-center justify-center w-full">
                                     <label for="fileUpload" class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
@@ -110,7 +110,7 @@ include_once "../layouts/master/header.php";
                                             <svg class="w-8 h-8 mb-3 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                             </svg>
-                                            <p class="mb-1 text-sm text-gray-500">Klik atau seret file ke area ini</p>
+                                            <p class="mb-1 text-sm text-gray-500">Klik area ini untuk memulai upload file</p>
                                             <p class="text-xs text-gray-500">PDF (Maksimal 10 file)</p>
                                         </div>
                                         <input id="fileUpload" name="files[]" type="file" class="hidden" accept=".pdf" multiple />
@@ -154,8 +154,8 @@ document.addEventListener('DOMContentLoaded', function() {
             // For now, we'll just show an alert
             alert('Form submitted successfully!');
             
-            // Redirect back to semua-arsip page after submission
-            window.location.href = 'semua-arsip.php';
+            // Redirect back to aktif page after submission
+            window.location.href = 'aktif.php';
         }
     });
 

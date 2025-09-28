@@ -5,29 +5,32 @@
 <!-- Sidebar - Fixed -->
 <aside class="w-64 bg-white border-r border-gray-200 flex flex-col pt-6 pb-3 px-4 h-screen fixed left-0 top-0">
     <div class="flex items-center gap-2 mb-8 px-2">
-        <span class="material-icons text-orange-500">inventory_2</span>
+        <span class="material-icons text-cyan-600">inventory_2</span>
         <span class="font-bold text-lg tracking-wide">ArsipOnline</span>
     </div>
     <nav class="flex-1 space-y-2 overflow-y-auto">
-        <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/dashboard.php'; ?>" class="flex items-center gap-3 px-3 py-2 rounded-lg <?php echo basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'bg-orange-50 text-orange-600 font-medium' : 'hover:bg-gray-100'; ?>">
+        <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/dashboard.php'; ?>" class="flex items-center gap-3 px-3 py-2 rounded-lg <?php echo basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'bg-cyan-600/10 text-cyan-600 font-medium' : 'hover:bg-cyan-600/5 text-slate-700'; ?>">
             <span class="material-icons">dashboard</span>Dashboard
         </a>
         
         <!-- Collapsible Menu for Semua Arsip -->
         <div class="menu-item">
-            <button class="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-gray-100 focus:outline-none" id="arsipMenu">
+            <button class="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-cyan-600/5 focus:outline-none text-slate-700" id="arsipMenu">
                 <div class="flex items-center gap-3">
                     <span class="material-icons">folder</span>Semua Arsip
                 </div>
                 <span class="material-icons transform transition-transform" id="arsipMenuIcon">expand_more</span>
             </button>
             <div class="pl-9 mt-1 hidden space-y-1" id="arsipSubmenu">
-                <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/aktif.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-gray-100 <?php echo basename($_SERVER['PHP_SELF']) == 'aktif.php' ? 'text-orange-600 font-medium' : ''; ?>">Aktif</a>
-                <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/inaktif.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-gray-100 <?php echo basename($_SERVER['PHP_SELF']) == 'inaktif.php' ? 'text-orange-600 font-medium' : ''; ?>">Inaktif</a>
+                <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/aktif.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 <?php echo basename($_SERVER['PHP_SELF']) == 'aktif.php' ? 'text-cyan-600 font-medium' : 'text-slate-700'; ?>">Aktif</a>
+                <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/inaktif.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 <?php echo basename($_SERVER['PHP_SELF']) == 'inaktif.php' ? 'text-cyan-600 font-medium' : 'text-slate-700'; ?>">Inaktif</a>
             </div>
         </div>
     </nav>
     <div class="mt-2 pt-4">
+        <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/profile.php'; ?>" class="flex items-center gap-4 p-2 rounded-lg <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'bg-cyan-600/10 text-cyan-600 font-medium' : 'hover:bg-cyan-600/5 text-slate-700'; ?>">
+            <span class="material-icons">settings</span>Pengaturan
+        </a>
         <a href="#" class="flex items-center gap-4 p-2 rounded-lg text-red-500 hover:bg-red-50"><span class="material-icons">logout</span>Keluar</a>
     </div>
 </aside>

@@ -7,36 +7,42 @@ $activeArchives = 12;
 $inactiveArchives = 7;
 $monthlyArchiveActivity = [
     '2025-09' => [
-        'new' => 5,      // Jumlah arsip baru yang masuk pada September 2025
-        'in_progress' => 3,  // Jumlah arsip yang sedang diproses
-        'completed' => 2,     // Jumlah arsip yang selesai pada September 2025
+        'aktif' => 5,      // Jumlah arsip Aktif yang masuk pada September 2025
+        'inaktif' => 3,  // Jumlah arsip yang Inaktif
+        'abadi' => 3,  // Jumlah arsip yang Abadi
+        'musnah' => 2,     // Jumlah arsip yang Musnah pada September 2025
     ],
     '2025-08' => [
-        'new' => 8,
-        'in_progress' => 4,
-        'completed' => 3,
+        'aktif' => 8,
+        'inaktif' => 4,
+        'abadi' => 4,
+        'musnah' => 3,
     ],
     '2025-07' => [
-        'new' => 6,
-        'in_progress' => 2,
-        'completed' => 4,
+        'aktif' => 6,
+        'inaktif' => 2,
+        'abadi' => 2,
+        'musnah' => 4,
     ],
     '2025-06' => [
-        'new' => 7,
-        'in_progress' => 5,
-        'completed' => 3,
+        'aktif' => 7,
+        'inaktif' => 5,
+        'abadi' => 5,
+        'musnah' => 3,
     ],
     '2025-05' => [
-        'new' => 9,
-        'in_progress' => 4,
-        'completed' => 5,
+        'aktif' => 9,
+        'inaktif' => 4,
+        'abadi' => 4,
+        'musnah' => 5,
     ],
 ];
 
 $archiveStats = [
-    'new' => 50,       // Jumlah arsip yang baru
-    'in_progress' => 30,  // Jumlah arsip yang sedang diproses
-    'completed' => 20,     // Jumlah arsip yang sudah selesai
+    'aktif' => 50,       // Jumlah arsip yang Aktif
+    'inaktif' => 30,  // Jumlah arsip yang Inaktif
+    'abadi' => 30,  // Jumlah arsip yang Abadi
+    'musnah' => 20,     // Jumlah arsip yang sudah Musnah
 ];
 
 include __DIR__ . '/../layouts/master/header.php';
@@ -50,38 +56,35 @@ include __DIR__ . '/../layouts/components/sidebar.php';
         <main class="flex-1 p-8 space-y-8 mt-16 overflow-y-auto">
             <!-- Header -->
             <div class="flex justify-between items-center">
-                <div class="font-bold text-xl">Dashboard</div>
-                <div class="flex gap-3 items-center">
-                    <button class="bg-orange-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-orange-600 flex items-center gap-2"><span class="material-icons text-sm">add</span>Tambah Arsip</button>
-                </div>
+                <div class="font-bold text-3xl">Dashboard</div>
             </div>
             <!-- Stats Cards -->
             <section class="grid grid-cols-4 gap-6">
                 <div class="bg-white rounded-xl shadow-sm p-6 flex flex-col items-start">
-                    <div class="text-gray-400 text-xs mb-1">Aktif</div>
+                    <div class="text-slate-500 font-semibold mb-1">Aktif</div>
                     <div class="flex items-end gap-2">
-                        <span class="text-2xl font-bold text-orange-500">109</span>
+                        <span class="text-3xl font-bold text-slate-700">109</span>
                         <span class="bg-green-50 text-green-600 px-2 py-0.5 rounded-full text-xs">+2%</span>
                     </div>
                 </div>
                 <div class="bg-white rounded-xl shadow-sm p-6 flex flex-col items-start">
-                    <div class="text-gray-400 text-xs mb-1">Inaktif</div>
+                    <div class="text-slate-500 font-semibold mb-1">Inaktif</div>
                     <div class="flex items-end gap-2">
-                        <span class="text-2xl font-bold text-orange-500">8</span>
+                        <span class="text-3xl font-bold text-slate-700">8</span>
                         <span class="bg-green-50 text-green-600 px-2 py-0.5 rounded-full text-xs">+10%</span>
                     </div>
                 </div>
                 <div class="bg-white rounded-xl shadow-sm p-6 flex flex-col items-start">
-                    <div class="text-gray-400 text-xs mb-1">Abadi</div>
+                    <div class="text-slate-500 font-semibold mb-1">Abadi</div>
                     <div class="flex items-end gap-2">
-                        <span class="text-2xl font-bold text-orange-500">21</span>
+                        <span class="text-3xl font-bold text-slate-700">21</span>
                         <span class="bg-red-50 text-red-600 px-2 py-0.5 rounded-full text-xs">-5%</span>
                     </div>
                 </div>
                 <div class="bg-white rounded-xl shadow-sm p-6 flex flex-col items-start">
-                    <div class="text-gray-400 text-xs mb-1">Dimusnahkan</div>
+                    <div class="text-slate-500 font-semibold mb-1">Dimusnahkan</div>
                     <div class="flex items-end gap-2">
-                        <span class="text-2xl font-bold text-orange-500">39</span>
+                        <span class="text-3xl font-bold text-slate-700">39</span>
                         <span class="bg-red-50 text-red-600 px-2 py-0.5 rounded-full text-xs">-5%</span>
                     </div>
                 </div>
@@ -90,8 +93,8 @@ include __DIR__ . '/../layouts/components/sidebar.php';
             <section class="grid grid-cols-3 gap-6">
                 <div class="col-span-2 bg-white rounded-xl shadow-sm p-6">
                     <div class="flex justify-between items-center mb-4">
-                        <div class="font-semibold">Aktivitas Arsip</div>
-                        <div class="text-xs text-gray-400">Minggu Ini</div>
+                        <div class="text-2xl font-semibold">Aktivitas Arsip</div>
+                        <div class="text-sm text-slate-500 border px-3 py-1 rounded hover:bg-gray-50">Minggu Ini</div>
                     </div>
                     <canvas id="archiveActivityChart" width="400" height="200"></canvas>
                     <script>
@@ -101,23 +104,21 @@ include __DIR__ . '/../layouts/components/sidebar.php';
                             data: {
                                 labels: <?php echo json_encode(array_keys($monthlyArchiveActivity)); ?>,  // Label berdasarkan bulan
                                 datasets: [{
-                                    label: 'Arsip Baru',
-                                    data: <?php echo json_encode(array_column($monthlyArchiveActivity, 'new')); ?>,  // Data arsip baru
-                                    backgroundColor: 'rgba(255, 159, 64, 0.2)',
-                                    borderColor: 'rgba(255, 159, 64, 1)',
-                                    borderWidth: 1
+                                    label: 'Arsip Aktif',
+                                    data: <?php echo json_encode(array_column($monthlyArchiveActivity, 'aktif')); ?>,  // Data arsip Aktif
+                                    backgroundColor: 'rgba(0, 146, 184, 1)',
                                 }, {
-                                    label: 'Proses',
-                                    data: <?php echo json_encode(array_column($monthlyArchiveActivity, 'in_progress')); ?>,  // Data arsip yang sedang diproses
-                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                                    borderColor: 'rgba(75, 192, 192, 1)',
-                                    borderWidth: 1
+                                    label: 'Inaktif',
+                                    data: <?php echo json_encode(array_column($monthlyArchiveActivity, 'inaktif')); ?>,  // Data arsip yang sedang diInaktif
+                                    backgroundColor: 'rgba(254, 184, 34, 1)',
                                 }, {
-                                    label: 'Selesai',
-                                    data: <?php echo json_encode(array_column($monthlyArchiveActivity, 'completed')); ?>,  // Data arsip yang selesai
-                                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                                    borderColor: 'rgba(153, 102, 255, 1)',
-                                    borderWidth: 1
+                                    label: 'Abadi',
+                                    data: <?php echo json_encode(array_column($monthlyArchiveActivity, 'abadi')); ?>,  // Data arsip yang Abadi
+                                    backgroundColor: 'rgba(98, 116, 142, 1)',
+                                }, {
+                                    label: 'Musnah',
+                                    data: <?php echo json_encode(array_column($monthlyArchiveActivity, 'musnah')); ?>,  // Data arsip yang Musnah
+                                    backgroundColor: 'rgba(49, 65, 88, 1)',
                                 }]
                             },
                             options: {
@@ -133,8 +134,8 @@ include __DIR__ . '/../layouts/components/sidebar.php';
                 </div>
                 <div class="bg-white rounded-xl shadow-sm p-6 flex flex-col">
                     <div class="flex justify-between items-center mb-4">
-                        <div class="font-semibold">Statistik Arsip</div>
-                        <div class="text-xs text-gray-400">Minggu Ini</div>
+                        <div class="text-2xl font-semibold">Statistik Arsip</div>
+                        <div class="text-sm text-slate-500 border px-3 py-1 rounded hover:bg-gray-50">Minggu Ini</div>
                     </div>
                     <canvas id="archiveStatsChart" width="200" height="200"></canvas>
                     <script>
@@ -142,19 +143,21 @@ include __DIR__ . '/../layouts/components/sidebar.php';
                         var archiveStatsChart = new Chart(ctx, {
                             type: 'doughnut',  // Jenis chart: Doughnut chart
                             data: {
-                                labels: ['Baru', 'Proses', 'Selesai'],
+                                labels: ['Aktif', 'Inaktif', 'Abadi', 'Musnah'],
                                 datasets: [{
                                     label: 'Status Arsip',
-                                    data: [<?php echo $archiveStats['new']; ?>, <?php echo $archiveStats['in_progress']; ?>, <?php echo $archiveStats['completed']; ?>],
+                                    data: [<?php echo $archiveStats['aktif']; ?>, <?php echo $archiveStats['inaktif']; ?>, <?php echo $archiveStats['abadi']; ?>, <?php echo $archiveStats['musnah']; ?>],
                                     backgroundColor: [
-                                        'rgba(255, 159, 64, 0.2)',   // Warna untuk arsip baru
-                                        'rgba(75, 192, 192, 0.2)',   // Warna untuk arsip yang sedang diproses
-                                        'rgba(153, 102, 255, 0.2)'   // Warna untuk arsip yang selesai
+                                        'rgba(0, 146, 184, 1)',   // Warna untuk arsip Aktif
+                                        'rgba(254, 184, 34, 1)',   // Warna untuk arsip yang Inaktif
+                                        'rgba(98, 116, 142, 1)',   // Warna untuk arsip yang Abadi
+                                        'rgba(49, 65, 88, 1)'   // Warna untuk arsip yang Musnah
                                     ],
                                     borderColor: [
-                                        'rgba(255, 159, 64, 1)',
-                                        'rgba(75, 192, 192, 1)',
-                                        'rgba(153, 102, 255, 1)'
+                                        'rgba(0, 146, 184, 1)',
+                                        'rgba(254, 184, 34, 1)',
+                                        'rgba(98, 116, 142, 1)',
+                                        'rgba(49, 65, 88, 1)'
                                     ],
                                     borderWidth: 1
                                 }]
@@ -169,8 +172,8 @@ include __DIR__ . '/../layouts/components/sidebar.php';
             <!-- Archive History Table -->
             <section class="bg-white rounded-xl shadow-sm p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <div class="font-semibold">Aktivitas Arsip Terbaru</div>
-                    <button class="text-xs text-gray-500 border px-3 py-1 rounded hover:bg-gray-50">Lihat Semua</button>
+                    <div class="text-2xl font-semibold">Aktivitas Arsip Terbaru</div>
+                    <button class="text-sm text-slate-500 border px-3 py-1 rounded hover:bg-gray-50">Lihat Semua</button>
                 </div>
                 <table class="min-w-full text-sm">
                     <thead>

@@ -18,7 +18,7 @@ include_once "../layouts/master/header.php";
                 <div class="flex flex-col space-y-4">
                     <!-- Header -->
                     <div class="flex justify-between items-center mb-8">
-                        <a href="semua-arsip.php" class="flex items-center text-2xl border-b">
+                        <a href="inaktif.php" class="flex items-center text-2xl border-b">
                             <svg class="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
                             </svg>
@@ -126,7 +126,7 @@ include_once "../layouts/master/header.php";
 
                         <!-- File Upload -->
                         <div>
-                            <label for="fileUpload" class="block text-sm font-medium text-gray-700 mb-1">Upload Dokumen PDF</label>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Upload Dokumen PDF</label>
                             <div class="flex flex-col space-y-2">
                                 <div class="flex items-center justify-center w-full">
                                     <label for="fileUpload" class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
@@ -134,13 +134,13 @@ include_once "../layouts/master/header.php";
                                             <svg class="w-8 h-8 mb-3 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
                                             </svg>
-                                            <p class="mb-1 text-sm text-gray-500">Klik atau seret file ke area ini</p>
+                                            <p class="mb-1 text-sm text-gray-500">Klik area ini untuk memulai upload file</p>
                                             <p class="text-xs text-gray-500">PDF (Maksimal 10 file)</p>
                                         </div>
                                         <input id="fileUpload" name="files[]" type="file" class="hidden" accept=".pdf" multiple />
                                     </label>
                                 </div>
-                                <div id="fileList" class="mt-2 space-y-2"></div>
+                                <div id="fileList" class="mt-2 flex flex-row gap-2 overflow-x-auto"></div>
                             </div>
                         </div>
 
@@ -179,7 +179,7 @@ document.addEventListener('DOMContentLoaded', function() {
             alert('Form submitted successfully!');
             
             // Redirect back to semua-arsip page after submission
-            window.location.href = 'semua-arsip.php';
+            window.location.href = 'inaktif.php';
         }
     });
 
@@ -304,24 +304,42 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 // Create file item
                 const fileItem = document.createElement('div');
-                fileItem.className = 'flex items-center justify-between p-2 bg-gray-50 rounded border border-gray-200 mb-2';
-                
-                // File info
-                const fileInfo = document.createElement('div');
-                fileInfo.className = 'flex items-center';
-                
-                // PDF icon
+                fileItem.className = 'flex flex-col items-center min-w-[180px] max-w-xs bg-gray-50 rounded border border-gray-200 p-2 relative';
+
+                // Create link wrapper
+                const fileLink = document.createElement('a');
+                fileLink.href = URL.createObjectURL(file);
+                fileLink.target = '_blank';
+                fileLink.rel = 'noopener noreferrer';
+                fileLink.className = 'w-full flex flex-col items-center group';
+
+                // Try to preview PDF cover (first page)
+                const pdfPreview = document.createElement('embed');
+                pdfPreview.src = fileLink.href + "#toolbar=0&navpanes=0&scrollbar=0&page=1";
+                pdfPreview.type = 'application/pdf';
+                pdfPreview.className = 'w-16 h-20 mb-1 border border-gray-200 rounded object-cover bg-white group-hover:ring-2 group-hover:ring-blue-500';
+                pdfPreview.onerror = function() {
+                    pdfPreview.replaceWith(fileIcon); // fallback to icon if failed
+                };
+
+                // PDF icon (fallback)
                 const fileIcon = document.createElement('div');
-                fileIcon.className = 'mr-2 text-red-500';
+                fileIcon.className = 'text-red-500 mb-1';
                 fileIcon.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
                     </svg>
                 `;
-                
+
+                fileLink.appendChild(pdfPreview);
+
+                // File info
+                const fileInfo = document.createElement('div');
+                fileInfo.className = 'flex flex-col items-center w-full';
+
                 // File name and size
                 const fileName = document.createElement('div');
-                fileName.className = 'text-sm';
+                fileName.className = 'text-sm truncate max-w-[140px]';
                 fileName.textContent = file.name;
                 
                 const fileSize = document.createElement('div');
@@ -338,7 +356,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Remove button
                 const removeBtn = document.createElement('button');
                 removeBtn.type = 'button';
-                removeBtn.className = 'text-gray-400 hover:text-red-500';
+                removeBtn.className = 'text-gray-400 hover:text-red-500 absolute top-1 right-1';
                 removeBtn.innerHTML = `
                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
