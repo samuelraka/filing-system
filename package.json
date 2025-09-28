@@ -1,0 +1,14 @@
+{
+  "dependencies": {
+    "tailwindcss": "^4.1.13"
+  },
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.1.13",
+    "concurrently": "^9.2.1"
+  },
+  "scripts": {
+    "tw:watch": "tailwindcss -i ./assets/css/tailwind_config.css -o ./assets/css/tailwind.css -w",
+    "serve": "php -S localhost:8000 -t .",
+    "dev": "concurrently \"npm:tw:watch\" \"npm:serve\""
+  }
+}
