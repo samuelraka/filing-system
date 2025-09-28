@@ -5,12 +5,38 @@
 // Dummy data for now (replace with DB queries later)
 $activeArchives = 12;
 $inactiveArchives = 7;
-$monthlyArchiveStats = [
-    '2025-09' => 5,
-    '2025-08' => 8,
-    '2025-07' => 3,
-    '2025-06' => 6,
-    '2025-05' => 9,
+$monthlyArchiveActivity = [
+    '2025-09' => [
+        'new' => 5,      // Jumlah arsip baru yang masuk pada September 2025
+        'in_progress' => 3,  // Jumlah arsip yang sedang diproses
+        'completed' => 2,     // Jumlah arsip yang selesai pada September 2025
+    ],
+    '2025-08' => [
+        'new' => 8,
+        'in_progress' => 4,
+        'completed' => 3,
+    ],
+    '2025-07' => [
+        'new' => 6,
+        'in_progress' => 2,
+        'completed' => 4,
+    ],
+    '2025-06' => [
+        'new' => 7,
+        'in_progress' => 5,
+        'completed' => 3,
+    ],
+    '2025-05' => [
+        'new' => 9,
+        'in_progress' => 4,
+        'completed' => 5,
+    ],
+];
+
+$archiveStats = [
+    'new' => 50,       // Jumlah arsip yang baru
+    'in_progress' => 30,  // Jumlah arsip yang sedang diproses
+    'completed' => 20,     // Jumlah arsip yang sudah selesai
 ];
 
 include __DIR__ . '/../layouts/master/header.php';
@@ -67,20 +93,77 @@ include __DIR__ . '/../layouts/components/sidebar.php';
                         <div class="font-semibold">Aktivitas Arsip</div>
                         <div class="text-xs text-gray-400">Minggu Ini</div>
                     </div>
-                    <div class="h-40 flex items-center justify-center text-gray-300">[Chart Placeholder]</div>
+                    <canvas id="archiveActivityChart" width="400" height="200"></canvas>
+                    <script>
+                        var ctx = document.getElementById('archiveActivityChart').getContext('2d');
+                        var archiveActivityChart = new Chart(ctx, {
+                            type: 'bar',  // Jenis chart: Bar chart
+                            data: {
+                                labels: <?php echo json_encode(array_keys($monthlyArchiveActivity)); ?>,  // Label berdasarkan bulan
+                                datasets: [{
+                                    label: 'Arsip Baru',
+                                    data: <?php echo json_encode(array_column($monthlyArchiveActivity, 'new')); ?>,  // Data arsip baru
+                                    backgroundColor: 'rgba(255, 159, 64, 0.2)',
+                                    borderColor: 'rgba(255, 159, 64, 1)',
+                                    borderWidth: 1
+                                }, {
+                                    label: 'Proses',
+                                    data: <?php echo json_encode(array_column($monthlyArchiveActivity, 'in_progress')); ?>,  // Data arsip yang sedang diproses
+                                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                                    borderColor: 'rgba(75, 192, 192, 1)',
+                                    borderWidth: 1
+                                }, {
+                                    label: 'Selesai',
+                                    data: <?php echo json_encode(array_column($monthlyArchiveActivity, 'completed')); ?>,  // Data arsip yang selesai
+                                    backgroundColor: 'rgba(153, 102, 255, 0.2)',
+                                    borderColor: 'rgba(153, 102, 255, 1)',
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true,
+                                scales: {
+                                    y: {
+                                        beginAtZero: true
+                                    }
+                                }
+                            }
+                        });
+                    </script>
                 </div>
                 <div class="bg-white rounded-xl shadow-sm p-6 flex flex-col">
                     <div class="flex justify-between items-center mb-4">
                         <div class="font-semibold">Statistik Arsip</div>
                         <div class="text-xs text-gray-400">Minggu Ini</div>
                     </div>
-                    <div class="h-40 flex items-center justify-center text-gray-300">[Donut Chart Placeholder]</div>
-                    <div class="flex justify-center gap-4 mt-4 text-xs">
-                        <span class="flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-full bg-orange-500"></span>Aktif</span>
-                        <span class="flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-full bg-yellow-400"></span>Inaktif</span>
-                        <span class="flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-full bg-green-500"></span>Musnah</span>
-                        <span class="flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-full bg-green-500"></span>Abadi</span>
-                    </div>
+                    <canvas id="archiveStatsChart" width="200" height="200"></canvas>
+                    <script>
+                        var ctx = document.getElementById('archiveStatsChart').getContext('2d');
+                        var archiveStatsChart = new Chart(ctx, {
+                            type: 'doughnut',  // Jenis chart: Doughnut chart
+                            data: {
+                                labels: ['Baru', 'Proses', 'Selesai'],
+                                datasets: [{
+                                    label: 'Status Arsip',
+                                    data: [<?php echo $archiveStats['new']; ?>, <?php echo $archiveStats['in_progress']; ?>, <?php echo $archiveStats['completed']; ?>],
+                                    backgroundColor: [
+                                        'rgba(255, 159, 64, 0.2)',   // Warna untuk arsip baru
+                                        'rgba(75, 192, 192, 0.2)',   // Warna untuk arsip yang sedang diproses
+                                        'rgba(153, 102, 255, 0.2)'   // Warna untuk arsip yang selesai
+                                    ],
+                                    borderColor: [
+                                        'rgba(255, 159, 64, 1)',
+                                        'rgba(75, 192, 192, 1)',
+                                        'rgba(153, 102, 255, 1)'
+                                    ],
+                                    borderWidth: 1
+                                }]
+                            },
+                            options: {
+                                responsive: true
+                            }
+                        });
+                    </script>
                 </div>
             </section>
             <!-- Archive History Table -->
