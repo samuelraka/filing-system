@@ -12,15 +12,15 @@ include_once "../layouts/master/header.php";
         <?php include_once "../layouts/components/topbar.php"; ?>
 
         <!-- Main content -->
-        <div class="p-6 mt-16 overflow-y-auto">
+        <div class="p-6 mt-16 overflow-y-auto flex flex-col">
             <!-- Header with search and add user button -->
-            <div class="flex justify-between items-center">
-                <h2 class="text-lg font-medium text-gray-900">Arsip Inaktif</h2>
+            <div class="flex justify-between items-center mb-8">
+                <h2 class="text-3xl font-medium text-gray-900">Arsip Inaktif</h2>
             </div>
 
             <!-- Filters -->
-            <div class="flex justify-between items-center my-3">
-                <a href="tambah_aktif.php" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center">
+            <div class="flex justify-between items-center mb-5">
+                <a href="tambah_inaktif.php" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md flex items-center">
                     <svg class="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
                     </svg>
@@ -57,10 +57,14 @@ include_once "../layouts/master/header.php";
                                     <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nomor Item Arsip</th>
                                     <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kode Klasifikasi Arsip</th>
                                     <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Uraian Informasi Arsip</th>
-                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kurun Waktu</th>
+                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tingkat Perkembangan</th>
                                     <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah Item Arsip</th>
-                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan SKAAD</th>
                                     <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan</th>
+                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nomor Definitif Folder dan Boks</th>
+                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Lokasi Simpan</th>
+                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jangka Simpan dan Nasib Akhir</th>
+                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kategori Arsip</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200" id="userTableBody">
@@ -74,10 +78,10 @@ include_once "../layouts/master/header.php";
                         <div class="flex items-center">
                             <span class="text-sm text-gray-700 mr-2">Show</span>
                             <select id="perPage" class="border border-gray-300 rounded-md text-sm py-1 px-2">
-                                <option value="12">12</option>
-                                <option value="24">24</option>
-                                <option value="36">36</option>
-                                <option value="48">48</option>
+                                <option value="12">10</option>
+                                <option value="24">25</option>
+                                <option value="36">50</option>
+                                <option value="36">100</option>
                             </select>
                         </div>
                         <div class="flex items-center space-x-1" id="pagination">

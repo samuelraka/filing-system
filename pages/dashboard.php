@@ -26,7 +26,6 @@ include __DIR__ . '/../layouts/components/sidebar.php';
             <div class="flex justify-between items-center">
                 <div class="font-bold text-xl">Dashboard</div>
                 <div class="flex gap-3 items-center">
-                    <button class="bg-orange-50 text-orange-600 px-4 py-2 rounded-lg font-semibold border border-orange-100 hover:bg-orange-100">Lihat Arsip Terbaru</button>
                     <button class="bg-orange-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-orange-600 flex items-center gap-2"><span class="material-icons text-sm">add</span>Tambah Arsip</button>
                 </div>
             </div>
@@ -77,16 +76,17 @@ include __DIR__ . '/../layouts/components/sidebar.php';
                     </div>
                     <div class="h-40 flex items-center justify-center text-gray-300">[Donut Chart Placeholder]</div>
                     <div class="flex justify-center gap-4 mt-4 text-xs">
-                        <span class="flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-full bg-orange-500"></span>Baru</span>
-                        <span class="flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-full bg-yellow-400"></span>Proses</span>
-                        <span class="flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-full bg-green-500"></span>Selesai</span>
+                        <span class="flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-full bg-orange-500"></span>Aktif</span>
+                        <span class="flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-full bg-yellow-400"></span>Inaktif</span>
+                        <span class="flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-full bg-green-500"></span>Musnah</span>
+                        <span class="flex items-center gap-1"><span class="inline-block w-3 h-3 rounded-full bg-green-500"></span>Abadi</span>
                     </div>
                 </div>
             </section>
             <!-- Archive History Table -->
             <section class="bg-white rounded-xl shadow-sm p-6">
                 <div class="flex justify-between items-center mb-4">
-                    <div class="font-semibold">Riwayat Arsip Masuk</div>
+                    <div class="font-semibold">Aktivitas Arsip Terbaru</div>
                     <button class="text-xs text-gray-500 border px-3 py-1 rounded hover:bg-gray-50">Lihat Semua</button>
                 </div>
                 <table class="min-w-full text-sm">
@@ -105,21 +105,21 @@ include __DIR__ . '/../layouts/components/sidebar.php';
                             <td class="py-2 font-semibold">Surat Masuk</td>
                             <td class="py-2">Surat undangan rapat bulanan</td>
                             <td class="py-2">Sep 12</td>
-                            <td class="py-2"><span class="bg-orange-50 text-orange-600 px-2 py-1 rounded text-xs">Baru</span></td>
+                            <td class="py-2"><span class="bg-orange-50 text-orange-600 px-2 py-1 rounded text-xs">Aktif</span></td>
                         </tr>
                         <tr class="border-b hover:bg-gray-50">
                             <td class="py-2">647</td>
                             <td class="py-2 font-semibold">Nota Dinas</td>
                             <td class="py-2">Nota dinas perjalanan dinas</td>
                             <td class="py-2">Sep 12</td>
-                            <td class="py-2"><span class="bg-yellow-50 text-yellow-700 px-2 py-1 rounded text-xs">Proses</span></td>
+                            <td class="py-2"><span class="bg-yellow-50 text-yellow-700 px-2 py-1 rounded text-xs">Inaktif</span></td>
                         </tr>
                         <tr class="border-b hover:bg-gray-50">
                             <td class="py-2">453</td>
                             <td class="py-2 font-semibold">Memo</td>
                             <td class="py-2">Memo internal divisi</td>
                             <td class="py-2">Sep 10</td>
-                            <td class="py-2"><span class="bg-green-50 text-green-700 px-2 py-1 rounded text-xs">Selesai</span></td>
+                            <td class="py-2"><span class="bg-green-50 text-green-700 px-2 py-1 rounded text-xs">Musnah</span></td>
                         </tr>
                     </tbody>
                 </table>

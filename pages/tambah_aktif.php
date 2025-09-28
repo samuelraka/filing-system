@@ -12,13 +12,13 @@ include_once "../layouts/master/header.php";
         <?php include_once "../layouts/components/topbar.php"; ?>
 
         <!-- Main content -->
-        <div class="p-6 mt-16 overflow-y-auto">
-            <h2 class="text-lg font-medium text-gray-900">Tambah Arsip</h2>
+        <div class="p-6 mt-16 overflow-y-auto flex flex-col gap-y-4">
+            <h2 class="text-3xl font-medium text-gray-900 mb-4">Tambah Arsip Aktif</h2>
             <div class="bg-white rounded-lg shadow-sm p-6">
                 <div class="flex flex-col space-y-4">
                     <!-- Header -->
-                    <div class="flex justify-between items-center mb-4">
-                        <a href="semua-arsip.php" class="flex items-center">
+                    <div class="flex justify-between items-center mb-8">
+                        <a href="semua-arsip.php" class="flex items-center text-2xl border-b">
                             <svg class="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
                             </svg>
@@ -41,8 +41,14 @@ include_once "../layouts/master/header.php";
                                 <input type="text" id="nomorItemArsip" name="nomorItemArsip" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                             </div>
 
-                            <!-- Kode Klasifikasi -->
+                            <!-- Kode Klasifikasi Correct One -->
+
                             <div>
+                                <label for="kodeKlasifikasi" class="block text-sm font-medium text-gray-700 mb-1">Kode Klasifikasi</label>
+                                <input type="text" id="kodeKlasifikasi" name="kodeKlasifikasi" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+
+                            <!-- <div>
                                 <label for="kodeKlasifikasi" class="block text-sm font-medium text-gray-700 mb-1">Kode Klasifikasi</label>
                                 <select id="kodeKlasifikasi" name="kodeKlasifikasi" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                                     <option value="">Pilih Kode Klasifikasi</option>
@@ -52,7 +58,7 @@ include_once "../layouts/master/header.php";
                                     <option value="HK">HK - Hukum</option>
                                     <option value="PR">PR - Perencanaan</option>
                                 </select>
-                            </div>
+                            </div> -->
 
                             <!-- Tanggal -->
                             <div>
@@ -67,7 +73,11 @@ include_once "../layouts/master/header.php";
                             </div>
 
                             <!-- Keterangan SKAAD -->
-                            <div>
+                             <div>
+                                <label for="keteranganSKAAD" class="block text-sm font-medium text-gray-700 mb-1">Keterangan SKAAD</label>
+                                <input type="text" id="keteranganSKAAD" name="keteranganSKAAD" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                            </div>
+                            <!-- <div>
                                 <label for="keteranganSKAAD" class="block text-sm font-medium text-gray-700 mb-1">Keterangan SKAAD</label>
                                 <select id="keteranganSKAAD" name="keteranganSKAAD" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                                     <option value="">Pilih Keterangan SKAAD</option>
@@ -75,7 +85,7 @@ include_once "../layouts/master/header.php";
                                     <option value="Musnah">Musnah</option>
                                     <option value="Dinilai Kembali">Dinilai Kembali</option>
                                 </select>
-                            </div>
+                            </div> -->
                         </div>
 
                         <!-- Uraian Informasi -->
