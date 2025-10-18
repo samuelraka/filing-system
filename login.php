@@ -8,16 +8,16 @@ if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
     logout();
 }
 
-// Handle login form submission
+// Handle login form submission (fallback for non-JS users)
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = $_POST['email'] ?? '';
+    $username = $_POST['username'] ?? '';
     $password = $_POST['password'] ?? '';
     
-    if (login($email, $password)) {
+    if (login($username, $password)) {
         header('Location: pages/dashboard.php');
         exit();
     } else {
-        $error = 'Email atau password salah';
+        $error = 'Username atau password salah';
     }
 }
 
@@ -91,7 +91,7 @@ include __DIR__ . '/layouts/master/header.php';
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         const loginForm = document.getElementById('loginForm');
-        const emailInput = document.getElementById('email');
+        const usernameInput = document.getElementById('username');
         const passwordInput = document.getElementById('password');
         const togglePassword = document.getElementById('togglePassword');
         
@@ -105,7 +105,7 @@ include __DIR__ . '/layouts/master/header.php';
             icon.textContent = type === 'password' ? 'visibility' : 'visibility_off';
         });
         
-        // Form validation
+        // Form validation and API submission
         loginForm.addEventListener('submit', function(e) {
             e.preventDefault();
             
@@ -114,12 +114,12 @@ include __DIR__ . '/layouts/master/header.php';
             // Reset error states
             document.getElementById('emailError').classList.add('hidden');
             document.getElementById('passwordError').classList.add('hidden');
-            emailInput.classList.remove('border-red-500', 'ring-red-500');
+            usernameInput.classList.remove('border-red-500', 'ring-red-500');
             passwordInput.classList.remove('border-red-500', 'ring-red-500');
             
-            // Validate email/username
-            if (!emailInput.value.trim()) {
-                showError(emailInput, 'emailError', 'Email atau username harus diisi');
+            // Validate username
+            if (!usernameInput.value.trim()) {
+                showError(usernameInput, 'emailError', 'Username harus diisi');
                 isValid = false;
             }
             
@@ -130,8 +130,46 @@ include __DIR__ . '/layouts/master/header.php';
             }
             
             if (isValid) {
-                // Submit the form
-                loginForm.submit();
+                // Show loading state
+                const submitButton = loginForm.querySelector('button[type="submit"]');
+                const originalText = submitButton.textContent;
+                submitButton.textContent = 'Memproses...';
+                submitButton.disabled = true;
+                
+                // Call API endpoint
+                fetch('http://localhost:3003/arsip/login', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        username: usernameInput.value.trim(),
+                        password: passwordInput.value
+                    })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        // Store user data in sessionStorage for client-side usage
+                        sessionStorage.setItem('user', JSON.stringify(data.data.user));
+                        sessionStorage.setItem('token', data.data.token);
+                        
+                        // Redirect to dashboard
+                        window.location.href = 'pages/dashboard.php';
+                    } else {
+                        // Show error message
+                        showApiError(data.message || 'Login gagal');
+                    }
+                })
+                .catch(error => {
+                    console.error('Login error:', error);
+                    showApiError('Terjadi kesalahan koneksi. Silakan coba lagi.');
+                })
+                .finally(() => {
+                    // Restore button state
+                    submitButton.textContent = originalText;
+                    submitButton.disabled = false;
+                });
             }
         });
         
@@ -141,6 +179,30 @@ include __DIR__ . '/layouts/master/header.php';
             const errorElement = document.getElementById(errorId);
             errorElement.textContent = message;
             errorElement.classList.remove('hidden');
+        }
+        
+        // Show API error message
+        function showApiError(message) {
+            // Create or update error message div
+            let errorDiv = document.getElementById('apiError');
+            if (!errorDiv) {
+                errorDiv = document.createElement('div');
+                errorDiv.id = 'apiError';
+                errorDiv.className = 'mb-4 p-3 bg-red-50 border border-red-200 rounded-md';
+                const errorMessage = document.createElement('p');
+                errorMessage.className = 'text-sm text-red-600';
+                errorDiv.appendChild(errorMessage);
+                
+                // Insert before the form
+                loginForm.parentNode.insertBefore(errorDiv, loginForm);
+            }
+            
+            errorDiv.querySelector('p').textContent = message;
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                errorDiv.remove();
+            }, 5000);
         }
     });
 </script>
