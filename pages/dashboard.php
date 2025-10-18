@@ -1,6 +1,10 @@
 <?php
 // dashboard.php
 // Dashboard page for archiving system
+include_once __DIR__ . '/../config/session.php';
+
+// Require login to access this page
+requireLogin();
 
 // Dummy data for now (replace with DB queries later)
 $activeArchives = 12;
@@ -46,7 +50,7 @@ $archiveStats = [
 ];
 
 include __DIR__ . '/../layouts/master/header.php';
-include __DIR__ . '/../layouts/components/sidebar.php';
+include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
 ?>
 <div class="min-h-screen bg-[#fafbfc] flex overflow-hidden">
     <!-- Main Content -->

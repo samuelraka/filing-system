@@ -1,11 +1,19 @@
 <?php
-// Include header
+// Include session management and header
+include_once "../config/session.php";
+
+// Require login to access this page
+requireLogin();
+
+// Only admin can access user management
+requireAdmin();
+
 include_once "../layouts/master/header.php";
 ?>
 
 <div class="flex h-screen bg-gray-100">
     <!-- Include sidebar -->
-    <?php include_once "../layouts/components/sidebar.php"; ?>
+    <?php include_once "../layouts/components/sidebar_dynamic.php"; ?>
 
     <div class="flex-1 flex flex-col ml-64">
         <!-- Include topbar -->

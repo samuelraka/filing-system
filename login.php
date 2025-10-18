@@ -1,43 +1,73 @@
 <?php
 // login.php
 // Login page for archiving system
+include_once __DIR__ . '/config/session.php';
+
+// Handle logout request
+if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
+    logout();
+}
+
+// Handle login form submission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $email = $_POST['email'] ?? '';
+    $password = $_POST['password'] ?? '';
+    
+    if (login($email, $password)) {
+        header('Location: pages/dashboard.php');
+        exit();
+    } else {
+        $error = 'Email atau password salah';
+    }
+}
+
 include __DIR__ . '/layouts/master/header.php';
 ?>
 
-<div class="min-h-screen bg-[#fafbfc] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
-    <div class="max-w-md w-full space-y-8">
+<div class="min-h-screen bg-gradient-to-br from-cyan-50 via-blue-50 to-indigo-100 flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
+
+    <div class="max-w-md w-full space-y-8 relative z-10">
         <!-- Logo and Title -->
-        <div class="text-center flex flex-col items-center justify-center gap-2 mb-5 pb-5">
+        <div class="text-center flex flex-col items-center justify-center gap-2 mb-8">
             <div class="flex items-center justify-center gap-2 mb-2">
-                <span class="material-icons text-orange-500 text-4xl">inventory_2</span>
-                <span class="font-bold text-2xl tracking-wide text-gray-900">ArsipOnline</span>
+                <span class="material-icons text-cyan-600 text-5xl">inventory_2</span>
+                <span class="font-bold text-4xl tracking-wide text-slate-800">ArsipOnline</span>
             </div>
-            <h2 class="text-center text-4xl font-bold text-gray-700">LOGIN</h2>
         </div>
 
-        <!-- Login Form -->
-        <div class="bg-white rounded-xl shadow-sm p-8">
-            <form class="space-y-6" id="loginForm">
-                <!-- Username/Email Field -->
+        <!-- Login Form with Glass Effect -->
+        <div class="bg-white/80 backdrop-blur-lg rounded-2xl shadow-xl border border-white/20 p-8">
+
+            <h2 class="text-center text-2xl font-bold text-slate-700 mb-8">LOGIN USER</h2>
+             
+             <!-- Error Message -->
+            <?php if (isset($error)): ?>
+                <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-md">
+                    <p class="text-sm text-red-600"><?php echo $error; ?></p>
+                </div>
+            <?php endif; ?>
+            
+            <form class="space-y-5" id="loginForm" method="POST">
+                <!-- Username -->
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                    <label for="username" class="block text-sm font-medium text-gray-700 mb-1">Username</label>
                     <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <span class="material-icons text-gray-400 text-sm">person</span>
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+                            <span class="material-icons text-gray-400 text-lg">person</span>
                         </div>
-                        <input id="email" name="email" type="text" required class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500" placeholder="Masukkan Email">
+                        <input id="username" name="username" type="text" required class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 bg-white/70 backdrop-blur-sm" placeholder="Masukkan Username">
                     </div>
                     <p id="emailError" class="mt-1 text-sm text-red-600 hidden"></p>
                 </div>
 
-                <!-- Password Field -->
+                <!-- Password -->
                 <div>
                     <label for="password" class="block text-sm font-medium text-gray-700 mb-1">Password</label>
                     <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <span class="material-icons text-gray-400 text-sm">lock</span>
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
+                            <span class="material-icons text-gray-400 text-lg">lock</span>
                         </div>
-                        <input id="password" name="password" type="password" required class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-orange-500 focus:border-orange-500" placeholder="Masukkan Password">
+                        <input id="password" name="password" type="password" required class="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500 bg-white/70 backdrop-blur-sm" placeholder="Masukkan Password">
                         <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
                             <button type="button" id="togglePassword" class="text-gray-400 hover:text-gray-600 focus:outline-none" style="line-height: 0;">
                                 <span class="material-icons text-sm">visibility</span>
@@ -47,9 +77,9 @@ include __DIR__ . '/layouts/master/header.php';
                     <p id="passwordError" class="mt-1 text-sm text-red-600 hidden"></p>
                 </div>
 
-                <!-- Login Button -->
+                <!-- Button -->
                 <div>
-                    <button type="submit" class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-orange-500 hover:bg-orange-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-orange-500">
+                    <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-md text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-all duration-200 transform hover:scale-[1.02]">
                         Masuk
                     </button>
                 </div>
@@ -100,8 +130,8 @@ include __DIR__ . '/layouts/master/header.php';
             }
             
             if (isValid) {
-                // For demo purposes, redirect to dashboard
-                window.location.href = 'pages/dashboard.php';
+                // Submit the form
+                loginForm.submit();
             }
         });
         

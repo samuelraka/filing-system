@@ -26,21 +26,25 @@ include_once "../layouts/master/header.php";
                         <input type="text" class="w-full border border-gray-300 rounded-md py-2 px-3 bg-gray-100" value="John Doe" disabled />
                     </div>
                     <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
-                        <input type="email" class="w-full border border-gray-300 rounded-md py-2 px-3 bg-gray-100" value="john.doe@email.com" disabled />
-                    </div>
-                    <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Unit Pengelola</label>
                         <input type="text" class="w-full border border-gray-300 rounded-md py-2 px-3 bg-gray-100" value="UPT Arsip" disabled />
                     </div>
                     <div class="flex items-center gap-2">
-                        <div class="flex-1">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Password</label>
-                            <input type="password" id="passwordField" class="w-full border border-gray-300 rounded-md py-2 px-3 bg-gray-100" value="passworddummy" disabled />
-                        </div>
                         <button type="button" id="changePasswordBtn" class="bg-slate-600 hover:bg-slate-600/90 text-white px-4 py-2 rounded-md mt-6">Ubah Password</button>
                     </div>
                     <div id="passwordChangeSection" class="space-y-2 hidden">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" class="w-full border border-gray-300 rounded-md py-2 px-3 bg-gray-100" value="john.doe@email.com" disabled />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Username</label>
+                            <input type="username" class="w-full border border-gray-300 rounded-md py-2 px-3 bg-gray-100" value="j0hn_doe" disabled />
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Password Lama</label>
+                            <input type="password" id="newPassword" class="w-full border border-gray-300 rounded-md py-2 px-3" />
+                        </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Password Baru</label>
                             <input type="password" id="newPassword" class="w-full border border-gray-300 rounded-md py-2 px-3" />
