@@ -1,26 +1,4 @@
 <?php
-// login.php
-// Login page for archiving system
-include_once __DIR__ . '/config/session.php';
-
-// Handle logout request
-if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
-    logout();
-}
-
-// Handle login form submission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $email = $_POST['email'] ?? '';
-    $password = $_POST['password'] ?? '';
-    
-    if (login($email, $password)) {
-        header('Location: pages/dashboard.php');
-        exit();
-    } else {
-        $error = 'Email atau password salah';
-    }
-}
-
 include __DIR__ . '/layouts/master/header.php';
 ?>
 

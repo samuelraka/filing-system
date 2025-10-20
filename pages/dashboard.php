@@ -1,10 +1,10 @@
 <?php
 // dashboard.php
 // Dashboard page for archiving system
-include_once __DIR__ . '/../config/session.php';
+// include_once __DIR__ . '/../config/session.php';
 
 // Require login to access this page
-requireLogin();
+// requireLogin();
 
 // Dummy data for now (replace with DB queries later)
 $activeArchives = 12;

@@ -35,9 +35,18 @@ include_once __DIR__ . '/../../config/session.php';
         </div>
 
         <!-- User Management -->
-        <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/user.php'; ?>" class="flex items-center gap-3 px-3 py-2 rounded-lg <?php echo basename($_SERVER['PHP_SELF']) == 'user.php' ? 'bg-cyan-600/10 text-cyan-600 font-medium' : 'hover:bg-cyan-600/5 text-slate-700'; ?>">
-            <span class="material-icons">people</span>Kelola Pengguna
-        </a>
+        <div class="menu-item">
+            <button class="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-cyan-600/5 focus:outline-none text-slate-700" id="arsipUsrMenu">
+                <div class="flex items-center gap-3">
+                    <span class="material-icons">people</span>Kelola Pengguna
+                </div>
+                <span class="material-icons transform transition-transform" id="arsipUsrMenuIcon">expand_more</span>
+            </button>
+            <div class="pl-9 mt-1 hidden space-y-1" id="arsipUsrSubmenu">
+                <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/../pages/kelola_pengguna.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 <?php echo basename($_SERVER['PHP_SELF']) == 'kelola_pengguna.php' ? 'text-cyan-600 font-medium' : 'text-slate-700'; ?>">Kelola Pengguna</a>
+                <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/../pages/unit_pengolah.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 <?php echo basename($_SERVER['PHP_SELF']) == 'unit_pengolah.php' ? 'text-cyan-600 font-medium' : 'text-slate-700'; ?>">Unit Pengolah</a>
+            </div>
+        </div>
 
         <!-- Collapsible Menu for Arsip Management -->
         <div class="menu-item">
@@ -48,7 +57,7 @@ include_once __DIR__ . '/../../config/session.php';
                 <span class="material-icons transform transition-transform" id="arsipMgmtMenuIcon">expand_more</span>
             </button>
             <div class="pl-9 mt-1 hidden space-y-1" id="arsipMgmtSubmenu">
-                <a href="#" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 text-slate-700">Tambah Kategori</a>
+                <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/../pages/kelola_arsip.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 <?php echo basename($_SERVER['PHP_SELF']) == 'kelola_arsip.php' ? 'text-cyan-600 font-medium' : 'text-slate-700'; ?>">Kategori Arsip</a>
                 <a href="#" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 text-slate-700">Retensi Arsip</a>
                 <a href="#" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 text-slate-700">Pemusnahan</a>
             </div>
@@ -100,6 +109,10 @@ include_once __DIR__ . '/../../config/session.php';
         const arsipMgmtSubmenu = document.getElementById('arsipMgmtSubmenu');
         const arsipMgmtMenuIcon = document.getElementById('arsipMgmtMenuIcon');
         
+        const arsipUsrMenu = document.getElementById('arsipUsrMenu');
+        const arsipUsrSubmenu = document.getElementById('arsipUsrSubmenu');
+        const arsipUsrMenuIcon = document.getElementById('arsipUsrMenuIcon');
+        
         const systemMenu = document.getElementById('systemMenu');
         const systemSubmenu = document.getElementById('systemSubmenu');
         const systemMenuIcon = document.getElementById('systemMenuIcon');
@@ -110,11 +123,29 @@ include_once __DIR__ . '/../../config/session.php';
             arsipSubmenu.classList.remove('hidden');
             arsipMenuIcon.classList.add('rotate-180');
         }
+
+        // Check if current page is kelola_pengguna.php or unit_pengolah.php to auto-expand the kelola pengguna menu
+        if (currentPage === 'kelola_pengguna.php' || currentPage === 'unit_pengolah.php') {
+            arsipUsrSubmenu.classList.remove('hidden');
+            arsipUsrMenuIcon.classList.add('rotate-180');
+        }
+        
+        // Check if current page is kelola_pengguna.php or unit_pengolah.php to auto-expand the kelola pengguna menu
+        if (currentPage === 'kelola_arsip.php') {
+            arsipMgmtSubmenu.classList.remove('hidden');
+            arsipMgmtMenuIcon.classList.add('rotate-180');
+        }
         
         // Toggle arsip submenu
         arsipMenu.addEventListener('click', function() {
             arsipSubmenu.classList.toggle('hidden');
             arsipMenuIcon.classList.toggle('rotate-180');
+        });
+        
+        // Toggle arsip user submenu
+        arsipUsrMenu.addEventListener('click', function() {
+            arsipUsrSubmenu.classList.toggle('hidden');
+            arsipUsrMenuIcon.classList.toggle('rotate-180');
         });
         
         // Toggle arsip management submenu
