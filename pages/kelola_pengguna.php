@@ -245,7 +245,10 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
         <div class="mb-4">
           <label for="edit_unit_pengolah" class="block text-sm font-medium text-gray-700">Unit Pengolah</label>
           <select id="edit_unit_pengolah" name="unit_pengolah" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm">
-            <!-- akan diisi dinamis dari tabel unit_pengolah -->
+            <option value="">Pilih Unit Pengolah</option>
+            <?php foreach ($units as $unit): ?>
+              <option value="<?= $unit['id_unit'] ?>"><?= htmlspecialchars($unit['nama_unit']) ?></option>
+            <?php endforeach; ?>
           </select>
         </div>
 
@@ -262,9 +265,16 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
 
         <div class="mb-4">
           <label for="edit_role" class="block text-sm font-medium text-gray-700">Role</label>
-          <select id="edit_role" name="role" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm">
-            <!-- diisi sesuai login role -->
-          </select>
+            <select id="edit_role" name="role" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm">
+                <?php if ($_SESSION['user_role'] === 'superadmin'): ?>
+                    <option value="superadmin">Superadmin</option>
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
+                <?php elseif ($_SESSION['user_role'] === 'admin'): ?>
+                    <option value="admin">Admin</option>
+                    <option value="user">User</option>
+                <?php endif; ?>
+            </select>
         </div>
 
         <div class="mb-6">
@@ -415,12 +425,13 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
         id_user: document.getElementById("edit_id_user").value,
         name: document.getElementById("edit_name").value.trim(),
         email: document.getElementById("edit_email").value.trim(),
+        unit_pengolah: document.getElementById("edit_unit_pengolah").value.trim(),
         role: document.getElementById("edit_role").value.trim(),
         password: document.getElementById("edit_password").value.trim()
     };
 
     try {
-        const res = await fetch("../api/user/update_user.php", {
+        const res = await fetch("../api/user/edit_user.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData)
@@ -438,6 +449,32 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
         alert("Terjadi kesalahan saat mengupdate pengguna.");
     }
     });
+
+    document.querySelectorAll('.btnDelete').forEach(button => {
+        button.addEventListener('click', async (e) => {
+            const id = e.currentTarget.getAttribute('data-id');
+
+            if (!confirm('Apakah Anda yakin ingin menghapus pengguna ini?')) return;
+
+            try {
+            const res = await fetch('../api/user/delete_user.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id_user: id })
+            });
+
+            const data = await res.json();
+            alert(data.message);
+
+            if (data.success) {
+                setTimeout(() => location.reload(), 800);
+            }
+            } catch (err) {
+            console.error('❌ Error saat menghapus:', err);
+            alert('Terjadi kesalahan saat menghapus pengguna.');
+            }
+        });
+        });
 
 </script>
 

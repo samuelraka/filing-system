@@ -10,3 +10,201 @@ Stack trace:
 [22-Oct-2025 07:07:27 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\Users\Samuel\Documents\GitHub\filing-system\config\session.php on line 5
 [2025-10-23 19:16:18] Berhasil tambah user ID: 7 (usrZZRYC) oleh superadmin
 [2025-10-23 19:17:08] Berhasil tambah user ID: 8 (usr0XX2K) oleh superadmin
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 8
+Nama: Pengguna 2
+Email: azza@gmail.com
+Username: usr0XX2K
+Role: user
+ID Unit: 1
+Nama Unit: Unit A
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 8
+Nama: Pengguna 2
+Email: azza@gmail.com
+Username: usr0XX2K
+Role: user
+ID Unit: 1
+Nama Unit: Unit A
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 8
+Nama: Pengguna 2
+Email: azza@gmail.com
+Username: usr0XX2K
+Role: user
+ID Unit: 1
+Nama Unit: Unit A
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 8
+Nama: Pengguna 2
+Email: azza@gmail.com
+Username: usr0XX2K
+Role: user
+ID Unit: 1
+Nama Unit: Unit A
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 8
+Nama: Pengguna 2
+Email: azza@gmail.com
+Username: usr0XX2K
+Role: user
+ID Unit: 1
+Nama Unit: Unit A
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 8
+Nama: Pengguna 2
+Email: azza@gmail.com
+Username: usr0XX2K
+Role: user
+ID Unit: 1
+Nama Unit: Unit A
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 8
+Nama: Pengguna 2
+Email: azza@gmail.com
+Username: usr0XX2K
+Role: user
+ID Unit: 1
+Nama Unit: Unit A
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 8
+Nama: Pengguna 2
+Email: azza@gmail.com
+Username: usr0XX2K
+Role: user
+ID Unit: 1
+Nama Unit: Unit A
+------------------------------------
+[2025-10-28 17:05:54] Update user ID 8 - Nama: Pengguna 2, Email: azza@gmail.com, Role: user, Unit: NULL
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 8
+Nama: Pengguna 2
+Email: azza@gmail.com
+Username: usr0XX2K
+Role: user
+ID Unit: 1
+Nama Unit: Unit A
+------------------------------------
+[2025-10-28 17:07:44] Update user ID 8 - Nama: Pengguna 2, Email: azza@gmail.com, Role: user, Unit: NULL
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 8
+Nama: Pengguna 2
+Email: azza@gmail.com
+Username: usr0XX2K
+Role: user
+ID Unit: 1
+Nama Unit: Unit A
+------------------------------------
+[2025-10-28 17:08:27] Update user ID 8 - Nama: Pengguna 2, Email: azza@gmail.com, Role: user, Unit: NULL
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 8
+Nama: Pengguna 2
+Email: azza@gmail.com
+Username: usr0XX2K
+Role: user
+ID Unit: 1
+Nama Unit: Unit A
+------------------------------------
+[2025-10-28 17:18:59] Update user ID 8 - Nama: Pengguna 2, Email: azza@gmail.com, Role: user, Unit: 1
+[2025-10-28 17:18:59] Profil user ID 8 diperbarui ke unit ID 1
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 8
+Nama: Pengguna 2
+Email: azza@gmail.com
+Username: usr0XX2K
+Role: user
+ID Unit: 1
+Nama Unit: Unit A
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 8
+Nama: Pengguna 2
+Email: azza@gmail.com
+Username: usr0XX2K
+Role: user
+ID Unit: 1
+Nama Unit: Unit A
+------------------------------------
+[2025-10-28 17:29:37] Update user ID 8 - Nama: Pengguna 2, Email: azza@gmail.com, Role: user, Unit: 1
+[2025-10-28 17:29:37] 🔍 Data diterima update_user: Array
+(
+    [id_user] => 8
+    [name] => Pengguna 2
+    [email] => azza@gmail.com
+    [unit_pengolah] => 1
+    [role] => user
+    [password] => 
+)
+
+[2025-10-28 17:29:37] Profil user ID 8 diperbarui ke unit ID 1
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 8
+Nama: Pengguna 2
+Email: azza@gmail.com
+Username: usr0XX2K
+Role: user
+ID Unit: 1
+Nama Unit: Unit A
+------------------------------------
+[2025-10-28 17:38:12] Update user ID 8 - Nama: Pengguna 2, Email: azza@gmail.com, Role: user, Unit: 1
+[2025-10-28 17:38:12] 🔍 Data diterima update_user: Array
+(
+    [id_user] => 8
+    [name] => Pengguna 2
+    [email] => azza@gmail.com
+    [unit_pengolah] => 1
+    [role] => user
+    [password] => 
+)
+
+[2025-10-28 17:38:12] Profil user ID 8 diperbarui ke unit ID 1
+[2025-10-28 17:59:12] Berhasil tambah user ID: 9 (usrDU5KL) oleh superadmin
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 9
+Nama: Pengguna 3
+Email: azza1@gmail.com
+Username: usrDU5KL
+Role: user
+ID Unit: 3
+Nama Unit: Unit C
+------------------------------------
+[2025-10-28 17:59:22] Update user ID 9 - Nama: Pengguna 3, Email: azza1@gmail.com, Role: admin, Unit: 3
+[2025-10-28 17:59:22] 🔍 Data diterima update_user: Array
+(
+    [id_user] => 9
+    [name] => Pengguna 3
+    [email] => azza1@gmail.com
+    [unit_pengolah] => 3
+    [role] => admin
+    [password] => 
+)
+
+[2025-10-28 17:59:22] Profil user ID 9 diperbarui ke unit ID 3
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 9
+Nama: Pengguna 3
+Email: azza1@gmail.com
+Username: usrDU5KL
+Role: admin
+ID Unit: 3
+Nama Unit: Unit C
+------------------------------------
+[2025-10-28 17:59:35] Update user ID 9 - Nama: Pengguna 3, Email: azza1@gmail.com, Role: admin, Unit: 1
+[2025-10-28 17:59:35] 🔍 Data diterima update_user: Array
+(
+    [id_user] => 9
+    [name] => Pengguna 3
+    [email] => azza1@gmail.com
+    [unit_pengolah] => 1
+    [role] => admin
+    [password] => 
+)
+
+[2025-10-28 17:59:35] Profil user ID 9 diperbarui ke unit ID 1
