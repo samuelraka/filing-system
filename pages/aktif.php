@@ -58,7 +58,7 @@ include_once "../layouts/master/header.php";
 
                     <!-- Table -->
                     <div class="overflow-x-auto mt-3">
-                        <table class="min-w-full divide-y divide-gray-200">
+                        <table class="min-w-full divide-y divide-gray-200 table-centered">
                             <thead>
                                 <tr>
                                     <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nomor Berkas</th>

@@ -43,8 +43,8 @@ include_once __DIR__ . '/../../config/session.php';
                 <span class="material-icons transform transition-transform" id="arsipUsrMenuIcon">expand_more</span>
             </button>
             <div class="pl-9 mt-1 hidden space-y-1" id="arsipUsrSubmenu">
-                <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/../pages/kelola_pengguna.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 <?php echo basename($_SERVER['PHP_SELF']) == 'kelola_pengguna.php' ? 'text-cyan-600 font-medium' : 'text-slate-700'; ?>">Kelola Pengguna</a>
-                <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/../pages/unit_pengolah.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 <?php echo basename($_SERVER['PHP_SELF']) == 'unit_pengolah.php' ? 'text-cyan-600 font-medium' : 'text-slate-700'; ?>">Unit Pengolah</a>
+                <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/../admin/kelola_pengguna.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 <?php echo basename($_SERVER['PHP_SELF']) == 'kelola_pengguna.php' ? 'text-cyan-600 font-medium' : 'text-slate-700'; ?>">Kelola Pengguna</a>
+                <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/../admin/unit_pengolah.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 <?php echo basename($_SERVER['PHP_SELF']) == 'unit_pengolah.php' ? 'text-cyan-600 font-medium' : 'text-slate-700'; ?>">Unit Pengolah</a>
             </div>
         </div>
 
@@ -57,7 +57,7 @@ include_once __DIR__ . '/../../config/session.php';
                 <span class="material-icons transform transition-transform" id="arsipMgmtMenuIcon">expand_more</span>
             </button>
             <div class="pl-9 mt-1 hidden space-y-1" id="arsipMgmtSubmenu">
-                <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/../pages/kelola_arsip.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 <?php echo basename($_SERVER['PHP_SELF']) == 'kelola_arsip.php' ? 'text-cyan-600 font-medium' : 'text-slate-700'; ?>">Kategori Arsip</a>
+                <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/../admin/kelola_arsip.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 <?php echo basename($_SERVER['PHP_SELF']) == 'kelola_arsip.php' ? 'text-cyan-600 font-medium' : 'text-slate-700'; ?>">Kategori Arsip</a>
                 <a href="#" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 text-slate-700">Retensi Arsip</a>
                 <a href="#" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 text-slate-700">Pemusnahan</a>
             </div>

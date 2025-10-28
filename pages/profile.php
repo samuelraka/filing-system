@@ -13,14 +13,25 @@ include_once "../layouts/master/header.php";
 
         <!-- Main content -->
         <div class="p-6 mt-16 flex flex-col items-center">
-            <div class="bg-white rounded-lg shadow-sm p-8 w-full max-w-xl">
-                <h2 class="text-2xl font-bold text-gray-900 mb-6 text-center">Pengaturan Profil</h2>
+            <div class="bg-white rounded-lg shadow-sm p-8 w-full max-w-3xl">
+                <h2 class="text-2xl font-medium text-gray-900 mb-6 text-center">Pengaturan Profil</h2>
                 <form id="profileForm" class="space-y-6">
-                    <div class="flex flex-col items-center space-y-2 mb-4">
-                        <img id="profilePic" src="https://ui-avatars.com/api/?name=John+Doe" alt="Profile Picture" class="w-24 h-24 rounded-full object-cover border border-gray-300" />
-                        <input type="file" id="profilePicInput" name="profilePic" accept="image/*" class="hidden" />
-                        <button type="button" id="changePicBtn" class="text-blue-600 hover:underline text-sm">Ganti Foto Profil</button>
+                    <div class="flex items-center mb-6">
+                        <!-- Left side: Profile Picture -->
+                        <div class="flex-shrink-0">
+                            <img id="profilePic" src="https://ui-avatars.com/api/?name=John+Doe" alt="Profile Picture" class="w-24 h-24 rounded-md object-cover border border-gray-300" />
+                        </div>
+                        
+                        <!-- Right side: Button and Info -->
+                        <div class="flex flex-col items-start space-y-2 ml-6">
+                            <input type="file" id="profilePicInput" name="profilePic" accept="image/*" class="hidden"/>
+                            <button type="button" id="changePicBtn" class="bg-slate-600 hover:bg-slate-700 text-white px-4 py-2 rounded-md text-sm font-medium transition-colors">Ganti Foto Profil</button>
+                            <div class="text-xs text-gray-500 text-left max-w-xs">
+                                <p>Gambar profile sebaiknya memiliki resolusi 1:1 dan berukuran tidak lebih dari 2MB.</p>
+                            </div>
+                        </div>
                     </div>
+
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Nama</label>
                         <input type="text" class="w-full border border-gray-300 rounded-md py-2 px-3 bg-gray-100" value="John Doe" disabled />
