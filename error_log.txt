@@ -1,0 +1,12 @@
+[22-Oct-2025 06:44:03 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\Users\Samuel\Documents\GitHub\filing-system\config\session.php on line 5
+[22-Oct-2025 06:44:03 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Unknown column 'id' in 'field list' in C:\Users\Samuel\Documents\GitHub\filing-system\api\add_unit_pengolah.php:36
+Stack trace:
+#0 C:\Users\Samuel\Documents\GitHub\filing-system\api\add_unit_pengolah.php(36): mysqli->prepare('SELECT id FROM ...')
+#1 {main}
+  thrown in C:\Users\Samuel\Documents\GitHub\filing-system\api\add_unit_pengolah.php on line 36
+[22-Oct-2025 06:45:00 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\Users\Samuel\Documents\GitHub\filing-system\config\session.php on line 5
+[22-Oct-2025 06:52:18 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\Users\Samuel\Documents\GitHub\filing-system\config\session.php on line 5
+[22-Oct-2025 07:07:17 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\Users\Samuel\Documents\GitHub\filing-system\config\session.php on line 5
+[22-Oct-2025 07:07:27 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\Users\Samuel\Documents\GitHub\filing-system\config\session.php on line 5
+[2025-10-23 19:16:18] Berhasil tambah user ID: 7 (usrZZRYC) oleh superadmin
+[2025-10-23 19:17:08] Berhasil tambah user ID: 8 (usr0XX2K) oleh superadmin

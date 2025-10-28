@@ -43,7 +43,7 @@ include __DIR__ . '/layouts/master/header.php';
             <form class="space-y-6" id="loginForm">
                 <!-- Email Field -->
                 <div>
-                    <label for="email" class="block text-sm font-medium mb-1">Username</label>
+                    <label for="username" class="block text-sm font-medium mb-1">Username</label>
                     <div class="relative">
                         <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                             <span class="material-icons">person</span>
@@ -94,12 +94,11 @@ include __DIR__ . '/layouts/master/header.php';
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const loginForm = document.getElementById('loginForm');
-    const emailInput = document.getElementById('email');
+    const usernameInput = document.getElementById('username');
     const passwordInput = document.getElementById('password');
     const togglePassword = document.getElementById('togglePassword');
     const loginBtn = document.getElementById('loginBtn');
     const loginBtnText = document.getElementById('loginBtnText');
-    const loginSpinner = document.getElementById('loginSpinner');
     const messageContainer = document.getElementById('messageContainer');
     
     // Toggle password visibility
@@ -138,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function clearFieldErrors() {
         document.getElementById('emailError').classList.add('hidden');
         document.getElementById('passwordError').classList.add('hidden');
-        emailInput.classList.remove('border-red-500', 'ring-red-500');
+        usernameInput.classList.remove('border-red-500', 'ring-red-500');
         passwordInput.classList.remove('border-red-500', 'ring-red-500');
     }
     
@@ -146,12 +145,10 @@ document.addEventListener('DOMContentLoaded', function() {
     function setLoading(loading) {
         if (loading) {
             loginBtn.disabled = true;
-            loginBtnText.classList.add('hidden');
-            loginSpinner.classList.remove('hidden');
+            loginBtnText.textContent = 'Loading...';
         } else {
             loginBtn.disabled = false;
-            loginBtnText.classList.remove('hidden');
-            loginSpinner.classList.add('hidden');
+            loginBtnText.textContent = 'Masuk';
         }
     }
     
@@ -161,17 +158,14 @@ document.addEventListener('DOMContentLoaded', function() {
         
         clearFieldErrors();
         
-        const email = emailInput.value.trim();
+        const username = document.getElementById('username').value.trim();
         const password = passwordInput.value;
         
         // Client-side validation
         let isValid = true;
         
-        if (!email) {
-            showFieldError(emailInput, 'emailError', 'Email harus diisi');
-            isValid = false;
-        } else if (!email.includes('@')) {
-            showFieldError(emailInput, 'emailError', 'Format email tidak valid');
+        if (!username) {
+            showFieldError(document.getElementById('username'), 'emailError', 'Username harus diisi');
             isValid = false;
         }
         
@@ -188,16 +182,16 @@ document.addEventListener('DOMContentLoaded', function() {
         setLoading(true);
         messageContainer.innerHTML = '';
         
-        // Create form data
-        const formData = new FormData();
-        formData.append('action', 'login');
-        formData.append('email', email);
-        formData.append('password', password);
-        
-        // Send AJAX request
-        fetch('handlers/auth_handler.php', {
+        // Send AJAX request to Node.js API
+        fetch('api/login.php', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password
+            })
         })
         .then(response => response.json())
         .then(data => {
@@ -206,9 +200,12 @@ document.addEventListener('DOMContentLoaded', function() {
             if (data.success) {
                 showMessage(data.message, 'success');
                 
+                // Store user info in session storage (for demo purposes)
+                sessionStorage.setItem('user', JSON.stringify(data.user));
+                
                 // Redirect after successful login
                 setTimeout(() => {
-                    window.location.href = data.redirect || 'pages/dashboard.php';
+                    window.location.href = 'pages/dashboard.php';
                 }, 1000);
             } else {
                 showMessage(data.message);
