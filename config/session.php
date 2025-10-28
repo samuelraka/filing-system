@@ -2,86 +2,108 @@
 // session.php
 // Session management for the archiving system
 
-// Start session
 session_start();
 
-// Check if user is logged in
+// Database configuration
+$host = 'localhost';
+$username = 'root';
+$password = '';
+$database = 'archives_db';
+
+// Create database connection
+$conn = new mysqli($host, $username, $password, $database);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+/**
+ * Check if user is logged in
+ */
 function isLoggedIn() {
-    return isset($_SESSION['user_id']);
+    return isset($_SESSION['id_user']);
 }
 
-// Check if user is admin
+/**
+ * Check if user is admin
+ */
 function isAdmin() {
-    return isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
+    return isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
 }
 
-// Get current user role
+/**
+ * Get current user role
+ */
 function getUserRole() {
-    return isset($_SESSION['user_role']) ? $_SESSION['user_role'] : 'guest';
+    return $_SESSION['role'] ?? 'guest';
 }
 
-// Get current user name
+/**
+ * Get current username
+ */
 function getUserName() {
-    return isset($_SESSION['user_name']) ? $_SESSION['user_name'] : 'Guest';
+    return $_SESSION['username'] ?? 'Guest';
 }
 
-// Dummy authentication function (replace with real DB authentication)
-function authenticateUser($email, $password) {
-    // This is a dummy authentication - replace with real database query
-    $dummyUsers = [
-        'admin@example.com' => [
-            'id' => 1,
-            'name' => 'Administrator',
-            'email' => 'admin@example.com',
-            'password' => 'admin123',
-            'role' => 'admin'
-        ],
-        'user@example.com' => [
-            'id' => 2,
-            'name' => 'Regular User',
-            'email' => 'user@example.com',
-            'password' => 'user123',
-            'role' => 'user'
-        ],
-        'manager@example.com' => [
-            'id' => 3,
-            'name' => 'Manager',
-            'email' => 'manager@example.com',
-            'password' => 'manager123',
-            'role' => 'manager'
-        ]
-    ];
-    
-    if (isset($dummyUsers[$email]) && $dummyUsers[$email]['password'] === $password) {
-        return $dummyUsers[$email];
+/**
+ * Authenticate user with username + password
+ * Returns user array if valid, false if invalid
+ */
+function authenticateUser($username, $password) {
+    global $conn;
+
+    $stmt = $conn->prepare("SELECT * FROM user WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows === 1) {
+        $user = $result->fetch_assoc();
+
+        if (password_verify($password, $user['password'])) {
+            return $user; // valid user
+        }
     }
-    
-    return false;
+
+    return false; // invalid user
 }
 
-// Login function
-function login($email, $password) {
-    $user = authenticateUser($email, $password);
-    
+/**
+ * Login user (set session)
+ */
+function login($username, $password) {
+    $user = authenticateUser($username, $password);
+
     if ($user) {
-        $_SESSION['user_id'] = $user['id'];
-        $_SESSION['user_name'] = $user['name'];
-        $_SESSION['user_email'] = $user['email'];
-        $_SESSION['user_role'] = $user['role'];
+        $_SESSION['id_user'] = $user['id_user'];
+        $_SESSION['username'] = $user['username'];
+        $_SESSION['nama'] = $user['nama'];
+        $_SESSION['role'] = $user['role'];
+        $_SESSION['user_email'] = $user['email'] ?? null;
+
         return true;
     }
-    
+
     return false;
 }
 
-// Logout function
-function logout() {
-    session_destroy();
-    header('Location: ../login.php');
-    exit();
+function getFullName() {
+    return $_SESSION['nama'] ?? getUserName();
 }
 
-// Redirect if not logged in
+
+/**
+ * Logout and destroy session
+ */
+function logout() {
+    session_unset();
+    session_destroy();
+}
+
+/**
+ * Require login (redirect if not logged in)
+ */
 function requireLogin() {
     if (!isLoggedIn()) {
         header('Location: ../login.php');
@@ -89,10 +111,12 @@ function requireLogin() {
     }
 }
 
-// Redirect if not admin
+/**
+ * Require admin access
+ */
 function requireAdmin() {
     if (!isAdmin()) {
-        header('Location: ../dashboard.php');
+        header('Location: ../pages/dashboard.php');
         exit();
     }
 }

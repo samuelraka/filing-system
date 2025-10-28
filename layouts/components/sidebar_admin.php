@@ -92,7 +92,7 @@ include_once __DIR__ . '/../../config/session.php';
         <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/profile.php'; ?>" class="flex items-center gap-4 p-2 rounded-lg <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'bg-cyan-600/10 text-cyan-600 font-medium' : 'hover:bg-cyan-600/5 text-slate-700'; ?>">
             <span class="material-icons">settings</span>Pengaturan
         </a>
-        <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/../login.php?logout=true'; ?>" class="flex items-center gap-4 p-2 rounded-lg text-red-500 hover:bg-red-50">
+        <a href="../api/logout.php" class="flex items-center gap-4 p-2 rounded-lg text-red-500 hover:bg-red-50">
             <span class="material-icons">logout</span>Keluar
         </a>
     </div>
