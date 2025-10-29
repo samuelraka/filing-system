@@ -208,3 +208,144 @@ Nama Unit: Unit C
 )
 
 [2025-10-28 17:59:35] Profil user ID 9 diperbarui ke unit ID 1
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 1
+Nama: Super Admin Utama
+Email: superadmin@poltekes.ac.id
+Username: superadmin
+Role: superadmin
+ID Unit: 
+Nama Unit: 
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 3
+Nama: User Staf Umum
+Email: user@poltekes.ac.id
+Username: stafumum
+Role: user
+ID Unit: 
+Nama Unit: 
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 2
+Nama: Admin Arsip
+Email: admin@poltekes.ac.id
+Username: admin
+Role: admin
+ID Unit: 
+Nama Unit: 
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 1
+Nama: Super Admin Utama
+Email: superadmin@poltekes.ac.id
+Username: superadmin
+Role: superadmin
+ID Unit: 
+Nama Unit: 
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 1
+Nama: Super Admin Utama
+Email: superadmin@poltekes.ac.id
+Username: superadmin
+Role: superadmin
+ID Unit: 
+Nama Unit: 
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 1
+Nama: Super Admin Utama
+Email: superadmin@poltekes.ac.id
+Username: superadmin
+Role: superadmin
+ID Unit: 
+Nama Unit: 
+------------------------------------
+[2025-10-28 19:28:41] Update user ID 1 - Nama: Super Admin Utama, Email: superadmin@poltekes.ac.id, Role: user, Unit: 
+[2025-10-28 19:28:41] 🔍 Data diterima update_user: Array
+(
+    [id_user] => 1
+    [name] => Super Admin Utama
+    [email] => superadmin@poltekes.ac.id
+    [unit_pengolah] => 
+    [role] => user
+    [password] => 
+)
+
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 1
+Nama: Super Admin Utama
+Email: superadmin@poltekes.ac.id
+Username: superadmin
+Role: user
+ID Unit: 
+Nama Unit: 
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 1
+Nama: Super Admin Utama
+Email: superadmin@poltekes.ac.id
+Username: superadmin
+Role: user
+ID Unit: 
+Nama Unit: 
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 1
+Nama: Super Admin Utama
+Email: superadmin@poltekes.ac.id
+Username: superadmin
+Role: user
+ID Unit: 
+Nama Unit: 
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 1
+Nama: Super Admin Utama
+Email: superadmin@poltekes.ac.id
+Username: superadmin
+Role: user
+ID Unit: 
+Nama Unit: 
+------------------------------------
+[2025-10-28 19:32:07] Update user ID 1 - Nama: Super Admin Utama, Email: superadmin@poltekes.ac.id, Role: user, Unit: 
+[2025-10-28 19:32:07] 🔍 Data diterima update_user: Array
+(
+    [id_user] => 1
+    [name] => Super Admin Utama
+    [email] => superadmin@poltekes.ac.id
+    [unit_pengolah] => 
+    [role] => user
+    [password] => 
+)
+
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 1
+Nama: Super Admin Utama
+Email: superadmin@poltekes.ac.id
+Username: superadmin
+Role: user
+ID Unit: 
+Nama Unit: 
+------------------------------------
+[2025-10-28 19:32:16] Update user ID 1 - Nama: Super Admin Utama, Email: superadmin@poltekes.ac.id, Role: superadmin, Unit: 
+[2025-10-28 19:32:16] 🔍 Data diterima update_user: Array
+(
+    [id_user] => 1
+    [name] => Super Admin Utama
+    [email] => superadmin@poltekes.ac.id
+    [unit_pengolah] => 
+    [role] => superadmin
+    [password] => 
+)
+
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 1
+Nama: Super Admin Utama
+Email: superadmin@poltekes.ac.id
+Username: superadmin
+Role: superadmin
+ID Unit: 
+Nama Unit: 
+------------------------------------

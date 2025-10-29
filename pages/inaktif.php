@@ -3,7 +3,7 @@
 include_once "../layouts/master/header.php";
 ?>
 
-<div class="flex h-screen bg-gray-100">
+<div class="flex h-screen bg-gray-100 overflow-x-auto">
     <!-- Include sidebar -->
     <?php include_once "../layouts/components/sidebar.php"; ?>
 
@@ -12,7 +12,7 @@ include_once "../layouts/master/header.php";
         <?php include_once "../layouts/components/topbar.php"; ?>
 
         <!-- Main content -->
-        <div class="p-6 mt-16 overflow-y-auto flex flex-col">
+        <div class="p-6 mt-16 overflow-y-auto">
             <!-- Header with search and add user button -->
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-3xl font-medium text-gray-900">Arsip Inaktif</h2>
@@ -54,11 +54,11 @@ include_once "../layouts/master/header.php";
                     </div>
                 </div>
             </div>
-            <div class="bg-white rounded-lg shadow-sm px-6 py-3">
+            
+            <div class="bg-white rounded-lg shadow-sm px-6 py-3 overflow-x-auto">
                 <div class="flex flex-col space-y-4">
-
                     <!-- Table -->
-                    <div class="overflow-x-auto mt-3">
+                    <div class="overflow-x mt-3">
                         <table class="min-w-full divide-y divide-gray-200">
                             <thead>
                                 <tr>
@@ -77,8 +77,9 @@ include_once "../layouts/master/header.php";
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
+                                <!-- Archive 1 with 3 documents -->
                                 <tr>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">IN-001</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 align-top" rowspan="3">IN-001</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">INA-1001</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">201.1</td>
                                     <td class="px-3 py-4 whitespace-nowrap">Nota Dinas Internal</td>
@@ -92,105 +93,103 @@ include_once "../layouts/master/header.php";
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Keuangan</td>
                                 </tr>
                                 <tr>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">IN-002</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">INA-1002</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">202.2</td>
-                                    <td class="px-3 py-4 whitespace-nowrap">Laporan Proyek Selesai</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2020-2022</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">201.2</td>
+                                    <td class="px-3 py-4 whitespace-nowrap">Laporan Keuangan Triwulan</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2022-2023</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Copy</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">4</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Perlu pengecekan kelengkapan</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">F-02/B-02</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Gudang Arsip Rak A-2</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">F-01/B-02</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Gudang Arsip Rak A-1</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">5 tahun - Permanen</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Proyek</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Keuangan</td>
                                 </tr>
                                 <tr>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">IN-003</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">INA-1003</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">203.3</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">201.3</td>
                                     <td class="px-3 py-4 whitespace-nowrap">Dokumen Pajak Tahunan</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2019-2021</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Asli</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">3</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Lengkap dan tersusun rapi</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">F-03/B-03</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Gudang Arsip Rak B-1</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">F-01/B-03</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Gudang Arsip Rak A-1</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">15 tahun - Musnah</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Pajak</td>
                                 </tr>
+                                
+                                <!-- Archive 2 with 2 documents -->
                                 <tr>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">IN-004</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 align-top" rowspan="2">IN-002</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">INA-1004</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">204.4</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">202.1</td>
+                                    <td class="px-3 py-4 whitespace-nowrap">Laporan Proyek Selesai</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2020-2022</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Copy</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">4</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Perlu pengecekan kelengkapan</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">F-02/B-01</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Gudang Arsip Rak A-2</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">5 tahun - Permanen</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Proyek</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">INA-1005</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">202.2</td>
+                                    <td class="px-3 py-4 whitespace-nowrap">Dokumen Kontrak Proyek</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2019-2021</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Asli</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">6</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Kontrak sudah selesai</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">F-02/B-02</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Gudang Arsip Rak A-2</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">10 tahun - Musnah</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Proyek</td>
+                                </tr>
+                                
+                                <!-- Archive 3 with 1 document -->
+                                <tr>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">IN-003</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">INA-1006</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">203.1</td>
                                     <td class="px-3 py-4 whitespace-nowrap">Surat Masuk Eksternal</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2018-2020</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Copy</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">1</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Arsip lama yang sudah digitalisasi</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">F-04/B-04</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Gudang Arsip Rak B-2</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">F-03/B-01</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Gudang Arsip Rak B-1</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Permanen</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Surat Menyurat</td>
                                 </tr>
-                                <tr>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">IN-005</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">INA-1005</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">205.5</td>
-                                    <td class="px-3 py-4 whitespace-nowrap">Memo Eksternal Penting</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2022</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Asli</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Butuh verifikasi kepala unit</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">F-05/B-05</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Gudang Arsip Rak C-1</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">7 tahun - Musnah</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Memo</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">IN-006</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">INA-1006</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">206.1</td>
-                                    <td class="px-3 py-4 whitespace-nowrap">Dokumen Kontrak Vendor</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2017-2019</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Asli</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">5</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Kontrak sudah berakhir</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">F-06/B-06</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Gudang Arsip Rak C-2</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">10 tahun - Musnah</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Kontrak</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">IN-007</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">INA-1007</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">207.2</td>
-                                    <td class="px-3 py-4 whitespace-nowrap">Laporan Audit Internal</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2016-2018</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Copy</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">3</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Audit sudah selesai</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">F-07/B-07</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Gudang Arsip Rak D-1</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Permanen</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Audit</td>
-                                </tr>
-                                <tr>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">IN-008</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">INA-1008</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">208.3</td>
-                                    <td class="px-3 py-4 whitespace-nowrap">Dokumen SDH Karyawan</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2015-2020</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Asli</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">8</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Karyawan sudah tidak aktif</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">F-08/B-08</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Gudang Arsip Rak D-2</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">10 tahun - Musnah</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">SDM</td>
-                                </tr>
                             </tbody>
                         </table>
+                    </div>
+                    <!-- Pagination -->
+                    <div class="flex items-center justify-between mt-4">
+                        <div class="flex items-center">
+                            <span class="text-sm text-gray-700 mr-2">Show</span>
+                            <select id="perPage" class="border border-gray-300 rounded-full-md text-sm py-1 px-2">
+                                <option value="12">12</option>
+                                <option value="24">24</option>
+                                <option value="36">36</option>
+                                <option value="48">48</option>
+                            </select>
+                        </div>
+                        <div class="flex items-center space-x-1" id="pagination">
+                            <button class="px-2 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50" id="prevPage">
+                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                            <!-- Page buttons will be added by JavaScript -->
+                            <button class="px-2 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50" id="nextPage">
+                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
+                                </svg>
+                            </button>
+                        </div>
                     </div>
 
                 </div>

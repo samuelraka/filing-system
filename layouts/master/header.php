@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" >
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,3 +10,4 @@
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title></title>
 </head>
+<body class="m-0 p-0 overflow-y-auto overflow-x-auto w-screen h-screen">

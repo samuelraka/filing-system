@@ -73,9 +73,9 @@ include_once "../layouts/master/header.php";
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                <!-- Hard-coded dummy data rows -->
+                                <!-- Archive 1 with 3 documents -->
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">A-001</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 align-top" rowspan="3">A-001</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1001</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">101.2</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Surat Keputusan Direktur</td>
@@ -94,9 +94,8 @@ include_once "../layouts/master/header.php";
                                     </td>
                                 </tr>
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">A-002</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1002</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">102.3</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">101.3</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Laporan Tahunan</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2022-12-05</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">3</td>
@@ -113,9 +112,8 @@ include_once "../layouts/master/header.php";
                                     </td>
                                 </tr>
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">A-003</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1003</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">103.4</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">101.4</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Dokumen Kontrak</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2021-07-21</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2</td>
@@ -127,10 +125,12 @@ include_once "../layouts/master/header.php";
                                         XXX
                                     </td>
                                 </tr>
+                                
+                                <!-- Archive 2 with 2 documents -->
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">A-004</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 align-top" rowspan="2">A-002</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1004</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">104.5</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">102.1</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Berita Acara</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2024-02-15</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">4</td>
@@ -143,9 +143,8 @@ include_once "../layouts/master/header.php";
                                     </td>
                                 </tr>
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">A-005</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1005</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">105.6</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">102.2</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Memo Internal</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2023-11-30</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">1</td>
@@ -157,10 +156,12 @@ include_once "../layouts/master/header.php";
                                         XXX
                                     </td>
                                 </tr>
+                                
+                                <!-- Archive 3 with 1 document -->
                                 <tr class="hover:bg-gray-50">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">A-006</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">A-003</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1006</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">106.7</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">103.1</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Surat Perjanjian</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2023-09-18</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">7</td>
@@ -168,36 +169,6 @@ include_once "../layouts/master/header.php";
                                         <span class="bg-green-50 text-green-600 px-2 py-1 rounded-full text-xs">Biasa</span>
                                     </td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Sudah disetujui</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        XXX
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">A-007</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1007</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">107.8</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Notulen Rapat</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2024-01-05</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">3</td>
-                                    <td class="px-3 py-4 whitespace-nowrap">
-                                        <span class="bg-green-50 text-green-600 px-2 py-1 rounded-full text-xs">Biasa</span>
-                                    </td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Rapat bulanan</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        XXX
-                                    </td>
-                                </tr>
-                                <tr class="hover:bg-gray-50">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">A-008</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1008</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">108.9</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Sertifikat</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2022-05-12</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2</td>
-                                    <td class="px-3 py-4 whitespace-nowrap">
-                                        <span class="bg-yellow-50 text-yellow-700 px-2 py-1 rounded-full text-xs">Terbatas</span>
-                                    </td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Perlu perpanjangan</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
                                         XXX
                                     </td>

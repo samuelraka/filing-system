@@ -11,7 +11,7 @@ include_once __DIR__ . '/../../config/session.php';
     </div>
     <nav class="flex-1 space-y-2 overflow-y-auto">
         <!-- Dashboard -->
-        <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/dashboard.php'; ?>" class="flex items-center gap-3 px-3 py-2 rounded-lg <?php echo basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'bg-cyan-600/10 text-cyan-600 font-medium' : 'hover:bg-cyan-600/5 text-slate-700'; ?>">
+        <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/../pages/dashboard.php'; ?>" class="flex items-center gap-3 px-3 py-2 rounded-lg <?php echo basename($_SERVER['PHP_SELF']) == 'dashboard.php' ? 'bg-cyan-600/10 text-cyan-600 font-medium' : 'hover:bg-cyan-600/5 text-slate-700'; ?>">
             <span class="material-icons">dashboard</span>Dashboard
         </a>
         
@@ -24,8 +24,8 @@ include_once __DIR__ . '/../../config/session.php';
                 <span class="material-icons transform transition-transform" id="arsipMenuIcon">expand_more</span>
             </button>
             <div class="pl-9 mt-1 hidden space-y-1" id="arsipSubmenu">
-                <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/aktif.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 <?php echo basename($_SERVER['PHP_SELF']) == 'aktif.php' ? 'text-cyan-600 font-medium' : 'text-slate-700'; ?>">Aktif</a>
-                <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/inaktif.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 <?php echo basename($_SERVER['PHP_SELF']) == 'inaktif.php' ? 'text-cyan-600 font-medium' : 'text-slate-700'; ?>">Inaktif</a>
+                <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/../pages/aktif.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 <?php echo basename($_SERVER['PHP_SELF']) == 'aktif.php' ? 'text-cyan-600 font-medium' : 'text-slate-700'; ?>">Aktif</a>
+                <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/../pages/inaktif.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 <?php echo basename($_SERVER['PHP_SELF']) == 'inaktif.php' ? 'text-cyan-600 font-medium' : 'text-slate-700'; ?>">Inaktif</a>
             </div>
         </div>
 
@@ -57,7 +57,7 @@ include_once __DIR__ . '/../../config/session.php';
                 <span class="material-icons transform transition-transform" id="arsipMgmtMenuIcon">expand_more</span>
             </button>
             <div class="pl-9 mt-1 hidden space-y-1" id="arsipMgmtSubmenu">
-                <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/../admin/kelola_arsip.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 <?php echo basename($_SERVER['PHP_SELF']) == 'kelola_arsip.php' ? 'text-cyan-600 font-medium' : 'text-slate-700'; ?>">Kategori Arsip</a>
+                <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/../pages/kelola_arsip.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 <?php echo basename($_SERVER['PHP_SELF']) == 'kelola_arsip.php' ? 'text-cyan-600 font-medium' : 'text-slate-700'; ?>">Kategori Arsip</a>
                 <a href="#" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 text-slate-700">Retensi Arsip</a>
                 <a href="#" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 text-slate-700">Pemusnahan</a>
             </div>
@@ -89,7 +89,7 @@ include_once __DIR__ . '/../../config/session.php';
         </div>
     </nav>
     <div class="mt-2 pt-4 space-y-1">
-        <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/profile.php'; ?>" class="flex items-center gap-4 p-2 rounded-lg <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'bg-cyan-600/10 text-cyan-600 font-medium' : 'hover:bg-cyan-600/5 text-slate-700'; ?>">
+        <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/../pages/profile.php'; ?>" class="flex items-center gap-4 p-2 rounded-lg <?php echo basename($_SERVER['PHP_SELF']) == 'profile.php' ? 'bg-cyan-600/10 text-cyan-600 font-medium' : 'hover:bg-cyan-600/5 text-slate-700'; ?>">
             <span class="material-icons">settings</span>Pengaturan
         </a>
         <a href="../api/logout.php" class="flex items-center gap-4 p-2 rounded-lg text-red-500 hover:bg-red-50">
@@ -119,7 +119,7 @@ include_once __DIR__ . '/../../config/session.php';
         
         // Check if current page is aktif.php or inaktif.php to auto-expand the arsip menu
         const currentPage = window.location.pathname.split('/').pop();
-        if (currentPage === 'aktif.php' || currentPage === 'inaktif.php') {
+        if (currentPage === 'aktif.php' || currentPage === 'inaktif.php' || currentPage === 'tambah_aktif.php' || currentPage === 'tambah_inaktif.php') {
             arsipSubmenu.classList.remove('hidden');
             arsipMenuIcon.classList.add('rotate-180');
         }

@@ -1,7 +1,7 @@
 <?php
 // dashboard.php
 // Dashboard page for archiving system
-// include_once __DIR__ . '/../config/session.php';
+include_once __DIR__ . '/../config/session.php';
 
 // Require login to access this page
 // requireLogin();
@@ -52,12 +52,13 @@ $archiveStats = [
 include __DIR__ . '/../layouts/master/header.php';
 include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
 ?>
-<div class="min-h-screen bg-[#fafbfc] flex overflow-hidden">
+
+<div class="flex h-screen bg-gray-100">
     <!-- Main Content -->
     <div class="flex-1 flex flex-col ml-64">
         <?php include __DIR__ . '/../layouts/components/topbar.php'; ?>
         <!-- Dashboard Content - Scrollable -->
-        <main class="flex-1 p-8 space-y-8 mt-16 overflow-y-auto">
+        <main class="flex-1 p-6 space-y-8 mt-16 overflow-y-auto">
             <!-- Header -->
             <div class="flex justify-between items-center">
                 <div class="font-bold text-3xl">Dashboard</div>

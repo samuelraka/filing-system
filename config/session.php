@@ -33,6 +33,13 @@ function isAdmin() {
 }
 
 /**
+ * Check if user is admin or superadmin
+ */
+function isAdminOrSuperAdmin() {
+    return isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'superadmin');
+}
+
+/**
  * Get current user role
  */
 function getUserRole() {
