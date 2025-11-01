@@ -20,16 +20,16 @@ $result = $stmt->get_result();
 
 if ($result->num_rows === 1) {
     $user = $result->fetch_assoc();
-    
-    if ($password === $user['password']) { // gunakan password_verify jika hashed
+
+    // Jika password disimpan hash, ganti baris di bawah dengan password_verify()
+    if ($password === $user['password']) {
         $_SESSION['user_id'] = $user['id_user'];
         $_SESSION['user_name'] = $user['nama'];
         $_SESSION['user_role'] = strtolower($user['role']);
 
-        // Buat pesan notifikasi sesuai role
-        $roleLabel = ucfirst($user['role']); // jadikan huruf pertama besar
+        $roleLabel = ucfirst($user['role']);
         $message = "Login berhasil sebagai $roleLabel.";
-        
+
         echo json_encode([
             'success' => true,
             'message' => $message,
@@ -37,7 +37,8 @@ if ($result->num_rows === 1) {
                 'id' => $user['id_user'],
                 'name' => $user['nama'],
                 'role' => $user['role']
-            ]
+            ],
+            'redirect' => '../pages/dashboard.php' // semua diarahkan ke dashboard
         ]);
     } else {
         echo json_encode(['success' => false, 'message' => 'Password salah']);

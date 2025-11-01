@@ -2,6 +2,16 @@
 // unit_pengolah.php
 // Page for managing unit pengolah
 include_once __DIR__ . '/../config/session.php';
+include_once __DIR__ . '/../config/database.php'; // koneksi mysqli
+
+// Ambil data unit pengolah dari database
+$result = $conn->query("SELECT * FROM unit_pengolah ORDER BY kode_unit ASC");
+$units = [];
+if ($result && $result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $units[] = $row;
+    }
+}
 
 // Require login to access this page
 // requireLogin();
@@ -35,42 +45,26 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
                             </tr>
                         </thead>
                         <tbody class="bg-white divide-y divide-gray-200">
+                            <?php foreach ($units as $unit) : ?>
                             <tr class="hover:bg-gray-50">
-                                <td class="py-4 px-4 whitespace-nowrap text-sm font-medium text-gray-900">UP-001</td>
-                                <td class="py-4 px-4 whitespace-nowrap text-sm text-gray-500">Unit A</td>
+                                <td class="py-4 px-4 whitespace-nowrap text-sm font-medium text-gray-900"><?= $unit['kode_unit'] ?></td>
+                                <td class="py-4 px-4 whitespace-nowrap text-sm text-gray-500"><?= $unit['nama_unit'] ?></td>
                                 <td class="py-4 px-4 whitespace-nowrap text-sm font-medium">
-                                    <button class="text-cyan-600 hover:text-cyan-900 mr-3">
+                                    <button 
+                                        class="text-cyan-600 hover:text-cyan-900 mr-3 btnEdit" 
+                                        data-id="<?= $unit['id_unit'] ?>" 
+                                        data-kode="<?= $unit['kode_unit'] ?>" 
+                                        data-nama="<?= $unit['nama_unit'] ?>">
                                         <span class="material-icons text-base">edit</span>
                                     </button>
-                                    <button class="text-red-600 hover:text-red-900">
+                                    <button 
+                                        class="text-red-600 hover:text-red-900 btnDelete" 
+                                        data-id="<?= $unit['id_unit'] ?>">
                                         <span class="material-icons text-base">delete</span>
                                     </button>
                                 </td>
                             </tr>
-                            <tr class="hover:bg-gray-50">
-                                <td class="py-4 px-4 whitespace-nowrap text-sm font-medium text-gray-900">UP-002</td>
-                                <td class="py-4 px-4 whitespace-nowrap text-sm text-gray-500">Unit B</td>
-                                <td class="py-4 px-4 whitespace-nowrap text-sm font-medium">
-                                    <button class="text-cyan-600 hover:text-cyan-900 mr-3">
-                                        <span class="material-icons text-base">edit</span>
-                                    </button>
-                                    <button class="text-red-600 hover:text-red-900">
-                                        <span class="material-icons text-base">delete</span>
-                                    </button>
-                                </td>
-                            </tr>
-                            <tr class="hover:bg-gray-50">
-                                <td class="py-4 px-4 whitespace-nowrap text-sm font-medium text-gray-900">UP-003</td>
-                                <td class="py-4 px-4 whitespace-nowrap text-sm text-gray-500">Unit C</td>
-                                <td class="py-4 px-4 whitespace-nowrap text-sm font-medium">
-                                    <button class="text-cyan-600 hover:text-cyan-900 mr-3">
-                                        <span class="material-icons text-base">edit</span>
-                                    </button>
-                                    <button class="text-red-600 hover:text-red-900">
-                                        <span class="material-icons text-base">delete</span>
-                                    </button>
-                                </td>
-                            </tr>
+                            <?php endforeach; ?>
                         </tbody>
                     </table>
                 </div>
@@ -89,7 +83,7 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
                     <span class="material-icons">close</span>
                 </button>
             </div>
-            <form action="#" method="POST">
+            <form id="addUnitForm">
                 <div class="mb-4">
                     <label for="kode_unit" class="block text-sm font-medium text-gray-700">Kode Unit Pengolah</label>
                     <input type="text" name="kode_unit" id="kode_unit" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm">
@@ -111,6 +105,41 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
     </div>
 </div>
 
+<!-- Modal Edit -->
+<div id="modalEdit" class="fixed inset-0 bg-gray-600/50 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+    <div class="relative top-20 mx-auto p-5 w-96 shadow-lg rounded-md bg-white">
+    <h2 class="text-lg font-semibold mb-4">Edit Unit Pengolah</h2>
+    <form id="formEdit">
+      <input type="hidden" id="edit_id_unit" />
+      <div class="mb-4">
+        <label for="edit_kode_unit" class="block text-sm font-medium text-gray-700 mb-1">Kode Unit</label>
+        <input type="text" id="edit_kode_unit" class="border rounded w-full p-2" required />
+      </div>
+      <div class="mb-4">
+        <label for="edit_nama_unit" class="block text-sm font-medium text-gray-700 mb-1">Nama Unit</label>
+        <input type="text" id="edit_nama_unit" class="border rounded w-full p-2" required />
+      </div>
+      <div class="flex justify-end gap-2">
+        <button type="button" id="closeEdit" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Batal</button>
+        <button type="submit" class="px-4 py-2 bg-cyan-600 text-white rounded hover:bg-cyan-700">Simpan</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- Modal Delete -->
+<div id="modalDelete" class="fixed inset-0 bg-gray-600/50 bg-opacity-50 overflow-y-auto h-full w-full hidden z-50">
+  <div class="relative top-20 mx-auto p-5 w-96 shadow-lg rounded-md bg-white">
+    <h2 class="text-lg font-semibold mb-4 text-red-600">Hapus Unit Pengolah?</h2>
+    <p class="text-gray-600 mb-6">Apakah kamu yakin ingin menghapus unit ini?</p>
+    <div class="flex justify-center gap-3">
+      <button id="cancelDelete" class="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400">Batal</button>
+      <button id="confirmDelete" class="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700">Hapus</button>
+    </div>
+  </div>
+</div>
+
+
 <script>
     function openModal(modalId) {
         document.getElementById(modalId).classList.remove('hidden');
@@ -119,6 +148,107 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
     function closeModal(modalId) {
         document.getElementById(modalId).classList.add('hidden');
     }
+
+    document.getElementById('addUnitForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        const kode_unit = document.getElementById('kode_unit').value.trim();
+        const nama_unit = document.getElementById('nama_unit').value.trim();
+
+        if (!kode_unit || !nama_unit) {
+            alert('Kode unit dan nama unit wajib diisi.');
+            return;
+        }
+
+        fetch('../api/unit_pengolah/add_unit_pengolah.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ kode_unit, nama_unit })
+        })
+        .then(res => res.json())
+        .then(data => {
+            alert(data.message);
+            if (data.success) {
+                closeModal('tambahUnitPengolahModal');
+                location.reload();
+            }
+        })
+        .catch(err => {
+            console.error('Error:', err);
+            alert('Terjadi kesalahan saat menyimpan data.');
+        });
+    });
+    document.addEventListener("DOMContentLoaded", () => {
+        const modalEdit = document.getElementById("modalEdit");
+        const modalDelete = document.getElementById("modalDelete");
+        const formEdit = document.getElementById("formEdit");
+
+        const editId = document.getElementById("edit_id_unit");
+        const editKode = document.getElementById("edit_kode_unit");
+        const editNama = document.getElementById("edit_nama_unit");
+
+        let deleteId = null;
+
+        // === OPEN EDIT MODAL ===
+        document.querySelectorAll(".btnEdit").forEach(btn => {
+            btn.addEventListener("click", () => {
+            editId.value = btn.dataset.id;
+            editKode.value = btn.dataset.kode;
+            editNama.value = btn.dataset.nama;
+            modalEdit.classList.remove("hidden");
+            });
+        });
+
+        // === CLOSE EDIT MODAL ===
+        document.getElementById("closeEdit").addEventListener("click", () => {
+            modalEdit.classList.add("hidden");
+        });
+
+        // === SUBMIT EDIT FORM ===
+        formEdit.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const data = {
+            id_unit: editId.value,
+            kode_unit: editKode.value,
+            nama_unit: editNama.value
+            };
+            const res = await fetch("../api/unit_pengolah/edit_unit_pengolah.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(data)
+            });
+            const result = await res.json();
+            alert(result.message);
+            if (result.success) location.reload();
+        });
+
+        // === OPEN DELETE MODAL ===
+        document.querySelectorAll(".btnDelete").forEach(btn => {
+            btn.addEventListener("click", () => {
+            deleteId = btn.dataset.id;
+            modalDelete.classList.remove("hidden");
+            });
+        });
+
+        // === CANCEL DELETE ===
+        document.getElementById("cancelDelete").addEventListener("click", () => {
+            modalDelete.classList.add("hidden");
+        });
+
+        // === CONFIRM DELETE ===
+        document.getElementById("confirmDelete").addEventListener("click", async () => {
+            const res = await fetch("../api/unit_pengolah/delete_unit_pengolah.php", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ id_unit: deleteId })
+            });
+            const result = await res.json();
+            alert(result.message);
+            if (result.success) location.reload();
+        });
+    });
 </script>
 
 <?php

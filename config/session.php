@@ -29,28 +29,28 @@ function isLoggedIn() {
  * Check if user is admin
  */
 function isAdmin() {
-    return isset($_SESSION['role']) && $_SESSION['role'] === 'admin';
+    return isset($_SESSION['user_role']) && $_SESSION['user_role'] === 'admin';
 }
 
 /**
  * Check if user is admin or superadmin
  */
 function isAdminOrSuperAdmin() {
-    return isset($_SESSION['role']) && ($_SESSION['role'] === 'admin' || $_SESSION['role'] === 'superadmin');
+    return isset($_SESSION['user_role']) && ($_SESSION['user_role'] === 'admin' || $_SESSION['user_role'] === 'superadmin');
 }
 
 /**
  * Get current user role
  */
 function getUserRole() {
-    return $_SESSION['role'] ?? 'guest';
+    return $_SESSION['user_role'] ?? 'guest';
 }
 
 /**
  * Get current username
  */
 function getUserName() {
-    return $_SESSION['username'] ?? 'Guest';
+    return $_SESSION['user_name'] ?? 'Guest';
 }
 
 /**
@@ -86,7 +86,7 @@ function login($username, $password) {
         $_SESSION['id_user'] = $user['id_user'];
         $_SESSION['username'] = $user['username'];
         $_SESSION['nama'] = $user['nama'];
-        $_SESSION['role'] = $user['role'];
+        $_SESSION['user_role'] = $user['role'];
         $_SESSION['user_email'] = $user['email'] ?? null;
 
         return true;
@@ -96,7 +96,7 @@ function login($username, $password) {
 }
 
 function getFullName() {
-    return $_SESSION['nama'] ?? getUserName();
+    return $_SESSION['user_name'] ?? getUserName();
 }
 
 
@@ -104,6 +104,9 @@ function getFullName() {
  * Logout and destroy session
  */
 function logout() {
+    $username = $_SESSION['username'] ?? 'unknown';
+    error_log("[" . date('Y-m-d H:i:s') . "] LOGOUT: $username\n", 3, __DIR__ . "/../error_log.txt");
+
     session_unset();
     session_destroy();
 }

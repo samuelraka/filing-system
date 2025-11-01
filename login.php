@@ -24,6 +24,8 @@ include __DIR__ . '/layouts/master/header.php';
                     <p class="text-sm text-red-600"><?php echo $error; ?></p>
                 </div>
             <?php endif; ?>
+
+            <div id="messageContainer"></div>
             
             <form class="space-y-5" id="loginForm" method="POST">
                 <!-- Username -->
@@ -57,8 +59,8 @@ include __DIR__ . '/layouts/master/header.php';
 
                 <!-- Button -->
                 <div>
-                    <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-md text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-all duration-200 transform hover:scale-[1.02]">
-                        Masuk
+                    <button id="loginBtn" type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-md text-sm font-medium text-white bg-cyan-600 hover:bg-cyan-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-cyan-500 transition-all duration-200 transform hover:scale-[1.02]">
+                        <span id="loginBtnText">Masuk</span>
                     </button>
                 </div>
             </form>
@@ -67,60 +69,132 @@ include __DIR__ . '/layouts/master/header.php';
 </div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const loginForm = document.getElementById('loginForm');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const togglePassword = document.getElementById('togglePassword');
+document.addEventListener('DOMContentLoaded', function() {
+    const loginForm = document.getElementById('loginForm');
+    const usernameInput = document.getElementById('username');
+    const passwordInput = document.getElementById('password');
+    const togglePassword = document.getElementById('togglePassword');
+    const loginBtn = document.getElementById('loginBtn');
+    const loginBtnText = document.getElementById('loginBtnText');
+    const messageContainer = document.getElementById('messageContainer');
+    
+    // Toggle password visibility
+    togglePassword.addEventListener('click', function() {
+        const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+        passwordInput.setAttribute('type', type);
         
-        // Toggle password visibility
-        togglePassword.addEventListener('click', function() {
-            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
-            passwordInput.setAttribute('type', type);
-            
-            // Toggle icon
-            const icon = this.querySelector('.material-icons');
-            icon.textContent = type === 'password' ? 'visibility' : 'visibility_off';
-        });
-        
-        // Form validation
-        loginForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            let isValid = true;
-            
-            // Reset error states
-            document.getElementById('emailError').classList.add('hidden');
-            document.getElementById('passwordError').classList.add('hidden');
-            emailInput.classList.remove('border-red-500', 'ring-red-500');
-            passwordInput.classList.remove('border-red-500', 'ring-red-500');
-            
-            // Validate email/username
-            if (!emailInput.value.trim()) {
-                showError(emailInput, 'emailError', 'Email atau username harus diisi');
-                isValid = false;
-            }
-            
-            // Validate password
-            if (!passwordInput.value) {
-                showError(passwordInput, 'passwordError', 'Password harus diisi');
-                isValid = false;
-            }
-            
-            if (isValid) {
-                // Submit the form
-                loginForm.submit();
-            }
-        });
-        
-        // Show error message
-        function showError(inputElement, errorId, message) {
-            inputElement.classList.add('border-red-500', 'ring-red-500');
-            const errorElement = document.getElementById(errorId);
-            errorElement.textContent = message;
-            errorElement.classList.remove('hidden');
-        }
+        const icon = this.querySelector('.material-icons');
+        icon.textContent = type === 'password' ? 'visibility' : 'visibility_off';
     });
+    
+    // Show message function
+    function showMessage(message, type = 'error') {
+        const bgColor = type === 'success' ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800';
+        messageContainer.innerHTML = `
+            <div class="p-3 ${bgColor} border rounded-md">
+                <p class="text-sm">${message}</p>
+            </div>
+        `;
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            messageContainer.innerHTML = '';
+        }, 5000);
+    }
+    
+    // Show error for field
+    function showFieldError(inputElement, errorId, message) {
+        inputElement.classList.add('border-red-500', 'ring-red-500');
+        const errorElement = document.getElementById(errorId);
+        errorElement.textContent = message;
+        errorElement.classList.remove('hidden');
+    }
+    
+    // Clear field errors
+    function clearFieldErrors() {
+        document.getElementById('emailError').classList.add('hidden');
+        document.getElementById('passwordError').classList.add('hidden');
+        usernameInput.classList.remove('border-red-500', 'ring-red-500');
+        passwordInput.classList.remove('border-red-500', 'ring-red-500');
+    }
+    
+    // Set loading state
+    function setLoading(loading) {
+        if (loading) {
+            loginBtn.disabled = true;
+            loginBtnText.textContent = 'Loading...';
+        } else {
+            loginBtn.disabled = false;
+            loginBtnText.textContent = 'Masuk';
+        }
+    }
+    
+    // Form submission
+    loginForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        clearFieldErrors();
+        
+        const username = document.getElementById('username').value.trim();
+        const password = passwordInput.value;
+        
+        // Client-side validation
+        let isValid = true;
+        
+        if (!username) {
+            showFieldError(document.getElementById('username'), 'emailError', 'Username harus diisi');
+            isValid = false;
+        }
+        
+        if (!password) {
+            showFieldError(passwordInput, 'passwordError', 'Password harus diisi');
+            isValid = false;
+        }
+        
+        if (!isValid) {
+            return;
+        }
+        
+        // Show loading state
+        setLoading(true);
+        messageContainer.innerHTML = '';
+        
+        // Send AJAX request to Node.js API
+        fetch('api/login.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username: username,
+                password: password
+            })
+        })
+        .then(response => response.json())
+        .then(data => {
+            setLoading(false);
+            
+            if (data.success) {
+                showMessage(data.message, 'success');
+                
+                // Store user info in session storage (for demo purposes)
+                sessionStorage.setItem('user', JSON.stringify(data.user));
+                
+                // Redirect after successful login
+                setTimeout(() => {
+                    window.location.href = 'pages/dashboard.php';
+                }, 1000);
+            } else {
+                showMessage(data.message);
+            }
+        })
+        .catch(error => {
+            setLoading(false);
+            console.error('Login error:', error);
+            showMessage('Terjadi kesalahan. Silakan coba lagi.');
+        });
+    });
+});
 </script>
 
 <?php

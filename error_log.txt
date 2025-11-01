@@ -349,3 +349,14 @@ Role: superadmin
 ID Unit: 
 Nama Unit: 
 ------------------------------------
+[2025-10-31 06:00:33] LOGOUT: unknown
+[2025-10-31 06:38:39] LOGOUT: unknown
+[01-Nov-2025 07:31:50 Europe/Berlin] [update_email.php] Duplicate entry 'samuelrakayustianto@gmail.com' for key 'email'
+[01-Nov-2025 07:34:08 Europe/Berlin] [update_password.php] Password lama salah.
+[2025-11-01 07:34:25] LOGOUT: unknown
+[01-Nov-2025 08:01:07 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\Users\Samuel\Documents\GitHub\filing-system\config\session.php on line 5
+[01-Nov-2025 08:28:59 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\Users\Samuel\Documents\GitHub\filing-system\config\session.php on line 5
+[01-Nov-2025 08:29:07 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\Users\Samuel\Documents\GitHub\filing-system\config\session.php on line 5
+[01-Nov-2025 23:11:49 Europe/Berlin] Error tambah_sub_sub_masalah.php: Unknown column 'kode_sub_sub' in 'field list'
+[01-Nov-2025 23:13:19 Europe/Berlin] Error tambah_sub_sub_masalah.php: Unknown column 'topik_sub_sub' in 'field list'
+[01-Nov-2025 23:34:41 Europe/Berlin] Error delete_sub_sub_masalah.php: Unknown column 'id_sub_sub' in 'where clause'
