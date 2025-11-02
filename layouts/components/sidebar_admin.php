@@ -117,21 +117,27 @@ include_once __DIR__ . '/../../config/session.php';
         const systemSubmenu = document.getElementById('systemSubmenu');
         const systemMenuIcon = document.getElementById('systemMenuIcon');
         
-        // Check if current page is aktif.php or inaktif.php to auto-expand the arsip menu
+        // Auto-expand Arsip menu
         const currentPage = window.location.pathname.split('/').pop();
         if (currentPage === 'aktif.php' || currentPage === 'inaktif.php' || currentPage === 'tambah_aktif.php' || currentPage === 'tambah_inaktif.php') {
+            arsipMenu.classList.add('bg-cyan-600/10', 'text-cyan-600', 'font-medium');
+            arsipMenu.classList.remove('text-slate-700');
             arsipSubmenu.classList.remove('hidden');
             arsipMenuIcon.classList.add('rotate-180');
         }
 
-        // Check if current page is kelola_pengguna.php or unit_pengolah.php to auto-expand the kelola pengguna menu
+        // Auto-expand Kelola Pengguna menu
         if (currentPage === 'kelola_pengguna.php' || currentPage === 'unit_pengolah.php') {
+            arsipUsrMenu.classList.add('bg-cyan-600/10', 'text-cyan-600', 'font-medium');
+            arsipUsrMenu.classList.remove('text-slate-700');
             arsipUsrSubmenu.classList.remove('hidden');
             arsipUsrMenuIcon.classList.add('rotate-180');
         }
         
-        // Check if current page is kelola_pengguna.php or unit_pengolah.php to auto-expand the kelola pengguna menu
-        if (currentPage === 'kelola_arsip.php') {
+        // Auto-expand Kelola Arsip menu
+        if (currentPage === 'kategori.php') {
+            arsipMgmtMenu.classList.add('bg-cyan-600/10', 'text-cyan-600', 'font-medium');
+            arsipMgmtMenu.classList.remove('text-slate-700');
             arsipMgmtSubmenu.classList.remove('hidden');
             arsipMgmtMenuIcon.classList.add('rotate-180');
         }

@@ -7,7 +7,7 @@ include_once '../config/database.php'; // pastikan koneksi $conn tersedia
 
 // Cek apakah user sudah login
 if (!isset($_SESSION['user_id'])) {
-    header("Location: ../user_login.php");
+    header("Location: ../login.php");
     exit;
 }
 
@@ -41,8 +41,6 @@ if ($result->num_rows > 0) {
 
 $stmt->close();
 ?>
-
-<div class="min-h-screen bg-gray-100">
     <!-- Include sidebar -->
     <?php include_once "../layouts/components/sidebar_dynamic.php"; ?>
 
@@ -196,7 +194,6 @@ $stmt->close();
             <div class="pb-8"></div>
         </div>
     </div>
-</div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {

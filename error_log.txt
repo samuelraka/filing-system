@@ -360,3 +360,9 @@ Nama Unit:
 [01-Nov-2025 23:11:49 Europe/Berlin] Error tambah_sub_sub_masalah.php: Unknown column 'kode_sub_sub' in 'field list'
 [01-Nov-2025 23:13:19 Europe/Berlin] Error tambah_sub_sub_masalah.php: Unknown column 'topik_sub_sub' in 'field list'
 [01-Nov-2025 23:34:41 Europe/Berlin] Error delete_sub_sub_masalah.php: Unknown column 'id_sub_sub' in 'where clause'
+[2025-11-02 16:59:57] LOGOUT: unknown
+[2025-11-02 17:28:35] LOGOUT: unknown
+[2025-11-02 17:28:40] LOGOUT: unknown
+[2025-11-02 17:29:51] LOGOUT: unknown
+[2025-11-02 17:30:21] LOGOUT: unknown
+[2025-11-02 17:30:42] LOGOUT: unknown

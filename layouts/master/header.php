@@ -5,9 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap">
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined">
     <link rel="stylesheet" href="../../assets/css/tailwind.css">
-    <link rel="stylesheet" href="../../assets/css/custom-table.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <title></title>
 </head>
-<body class="m-0 p-0 overflow-y-auto overflow-x-auto w-screen h-screen">
+<body class="m-0 p-0 overflow-y-auto overflow-x-auto w-screen h-screen bg-gray-100">

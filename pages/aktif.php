@@ -3,9 +3,9 @@
 include_once "../layouts/master/header.php";
 ?>
 
-<div class="flex h-screen bg-gray-100">
+<div class="flex h-screen">
     <!-- Include sidebar -->
-    <?php include_once "../layouts/components/sidebar.php"; ?>
+    <?php include_once "../layouts/components/sidebar_dynamic.php"; ?>
 
     <div class="flex-1 flex flex-col ml-64">
         <!-- Include topbar -->
@@ -21,17 +21,13 @@ include_once "../layouts/master/header.php";
             <!-- Filters -->
             <div class="flex justify-between items-center mb-5">
                 <div class="flex items-center gap-x-4">
-                    <a href="tambah_aktif.php" class="bg-cyan-600 hover:bg-cyan-600/90 text-white px-4 py-2 rounded-md flex items-center">
-                        <svg class="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                            <path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd" />
-                        </svg>
-                        Tambah Arsip
+                    <a href="tambah_aktif.php" class="bg-cyan-600 hover:bg-cyan-600/90 text-white px-3 py-2 gap-1 rounded-md flex items-center">
+                        <span class="material-symbols-outlined">add</span>
+                        <span>Tambah Arsip</span>
                     </a>
-                    <a href="#" class="bg-slate-700 hover:bg-slate-700/90 text-white px-4 py-2 rounded-md flex items-center">
-                        <svg class="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 9V4a1 1 0 011-1h10a1 1 0 011 1v5m-1 6h2a2 2 0 002-2v-3a2 2 0 00-2-2H5a2 2 0 00-2 2v3a2 2 0 002 2h2m10 0v4a1 1 0 01-1 1H7a1 1 0 01-1-1v-4h10z" />
-                        </svg>
-                        Cetak Tabel Arsip
+                    <a href="#" class="bg-slate-700 hover:bg-slate-700/90 text-white px-3 py-2 gap-2 rounded-md flex items-center">
+                        <span class="material-symbols-outlined">print</span>
+                        <span>Cetak Tabel Arsip</span>
                     </a>
                 </div>
                 <div class="flex items-center gap-x-4">
@@ -53,124 +49,127 @@ include_once "../layouts/master/header.php";
                     </div>
                 </div>
             </div>
-            <div class="bg-white rounded-lg shadow-sm px-6 py-3">
+            <div class="bg-white rounded-lg shadow-sm px-6 py-3 max-w-screen">
                 <div class="flex flex-col space-y-4">
-
                     <!-- Table -->
                     <div class="overflow-x-auto mt-3">
-                        <table class="min-w-full divide-y divide-gray-200 table-centered">
-                            <thead>
-                                <tr>
-                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nomor Berkas</th>
-                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Nomor Item Arsip</th>
-                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Kode Klasifikasi Arsip</th>
-                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Uraian Informasi Arsip</th>
-                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
-                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah Item Arsip</th>
-                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan SKAAD</th>
-                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan</th>
-                                    <th class="px-3 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Opsi</th>
+                        <table class="min-w-full border border-gray-200 divide-y divide-gray-200 table-auto">
+                            <thead class="bg-gray-50">
+                                <tr class="divide-x divide-gray-200 text-center">
+                                    <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Nomor Berkas</th>
+                                    <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Nomor Item Arsip</th>
+                                    <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Kode Klasifikasi Arsip</th>
+                                    <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Uraian Informasi Arsip</th>
+                                    <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
+                                    <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah Item Arsip</th>
+                                    <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-tight">Keterangan SKAAD</th>
+                                    <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan</th>
+                                    <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Opsi</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 <!-- Archive 1 with 3 documents -->
-                                <tr class="hover:bg-gray-50">
+                                <tr class="divide-x divide-gray-200 text-center">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 align-top" rowspan="3">A-001</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1001</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">101.2</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Surat Keputusan Direktur</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-left text-gray-900">Surat Keputusan Direktur</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2023-01-10</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">5</td>
-                                    <td class="px-3 py-4 whitespace-nowrap">
-                                        <span class="bg-green-50 text-green-600 px-2 py-1 rounded-full text-xs">Biasa</span>
+                                    <td class="px-3 py-4 whitespace-nowrap text-center">
+                                        <span class="bg-green-50 text-green-600 px-2 py-1 rounded-full text-sm">Biasa</span>
                                     </td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Arsip penting</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <button class="action-button text-gray-500 hover:text-gray-700" data-user-id="1">
-                                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                                            </svg>
+                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
+                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
                                         </button>
                                     </td>
                                 </tr>
-                                <tr class="hover:bg-gray-50">
+                                <tr class="divide-x divide-gray-200 text-center">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1002</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">101.3</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Laporan Tahunan</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-left text-gray-900">Laporan Tahunan</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2022-12-05</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">3</td>
-                                    <td class="px-3 py-4 whitespace-nowrap">
-                                        <span class="bg-yellow-50 text-yellow-700 px-2 py-1 rounded-full text-xs">Terbatas</span>
+                                    <td class="px-3 py-4 whitespace-nowrap text-center">
+                                        <span class="bg-yellow-50 text-yellow-700 px-2 py-1 rounded-full text-sm">Terbatas</span>
                                     </td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Perlu verifikasi</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        <button class="action-button text-gray-500 hover:text-gray-700" data-user-id="2">
-                                            <svg class="h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                                <path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z" />
-                                            </svg>
+                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
+                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
                                         </button>
                                     </td>
                                 </tr>
-                                <tr class="hover:bg-gray-50">
+                                <tr class="divide-x divide-gray-200 text-center">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1003</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">101.4</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Dokumen Kontrak</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-left text-gray-900">Dokumen Kontrak</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2021-07-21</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2</td>
-                                    <td class="px-3 py-4 whitespace-nowrap">
-                                        <span class="bg-green-50 text-green-600 px-2 py-1 rounded-full text-xs">Biasa</span>
+                                    <td class="px-3 py-4 whitespace-nowrap text-center">
+                                        <span class="bg-green-50 text-green-600 px-2 py-1 rounded-full text-sm">Biasa</span>
                                     </td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Sudah diverifikasi</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        XXX
+                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
+                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
+                                        </button>
                                     </td>
                                 </tr>
                                 
                                 <!-- Archive 2 with 2 documents -->
-                                <tr class="hover:bg-gray-50">
+                                <tr class="divide-x divide-gray-200 text-center">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 align-top" rowspan="2">A-002</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1004</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">102.1</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Berita Acara</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-left text-gray-900">Berita Acara</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2024-02-15</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">4</td>
-                                    <td class="px-3 py-4 whitespace-nowrap">
-                                        <span class="bg-green-50 text-green-600 px-2 py-1 rounded-full text-xs">Biasa</span>
+                                    <td class="px-3 py-4 whitespace-nowrap text-center">
+                                        <span class="bg-green-50 text-green-600 px-2 py-1 rounded-full text-sm">Biasa</span>
                                     </td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">-</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        XXX
+                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
+                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
+                                        </button>
                                     </td>
                                 </tr>
-                                <tr class="hover:bg-gray-50">
+                                <tr class="divide-x divide-gray-200 text-center">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1005</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">102.2</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Memo Internal</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-left text-gray-900">Memo Internal</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2023-11-30</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">1</td>
                                     <td class="px-3 py-4 whitespace-nowrap">
-                                        <span class="bg-gray-700 text-gray-100 px-2 py-1 rounded-full text-xs">Rahasia</span>
+                                        <span class="bg-gray-700 text-gray-100 px-2 py-1 rounded-full text-sm">Rahasia</span>
                                     </td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Butuh lampiran</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        XXX
+                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
+                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
+                                        </button>
                                     </td>
                                 </tr>
                                 
                                 <!-- Archive 3 with 1 document -->
-                                <tr class="hover:bg-gray-50">
+                                <tr class="divide-x divide-gray-200 text-center">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">A-003</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1006</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">103.1</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Surat Perjanjian</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-left text-gray-900">Surat Perjanjian</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2023-09-18</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">7</td>
                                     <td class="px-3 py-4 whitespace-nowrap">
-                                        <span class="bg-green-50 text-green-600 px-2 py-1 rounded-full text-xs">Biasa</span>
+                                        <span class="bg-green-50 text-green-600 px-2 py-1 rounded-full text-sm">Biasa</span>
                                     </td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Sudah disetujui</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-right text-sm font-medium">
-                                        XXX
+                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
+                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
+                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
+                                        </button>
                                     </td>
                                 </tr>
                             </tbody>
