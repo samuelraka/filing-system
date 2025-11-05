@@ -22,7 +22,7 @@ include_once "../layouts/master/header.php";
             <!-- Filters -->
             <div class="flex justify-between items-center mb-5">
                 <div class="flex items-center gap-x-4">
-                    <a href="tambah_aktif.php" class="bg-cyan-600 hover:bg-cyan-600/90 text-white px-3 py-2 gap-1 rounded-md flex items-center">
+                    <a href="tambah_inaktif.php" class="bg-cyan-600 hover:bg-cyan-600/90 text-white px-3 py-2 gap-1 rounded-md flex items-center">
                         <span class="material-symbols-outlined">add</span>
                         <span>Tambah Arsip</span>
                     </a>

@@ -26,6 +26,8 @@ include_once __DIR__ . '/../../config/session.php';
             <div class="pl-9 mt-1 hidden space-y-1" id="arsipSubmenu">
                 <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/../pages/aktif.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 <?php echo basename($_SERVER['PHP_SELF']) == 'aktif.php' ? 'text-cyan-600 font-medium' : 'text-slate-700'; ?>">Aktif</a>
                 <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/../pages/inaktif.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 <?php echo basename($_SERVER['PHP_SELF']) == 'inaktif.php' ? 'text-cyan-600 font-medium' : 'text-slate-700'; ?>">Inaktif</a>
+                <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/../pages/vital.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 <?php echo basename($_SERVER['PHP_SELF']) == 'vital.php' ? 'text-cyan-600 font-medium' : 'text-slate-700'; ?>">Vital</a>
+                <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/../pages/statis.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 <?php echo basename($_SERVER['PHP_SELF']) == 'statis.php' ? 'text-cyan-600 font-medium' : 'text-slate-700'; ?>">Statis</a>
             </div>
         </div>
 
@@ -119,7 +121,7 @@ include_once __DIR__ . '/../../config/session.php';
         
         // Auto-expand Arsip menu
         const currentPage = window.location.pathname.split('/').pop();
-        if (currentPage === 'aktif.php' || currentPage === 'inaktif.php' || currentPage === 'tambah_aktif.php' || currentPage === 'tambah_inaktif.php') {
+        if (currentPage === 'aktif.php' || currentPage === 'inaktif.php' || currentPage === 'vital.php' || currentPage === 'statis.php' || currentPage === 'tambah_aktif.php' || currentPage === 'tambah_inaktif.php' || currentPage === 'tambah_vital.php' || currentPage === 'tambah_statis.php') {
             arsipMenu.classList.add('bg-cyan-600/10', 'text-cyan-600', 'font-medium');
             arsipMenu.classList.remove('text-slate-700');
             arsipSubmenu.classList.remove('hidden');

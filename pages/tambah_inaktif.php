@@ -146,12 +146,8 @@ include_once "../layouts/master/header.php";
 
                         <!-- Form Actions -->
                         <div class="flex justify-end space-x-3">
-                            <button type="button" id="resetBtn" class="bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-50">
-                                Reset
-                            </button>
-                            <button type="submit" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-md">
-                                Simpan
-                            </button>
+                            <button type="reset" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md">Reset</button>
+                            <button type="submit" class="bg-cyan-600 hover:bg-cyan-600/90 text-white px-4 py-2 rounded-md">Simpan</button>
                         </div>
                     </form>
                 </div>
