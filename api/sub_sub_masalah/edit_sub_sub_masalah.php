@@ -21,7 +21,7 @@ try {
     if (
         empty($data['id_sub_sub_masalah']) ||
         empty($data['kode_sub_sub_masalah']) ||
-        empty($data['id_sub_masalah']) ||
+        empty($data['id_sub']) ||
         empty($data['topik_sub_sub_masalah'])
     ) {
         throw new Exception("Semua field wajib diisi.");
@@ -29,12 +29,12 @@ try {
 
     $id_sub_sub = intval($data['id_sub_sub_masalah']);
     $kode_sub_sub = trim($data['kode_sub_sub_masalah']);
-    $id_sub_masalah = intval($data['id_sub_masalah']);
+    $id_sub = intval($data['id_sub']);
     $topik_sub_sub = trim($data['topik_sub_sub_masalah']);
 
-    // Pastikan id_sub_masalah valid di tabel sub_masalah
+    // Pastikan id_sub valid di tabel sub_masalah
     $cek = $conn->prepare("SELECT id_sub FROM sub_masalah WHERE id_sub = ?");
-    $cek->bind_param("i", $id_sub_masalah);
+    $cek->bind_param("i", $id_sub);
     $cek->execute();
     $cekResult = $cek->get_result();
 
@@ -45,7 +45,7 @@ try {
 
     // Query update
     $stmt = $conn->prepare("UPDATE sub_sub_masalah SET kode_subsub = ?, id_sub = ?, topik_subsub = ? WHERE id_subsub = ?");
-    $stmt->bind_param("sisi", $kode_sub_sub, $id_sub_masalah, $topik_sub_sub, $id_sub_sub);
+    $stmt->bind_param("sisi", $kode_sub_sub, $id_sub, $topik_sub_sub, $id_sub_sub);
 
     if ($stmt->execute()) {
         if ($stmt->affected_rows > 0) {

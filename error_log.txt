@@ -366,3 +366,14 @@ Nama Unit:
 [2025-11-02 17:29:51] LOGOUT: unknown
 [2025-11-02 17:30:21] LOGOUT: unknown
 [2025-11-02 17:30:42] LOGOUT: unknown
+[2025-11-05 16:29:37] LOGOUT: unknown
+[05-Nov-2025 16:49:49 Europe/Berlin] 🟡 Input diterima: id_sub=4, kode_sub=SM-003, id_pokok=0, uraian=Contoh Sub Masalah 3
+[05-Nov-2025 16:49:49 Europe/Berlin] PHP Fatal error:  Uncaught mysqli_sql_exception: Cannot add or update a child row: a foreign key constraint fails (`archives_db`.`sub_masalah`, CONSTRAINT `sub_masalah_ibfk_1` FOREIGN KEY (`id_pokok`) REFERENCES `pokok_masalah` (`id_pokok`) ON DELETE CASCADE) in C:\Users\Samuel\Documents\GitHub\filing-system\api\sub_masalah\edit_sub_masalah.php:74
+Stack trace:
+#0 C:\Users\Samuel\Documents\GitHub\filing-system\api\sub_masalah\edit_sub_masalah.php(74): mysqli_stmt->execute()
+#1 {main}
+  thrown in C:\Users\Samuel\Documents\GitHub\filing-system\api\sub_masalah\edit_sub_masalah.php on line 74
+[05-Nov-2025 16:51:00 Europe/Berlin] 🟡 Input diterima: id_sub=4, kode_sub=SM-003, id_pokok=3, uraian=Contoh Sub Masalah 3
+[05-Nov-2025 16:51:00 Europe/Berlin] ✅ Update berhasil untuk id_sub=4 (kode_sub=SM-003, id_pokok=3)
+[05-Nov-2025 16:53:48 Europe/Berlin] 🟡 Input diterima: id_sub=4, kode_sub=SM-003, id_pokok=1, uraian=Contoh Sub Masalah 3
+[05-Nov-2025 16:53:48 Europe/Berlin] ✅ Update berhasil untuk id_sub=4 (kode_sub=SM-003, id_pokok=1)

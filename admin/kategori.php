@@ -334,8 +334,8 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
         <input type="text" id="edit_kode_sub_masalah" class="border rounded w-full p-2" required>
       </div>
       <div class="mb-4">
-        <label for="edit_id_pokok_masalah" class="block text-sm font-medium text-gray-700">Pokok Masalah</label>
-        <select id="edit_id_pokok_masalah" class="border rounded w-full p-2" required>
+        <label for="edit_id_pokok" class="block text-sm font-medium text-gray-700">Pokok Masalah</label>
+        <select id="edit_id_pokok" class="border rounded w-full p-2" required>
           <option value="">-- Pilih Pokok Masalah --</option>
           <?php foreach ($pokokMasalah as $pokok): ?>
             <option value="<?= $pokok['id_pokok'] ?>"><?= $pokok['kode_pokok'] ?> - <?= $pokok['topik_pokok'] ?></option>
@@ -418,8 +418,8 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
         <input type="text" id="edit_kode_sub_sub_masalah" class="border rounded w-full p-2" required />
       </div>
       <div class="mb-4">
-        <label for="edit_id_sub_masalah" class="block text-sm font-medium text-gray-700 mb-1">Sub Masalah</label>
-        <select name="edit_id_sub_masalah" id="edit_id_sub_masalah" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm">
+        <label for="edit_id_sub" class="block text-sm font-medium text-gray-700 mb-1">Sub Masalah</label>
+        <select name="edit_id_sub" id="edit_id_sub" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm">
             <option value="">-- Pilih Sub Masalah --</option>
             <?php foreach ($subMasalah as $sub): ?>
                 <option value="<?= $sub['id_sub'] ?>"><?= $sub['kode_sub'] ?> - <?= $sub['topik_sub'] ?></option>
@@ -627,7 +627,7 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.addEventListener("click", () => {
       document.getElementById("edit_id_sub_masalah").value = btn.dataset.id;
       document.getElementById("edit_kode_sub_masalah").value = btn.dataset.kode;
-      document.getElementById("edit_id_pokok_masalah").value = btn.dataset.pokok;
+      document.getElementById("edit_id_pokok").value = btn.dataset.pokok;
       document.getElementById("edit_uraian_sub_masalah").value = btn.dataset.nama;
       modalEditSub.classList.remove("hidden");
     });
@@ -638,7 +638,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const data = {
       id_sub_masalah: document.getElementById("edit_id_sub_masalah").value,
       kode_sub_masalah: document.getElementById("edit_kode_sub_masalah").value,
-      id_pokok_masalah: document.getElementById("edit_id_pokok_masalah").value,
+      id_pokok: document.getElementById("edit_id_pokok").value,
       uraian_sub_masalah: document.getElementById("edit_uraian_sub_masalah").value,
     };
 
@@ -713,7 +713,7 @@ document.addEventListener("DOMContentLoaded", () => {
         // isi data ke dalam modal
         document.getElementById("edit_id_sub_sub_masalah").value = btn.dataset.id;
         document.getElementById("edit_kode_sub_sub_masalah").value = btn.dataset.kode;
-        document.getElementById("edit_id_sub_masalah").value = btn.dataset.sub;
+        document.getElementById("edit_id_sub").value = btn.dataset.sub;
         document.getElementById("edit_topik_sub_sub_masalah").value = btn.dataset.nama;
 
         // tampilkan modal
@@ -732,7 +732,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const data = {
         id_sub_sub_masalah: document.getElementById("edit_id_sub_sub_masalah").value,
         kode_sub_sub_masalah: document.getElementById("edit_kode_sub_sub_masalah").value,
-        id_sub_masalah: document.getElementById("edit_id_sub_masalah").value,
+        id_sub: document.getElementById("edit_id_sub").value,
         topik_sub_sub_masalah: document.getElementById("edit_topik_sub_sub_masalah").value,
     };
 
