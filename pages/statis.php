@@ -168,9 +168,9 @@ $tahun_result = mysqli_query($conn, "SELECT DISTINCT tahun FROM arsip_statis ORD
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900"><?= $row['tingkat_perkembangan'] ?></td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Arsip statis penting</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
+                                        <a href="detail_statis.php?id=1" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
                                             <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </button>
+                                        </a>
                                     </td>
                                 </tr>
                                 <?php endwhile; ?>

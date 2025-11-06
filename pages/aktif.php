@@ -81,9 +81,9 @@ include_once "../layouts/master/header.php";
                                     </td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Arsip penting</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
+                                        <a href="detail_aktif.php?id=IT-1001" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
                                             <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </button>
+                                        </a>
                                     </td>
                                 </tr>
                                 <tr class="divide-x divide-gray-200 text-center">
@@ -97,9 +97,9 @@ include_once "../layouts/master/header.php";
                                     </td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Perlu verifikasi</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
+                                        <a href="detail_aktif.php?id=IT-1002" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
                                             <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </button>
+                                        </a>
                                     </td>
                                 </tr>
                                 <tr class="divide-x divide-gray-200 text-center">
@@ -113,9 +113,9 @@ include_once "../layouts/master/header.php";
                                     </td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Sudah diverifikasi</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
+                                        <a href="detail_aktif.php?id=IT-1003" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
                                             <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </button>
+                                        </a>
                                     </td>
                                 </tr>
                                 
@@ -132,9 +132,9 @@ include_once "../layouts/master/header.php";
                                     </td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">-</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
+                                        <a href="detail_aktif.php?id=IT-1004" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
                                             <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </button>
+                                        </a>
                                     </td>
                                 </tr>
                                 <tr class="divide-x divide-gray-200 text-center">
@@ -144,13 +144,13 @@ include_once "../layouts/master/header.php";
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2023-11-30</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">1</td>
                                     <td class="px-3 py-4 whitespace-nowrap">
-                                        <span class="bg-gray-700 text-gray-100 px-2 py-1 rounded-full text-sm">Rahasia</span>
+                                        <span class="bg-gray-500 px-2 py-1 rounded-full text-sm">Rahasia</span>
                                     </td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Butuh lampiran</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
+                                        <a href="detail_aktif.php?id=IT-1005" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
                                             <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </button>
+                                        </a>
                                     </td>
                                 </tr>
                                 
@@ -167,9 +167,9 @@ include_once "../layouts/master/header.php";
                                     </td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Sudah disetujui</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
+                                        <a href="detail_aktif.php?id=IT-1006" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
                                             <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </button>
+                                        </a>
                                     </td>
                                 </tr>
                             </tbody>

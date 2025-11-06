@@ -89,9 +89,9 @@ include_once "../layouts/master/header.php";
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">10 tahun - Musnah</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Keuangan</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-center text-sm">
-                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
+                                        <a href="detail_inaktif.php?id=INA-1001" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
                                             <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </button>
+                                        </a>
                                     </td>
                                 </tr>
                                 <tr class="divide-x divide-gray-200 text-center">
@@ -107,9 +107,9 @@ include_once "../layouts/master/header.php";
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">5 tahun - Permanen</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Keuangan</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-center text-sm">
-                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
+                                        <a href="detail_inaktif.php?id=INA-1002" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
                                             <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </button>
+                                        </a>
                                     </td>
                                 </tr>
                                 <tr class="divide-x divide-gray-200 text-center">
@@ -125,9 +125,9 @@ include_once "../layouts/master/header.php";
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">15 tahun - Musnah</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Pajak</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-center text-sm">
-                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
+                                        <a href="detail_inaktif.php?id=INA-1003" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
                                             <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </button>
+                                        </a>
                                     </td>
                                 </tr>
                                 
@@ -146,9 +146,9 @@ include_once "../layouts/master/header.php";
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">5 tahun - Permanen</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Proyek</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-center text-sm">
-                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
+                                        <a href="detail_inaktif.php?id=INA-1004" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
                                             <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </button>
+                                        </a>
                                     </td>
                                 </tr>
                                 <tr class="divide-x divide-gray-200 text-center">
@@ -164,9 +164,9 @@ include_once "../layouts/master/header.php";
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">10 tahun - Musnah</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Proyek</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-center text-sm">
-                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
+                                        <a href="detail_inaktif.php?id=INA-1005" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
                                             <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </button>
+                                        </a>
                                     </td>
                                 </tr>
                                 
@@ -185,9 +185,9 @@ include_once "../layouts/master/header.php";
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Permanen</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Surat Menyurat</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-center text-sm">
-                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
+                                        <a href="detail_inaktif.php?id=INA-1006" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
                                             <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </button>
+                                        </a>
                                     </td>
                                 </tr>
                             </tbody>
