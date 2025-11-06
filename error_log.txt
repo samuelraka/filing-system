@@ -378,3 +378,10 @@ Stack trace:
 [05-Nov-2025 16:53:48 Europe/Berlin] 🟡 Input diterima: id_sub=4, kode_sub=SM-003, id_pokok=1, uraian=Contoh Sub Masalah 3
 [05-Nov-2025 16:53:48 Europe/Berlin] ✅ Update berhasil untuk id_sub=4 (kode_sub=SM-003, id_pokok=1)
 [2025-11-05 18:31:51] LOGOUT: unknown
+[06-Nov-2025 23:34:16 Europe/Berlin] Error di tambah_arsip.php: Unknown column 'kode_klasifikasi' in 'where clause'
+[06-Nov-2025 23:34:24 Europe/Berlin] Error di tambah_arsip.php: Unknown column 'kode_klasifikasi' in 'where clause'
+[2025-11-06 23:36:59] LOGOUT: unknown
+[06-Nov-2025 23:38:45 Europe/Berlin] Error di tambah_arsip.php: ID arsip belum dipilih untuk menambahkan item baru.
+[07-Nov-2025 00:02:23 Europe/Berlin] Error di tambah_arsip.php: Arsip aktif dengan ID undefined tidak ditemukan.
+[07-Nov-2025 00:25:32 Europe/Berlin] Error di tambah_arsip.php: Arsip aktif dengan ID undefined tidak ditemukan.
+[07-Nov-2025 00:30:42 Europe/Berlin] Error di tambah_arsip.php: Arsip aktif dengan ID undefined tidak ditemukan.
