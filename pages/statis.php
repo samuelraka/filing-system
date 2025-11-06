@@ -1,7 +1,65 @@
 <?php
-// Include header
 include_once "../layouts/master/header.php";
+include_once "../config/database.php";
+
+// --- konfigurasi pagination ---
+$limit = 10;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($page < 1) $page = 1;
+$offset = ($page - 1) * $limit;
+
+// --- ambil parameter pencarian & filter ---
+$keyword = isset($_GET['search']) ? trim($_GET['search']) : '';
+$filter_jenis = isset($_GET['jenis']) ? trim($_GET['jenis']) : '';
+$filter_tahun = isset($_GET['tahun']) ? trim($_GET['tahun']) : '';
+
+// --- bangun query WHERE dinamis ---
+$where = "WHERE 1=1";
+
+if ($keyword !== '') {
+    $keyword_safe = mysqli_real_escape_string($conn, $keyword);
+    $where .= " AND (s.kode_subsub LIKE '%$keyword_safe%' 
+                OR a.jenis_arsip LIKE '%$keyword_safe%' 
+                OR a.tahun LIKE '%$keyword_safe%')";
+}
+
+if ($filter_jenis !== '') {
+    $filter_jenis_safe = mysqli_real_escape_string($conn, $filter_jenis);
+    $where .= " AND a.jenis_arsip = '$filter_jenis_safe'";
+}
+
+if ($filter_tahun !== '') {
+    $filter_tahun_safe = mysqli_real_escape_string($conn, $filter_tahun);
+    $where .= " AND a.tahun = '$filter_tahun_safe'";
+}
+
+// --- hitung total data ---
+$total_result = mysqli_query($conn, "
+    SELECT COUNT(*) AS total 
+    FROM arsip_statis a 
+    JOIN sub_sub_masalah s ON a.id_subsub = s.id_subsub 
+    $where
+");
+$total_row = mysqli_fetch_assoc($total_result);
+$total_data = $total_row['total'];
+$total_pages = ceil($total_data / $limit);
+
+// --- ambil data arsip statis ---
+$query = "
+    SELECT a.*, s.kode_subsub, s.topik_subsub 
+    FROM arsip_statis a 
+    JOIN sub_sub_masalah s ON a.id_subsub = s.id_subsub
+    $where
+    ORDER BY a.created_at DESC
+    LIMIT $limit OFFSET $offset
+";
+$result = mysqli_query($conn, $query);
+
+// --- ambil data unik untuk dropdown filter ---
+$jenis_result = mysqli_query($conn, "SELECT DISTINCT jenis_arsip FROM arsip_statis ORDER BY jenis_arsip ASC");
+$tahun_result = mysqli_query($conn, "SELECT DISTINCT tahun FROM arsip_statis ORDER BY tahun DESC");
 ?>
+
 
 <div class="flex h-screen">
     <!-- Include sidebar -->
@@ -37,7 +95,7 @@ include_once "../layouts/master/header.php";
                                 <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                             </svg>
                         </div>
-                        <input type="text" id="searchInput" placeholder="Kode Klasifikasi, Jenis Arsip, Tahun" class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0092B8]">
+                        <input type="text" id="searchInput" value="<?= htmlspecialchars($keyword) ?>" placeholder="Kode Klasifikasi, Jenis Arsip, Tahun" class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0092B8]">
                     </div>
                     <div class="flex items-center">
                         <button id="filtersBtn" class="border border-gray-300 bg-white text-slate-700 px-4 py-2 rounded-md flex items-center hover:bg-gray-100">
@@ -47,6 +105,37 @@ include_once "../layouts/master/header.php";
                             Filters
                         </button>
                     </div>
+                </div>
+            </div>
+
+            <!-- Dropdown filter -->
+            <div id="filterDropdown" class="hidden mt-3 bg-white border border-gray-200 rounded-md shadow p-4 w-[300px]">
+                <div class="mb-3">
+                    <label for="filterJenis" class="block text-sm text-gray-700 font-medium">Jenis Arsip</label>
+                    <select id="filterJenis" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                        <option value="">Semua</option>
+                        <?php while ($j = mysqli_fetch_assoc($jenis_result)): ?>
+                            <option value="<?= htmlspecialchars($j['jenis_arsip']) ?>" <?= ($filter_jenis == $j['jenis_arsip']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($j['jenis_arsip']) ?>
+                            </option>
+                        <?php endwhile; ?>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="filterTahun" class="block text-sm text-gray-700 font-medium">Tahun</label>
+                    <select id="filterTahun" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                        <option value="">Semua</option>
+                        <?php while ($t = mysqli_fetch_assoc($tahun_result)): ?>
+                            <option value="<?= htmlspecialchars($t['tahun']) ?>" <?= ($filter_tahun == $t['tahun']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($t['tahun']) ?>
+                            </option>
+                        <?php endwhile; ?>
+                    </select>
+                </div>
+
+                <div class="flex justify-end mt-4">
+                    <button id="applyFilterBtn" class="bg-[#0092B8] hover:bg-[#007A99] text-white px-3 py-2 rounded-md">Terapkan</button>
                 </div>
             </div>
 
@@ -68,14 +157,15 @@ include_once "../layouts/master/header.php";
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
+                                <?php while ($row = mysqli_fetch_assoc($result)) : ?>
                                 <!-- Row 1 -->
                                 <tr class="hover:bg-gray-50 divide-x divide-gray-200">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">1</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">001.1</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Surat Keputusan</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">2020</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">3</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Asli</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center"><?= $row['id_subsub'] ?></td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900"><?= $row['kode_subsub'] ?></td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900"><?= $row['jenis_arsip'] ?></td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center"><?= $row['tahun'] ?></td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center"><?= $row['jumlah'] ?></td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900"><?= $row['tingkat_perkembangan'] ?></td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Arsip statis penting</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
                                         <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
@@ -83,99 +173,78 @@ include_once "../layouts/master/header.php";
                                         </button>
                                     </td>
                                 </tr>
-                                <!-- Row 2 -->
-                                <tr class="hover:bg-gray-50 divide-x divide-gray-200">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">2</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">101.2</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Laporan Tahunan</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">2022</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">5</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Salinan</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Untuk referensi</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
-                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <!-- Row 3 -->
-                                <tr class="hover:bg-gray-50 divide-x divide-gray-200">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">3</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">201.4</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Notulen Rapat</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">2019</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">2</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Asli</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Dokumen terdigitalisasi</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
-                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <!-- Row 4 -->
-                                <tr class="hover:bg-gray-50 divide-x divide-gray-200">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">4</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">305.6</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Buku Agenda</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">2015</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">7</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Lengkap</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Disimpan permanen</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
-                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <!-- Row 5 -->
-                                <tr class="hover:bg-gray-50 divide-x divide-gray-200">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">5</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">410.2</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Dokumen Proyek Final</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">2021</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">4</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Asli</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Arsip statis untuk audit</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
-                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </button>
-                                    </td>
-                                </tr>
+                                <?php endwhile; ?>
                             </tbody>
                         </table>
                     </div>
 
+                    <?php
+                        $baseUrl = "?search=$keyword&jenis=$filter_jenis&tahun=$filter_tahun";
+                    ?>
+
                     <!-- Pagination -->
                     <div class="flex items-center justify-between mt-4">
-                        <div class="flex items-center">
-                            <span class="text-sm text-gray-700 mr-2">Show</span>
-                            <select id="perPage" class="border border-gray-300 rounded-full-md text-sm py-1 px-2">
-                                <option value="12">12</option>
-                                <option value="24">24</option>
-                                <option value="36">36</option>
-                                <option value="48">48</option>
-                            </select>
-                        </div>
-                        <div class="flex items-center space-x-1" id="pagination">
-                            <button class="px-2 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50" id="prevPage">
-                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-                                </svg>
-                            </button>
-                            <button class="px-2 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50" id="nextPage">
-                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                                </svg>
-                            </button>
+                        <p class="text-sm text-gray-600">
+                            Halaman <?= $page ?> dari <?= $total_pages ?> (Total <?= $total_data ?> data)
+                        </p>
+
+                        <div class="flex items-center space-x-1">
+                            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                <a href="<?= $baseUrl ?>&page=<?= $i ?>" 
+                                class="px-3 py-1 border border-gray-300 rounded-md text-sm <?= ($i == $page) ? 'bg-cyan-600 text-white' : 'hover:bg-gray-100' ?>">
+                                    <?= $i ?>
+                                </a>
+                            <?php endfor; ?>
+
+                            <?php if ($page > 1): ?>
+                                <a href="<?= $baseUrl ?>&page=<?= $page - 1 ?>" class="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100">
+                                    &laquo; Sebelumnya
+                                </a>
+                            <?php endif; ?>
+
+                            <?php if ($page < $total_pages): ?>
+                                <a href="<?= $baseUrl ?>&page=<?= $page + 1 ?>" class="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100">
+                                    Berikutnya &raquo;
+                                </a>
+                            <?php endif; ?>
                         </div>
                     </div>
+                    
                 </div>
             </div>
         </div><!-- /content -->
     </div><!-- /flex-1 -->
 </div><!-- /screen -->
+
+<script>
+document.getElementById('searchInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        const search = e.target.value.trim();
+        const params = new URLSearchParams(window.location.search);
+        params.set('search', search);
+        params.set('page', 1); // reset ke halaman 1
+        window.location.search = params.toString();
+    }
+});
+
+// toggle dropdown filter
+document.getElementById('filtersBtn').addEventListener('click', function() {
+    document.getElementById('filterDropdown').classList.toggle('hidden');
+});
+
+// tombol apply filter
+document.getElementById('applyFilterBtn').addEventListener('click', function() {
+    const jenis = document.getElementById('filterJenis').value;
+    const tahun = document.getElementById('filterTahun').value;
+
+    const params = new URLSearchParams(window.location.search);
+    if (jenis) params.set('jenis', jenis); else params.delete('jenis');
+    if (tahun) params.set('tahun', tahun); else params.delete('tahun');
+    params.set('page', 1);
+    window.location.search = params.toString();
+});
+</script>
+
 
 <?php
 // Include footer

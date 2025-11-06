@@ -1,7 +1,66 @@
 <?php
-// Include header
 include_once "../layouts/master/header.php";
+include_once "../config/database.php";
+
+// Pagination setup
+$limit = 10;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($page < 1) $page = 1;
+$offset = ($page - 1) * $limit;
+
+// Ambil parameter pencarian dan filter
+$keyword = isset($_GET['search']) ? trim($_GET['search']) : '';
+$filter_media = isset($_GET['media']) ? trim($_GET['media']) : '';
+$filter_lokasi = isset($_GET['lokasi']) ? trim($_GET['lokasi']) : '';
+$filter_metode = isset($_GET['metode']) ? trim($_GET['metode']) : '';
+
+// WHERE dinamis
+$where = "WHERE 1=1";
+
+if ($keyword !== '') {
+    $keyword_safe = mysqli_real_escape_string($conn, $keyword);
+    $where .= " AND (v.kode_klasifikasi LIKE '%$keyword_safe%' 
+                OR v.jenis_arsip LIKE '%$keyword_safe%' 
+                OR v.tahun LIKE '%$keyword_safe%')";
+}
+
+if ($filter_media !== '') {
+    $media_safe = mysqli_real_escape_string($conn, $filter_media);
+    $where .= " AND v.media = '$media_safe'";
+}
+
+if ($filter_lokasi !== '') {
+    $lokasi_safe = mysqli_real_escape_string($conn, $filter_lokasi);
+    $where .= " AND v.lokasi_simpan = '$lokasi_safe'";
+}
+
+if ($filter_metode !== '') {
+    $metode_safe = mysqli_real_escape_string($conn, $filter_metode);
+    $where .= " AND v.metode_perlindungan = '$metode_safe'";
+}
+
+// Hitung total data
+$total_result = mysqli_query($conn, "SELECT COUNT(*) AS total FROM arsip_vital v $where");
+$total_row = mysqli_fetch_assoc($total_result);
+$total_data = $total_row['total'];
+$total_pages = ceil($total_data / $limit);
+
+// Query utama
+$query = "
+    SELECT v.* 
+    FROM arsip_vital v
+    $where
+    ORDER BY v.created_at DESC
+    LIMIT $limit OFFSET $offset
+";
+$result = mysqli_query($conn, $query);
+
+// Ambil nilai unik untuk dropdown
+$media_result = mysqli_query($conn, "SELECT DISTINCT media FROM arsip_vital ORDER BY media ASC");
+$lokasi_result = mysqli_query($conn, "SELECT DISTINCT lokasi_simpan FROM arsip_vital ORDER BY lokasi_simpan ASC");
+$metode_result = mysqli_query($conn, "SELECT DISTINCT metode_perlindungan FROM arsip_vital ORDER BY metode_perlindungan ASC");
 ?>
+
 
 <div class="flex h-screen">
     <!-- Include sidebar -->
@@ -50,6 +109,49 @@ include_once "../layouts/master/header.php";
                 </div>
             </div>
 
+            <!-- Dropdown filter -->
+            <div id="filterDropdown" class="hidden mt-3 bg-white border border-gray-200 rounded-md shadow p-4 w-[320px]">
+                <div class="mb-3">
+                    <label for="filterMedia" class="block text-sm text-gray-700 font-medium">Media</label>
+                    <select id="filterMedia" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                        <option value="">Semua</option>
+                        <?php while ($m = mysqli_fetch_assoc($media_result)): ?>
+                            <option value="<?= htmlspecialchars($m['media']) ?>" <?= ($filter_media == $m['media']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($m['media']) ?>
+                            </option>
+                        <?php endwhile; ?>
+                    </select>
+                </div>
+
+                <div class="mb-3">
+                    <label for="filterLokasi" class="block text-sm text-gray-700 font-medium">Lokasi Simpan</label>
+                    <select id="filterLokasi" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                        <option value="">Semua</option>
+                        <?php while ($l = mysqli_fetch_assoc($lokasi_result)): ?>
+                            <option value="<?= htmlspecialchars($l['lokasi_simpan']) ?>" <?= ($filter_lokasi == $l['lokasi_simpan']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($l['lokasi_simpan']) ?>
+                            </option>
+                        <?php endwhile; ?>
+                    </select>
+                </div>
+
+                <div>
+                    <label for="filterMetode" class="block text-sm text-gray-700 font-medium">Metode Perlindungan</label>
+                    <select id="filterMetode" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                        <option value="">Semua</option>
+                        <?php while ($p = mysqli_fetch_assoc($metode_result)): ?>
+                            <option value="<?= htmlspecialchars($p['metode_perlindungan']) ?>" <?= ($filter_metode == $p['metode_perlindungan']) ? 'selected' : '' ?>>
+                                <?= htmlspecialchars($p['metode_perlindungan']) ?>
+                            </option>
+                        <?php endwhile; ?>
+                    </select>
+                </div>
+
+                <div class="flex justify-end mt-4">
+                    <button id="applyFilterBtn" class="bg-[#0092B8] hover:bg-[#007A99] text-white px-3 py-2 rounded-md">Terapkan</button>
+                </div>
+            </div>
+
             <div class="bg-white rounded-lg shadow-sm px-6 py-3 max-w-screen">
                 <div class="flex flex-col space-y-4">
                     <!-- Table -->
@@ -71,122 +173,55 @@ include_once "../layouts/master/header.php";
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                <!-- Row 1 -->
-                                <tr class="hover:bg-gray-50 divide-x divide-gray-200">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">1</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Rencana Kontingensi</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">TI</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2022–2024</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Kertas</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">3</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Permanen</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Ruang Arsip 1</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Scan & Laminasi</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Akses terbatas, arsip vital</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
-                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <!-- Row 2 -->
-                                <tr class="hover:bg-gray-50 divide-x divide-gray-200">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">2</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Data Karyawan Kritis</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">SDM</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2018–2023</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Digital</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">2</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">10 Tahun</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Vault Digital</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Backup Harian + Enkripsi</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Rahasia</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
-                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <!-- Row 3 -->
-                                <tr class="hover:bg-gray-50 divide-x divide-gray-200">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">3</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Konfigurasi Sistem Keamanan</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">TI</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2020–2024</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Digital</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">1</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Permanen</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Server Room</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Redundansi + Enkripsi</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Dokumen kritikal</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
-                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <!-- Row 4 -->
-                                <tr class="hover:bg-gray-50 divide-x divide-gray-200">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">4</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Prosedur Penanggulangan Bencana</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Operasional</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2019–2024</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Kertas</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">8</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">5 Tahun</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Ruang Arsip 2</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Laminasi + Kedap Air</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Untuk audit</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
-                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <!-- Row 5 -->
-                                <tr class="hover:bg-gray-50 divide-x divide-gray-200">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">5</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Backup Database Bulanan</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">TI</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2021–2024</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Digital</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center">12</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Permanen</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Vault Digital</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Backup Offsite + Enkripsi</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">High priority</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <button class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
-                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </button>
-                                    </td>
-                                </tr>
+                                <?php if (mysqli_num_rows($result) > 0): ?>
+                                    <?php $no = 1; ?>
+                                    <?php while ($row = mysqli_fetch_assoc($result)): ?>
+                                        <tr class="hover:bg-gray-50 divide-x divide-gray-200">
+                                            <td class="px-3 py-4 text-center"><?= $no++; ?></td>
+                                            <td class="px-3 py-4"><?= htmlspecialchars($row['uraian_arsip']); ?></td>
+                                            <td class="px-3 py-4 text-center"><?= htmlspecialchars($row['unit_kerja']); ?></td>
+                                            <td class="px-3 py-4 text-center"><?= htmlspecialchars($row['kurun_waktu']); ?></td>
+                                            <td class="px-3 py-4 text-center"><?= htmlspecialchars($row['media']); ?></td>
+                                            <td class="px-3 py-4 text-center"><?= htmlspecialchars($row['jumlah']); ?></td>
+                                            <td class="px-3 py-4 text-center"><?= htmlspecialchars($row['jangka_simpan']); ?></td>
+                                            <td class="px-3 py-4 text-center"><?= htmlspecialchars($row['lokasi_simpan']); ?></td>
+                                            <td class="px-3 py-4 text-center"><?= htmlspecialchars($row['metode_perlindungan']); ?></td>
+                                            <td class="px-3 py-4"><?= htmlspecialchars($row['keterangan']); ?></td>
+                                            <td class="px-3 py-4 text-center">
+                                                <a href="detail_vital.php?id=<?= $row['id_arsip'] ?>" 
+                                                class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm"
+                                                title="Lihat Detail">
+                                                    <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
+                                                </a>
+                                            </td>
+                                        </tr>
+                                    <?php endwhile; ?>
+                                <?php else: ?>
+                                    <tr>
+                                        <td colspan="11" class="text-center py-4 text-gray-500">Tidak ada data arsip vital.</td>
+                                    </tr>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>
 
                     <!-- Pagination -->
                     <div class="flex items-center justify-between mt-4">
-                        <div class="flex items-center">
-                            <span class="text-sm text-gray-700 mr-2">Show</span>
-                            <select id="perPage" class="border border-gray-300 rounded-full-md text-sm py-1 px-2">
-                                <option value="12">12</option>
-                                <option value="24">24</option>
-                                <option value="36">36</option>
-                                <option value="48">48</option>
-                            </select>
-                        </div>
-                        <div class="flex items-center space-x-1" id="pagination">
-                            <button class="px-2 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50" id="prevPage">
-                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd" />
-                                </svg>
-                            </button>
-                            <button class="px-2 py-1 border border-gray-300 rounded-md text-sm disabled:opacity-50" id="nextPage">
-                                <svg class="h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                    <path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd" />
-                                </svg>
-                            </button>
+                        <p class="text-sm text-gray-600">
+                            Halaman <?= $page ?> dari <?= $total_pages ?> (Total <?= $total_data ?> data)
+                        </p>
+                        <div class="flex items-center space-x-1">
+                            <?php if ($page > 1): ?>
+                                <a href="?page=<?= $page - 1 ?>&search=<?= $keyword ?>&media=<?= $filter_media ?>&lokasi=<?= $filter_lokasi ?>&metode=<?= $filter_metode ?>" class="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100">&laquo; Sebelumnya</a>
+                            <?php endif; ?>
+
+                            <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                                <a href="?page=<?= $i ?>&search=<?= $keyword ?>&media=<?= $filter_media ?>&lokasi=<?= $filter_lokasi ?>&metode=<?= $filter_metode ?>" class="px-3 py-1 border border-gray-300 rounded-md text-sm <?= ($i == $page) ? 'bg-cyan-600 text-white' : 'hover:bg-gray-100' ?>"><?= $i ?></a>
+                            <?php endfor; ?>
+
+                            <?php if ($page < $total_pages): ?>
+                                <a href="?page=<?= $page + 1 ?>&search=<?= $keyword ?>&media=<?= $filter_media ?>&lokasi=<?= $filter_lokasi ?>&metode=<?= $filter_metode ?>" class="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100">Berikutnya &raquo;</a>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
@@ -195,6 +230,36 @@ include_once "../layouts/master/header.php";
     </div><!-- /flex-1 -->
     
 </div><!-- /screen -->
+
+<script>
+document.getElementById('searchInput').addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+        const search = e.target.value.trim();
+        const params = new URLSearchParams(window.location.search);
+        params.set('search', search);
+        params.set('page', 1);
+        window.location.search = params.toString();
+    }
+});
+
+document.getElementById('filtersBtn').addEventListener('click', function() {
+    document.getElementById('filterDropdown').classList.toggle('hidden');
+});
+
+document.getElementById('applyFilterBtn').addEventListener('click', function() {
+    const media = document.getElementById('filterMedia').value;
+    const lokasi = document.getElementById('filterLokasi').value;
+    const metode = document.getElementById('filterMetode').value;
+    const params = new URLSearchParams(window.location.search);
+
+    if (media) params.set('media', media); else params.delete('media');
+    if (lokasi) params.set('lokasi', lokasi); else params.delete('lokasi');
+    if (metode) params.set('metode', metode); else params.delete('metode');
+    params.set('page', 1);
+    window.location.search = params.toString();
+});
+</script>
+
 
 <?php
 // Include footer
