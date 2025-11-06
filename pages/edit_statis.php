@@ -1,16 +1,45 @@
 <?php
 include_once "../layouts/master/header.php";
+include_once "../config/database.php";
 
-$id = isset($_GET['id']) ? intval($_GET['id']) : 1;
-$data = [
-    1 => ['no' => '1','kode' => '001.1','jenis' => 'Surat Keputusan','tahun' => '2020','jumlah' => '3','perkembangan' => 'Asli','keterangan' => 'Arsip statis penting'],
-    2 => ['no' => '2','kode' => '101.2','jenis' => 'Laporan Tahunan','tahun' => '2022','jumlah' => '5','perkembangan' => 'Salinan','keterangan' => 'Untuk referensi'],
-    3 => ['no' => '3','kode' => '201.4','jenis' => 'Notulen Rapat','tahun' => '2019','jumlah' => '2','perkembangan' => 'Asli','keterangan' => 'Dokumen terdigitalisasi'],
-    4 => ['no' => '4','kode' => '305.6','jenis' => 'Buku Agenda','tahun' => '2015','jumlah' => '7','perkembangan' => 'Lengkap','keterangan' => 'Disimpan permanen'],
-    5 => ['no' => '5','kode' => '410.2','jenis' => 'Dokumen Proyek Final','tahun' => '2021','jumlah' => '4','perkembangan' => 'Asli','keterangan' => 'Arsip statis untuk audit'],
-];
-$item = $data[$id] ?? $data[1];
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $pdfUrl = isset($_GET['file']) ? $_GET['file'] : '';
+
+// Default item
+$item = [
+    'no' => $id ? (string)$id : '',
+    'id_subsub' => '',
+    'kode' => '',
+    'jenis' => '',
+    'tahun' => '',
+    'jumlah' => '',
+    'perkembangan' => '',
+    'keterangan' => ''
+];
+
+if ($id > 0) {
+    try {
+        $stmt = $conn->prepare("SELECT a.id_arsip_statis, a.id_subsub, s.kode_subsub, a.jenis_arsip, a.tahun, a.jumlah, a.tingkat_perkembangan, a.keterangan FROM arsip_statis a LEFT JOIN sub_sub_masalah s ON a.id_subsub = s.id_subsub WHERE a.id_arsip_statis = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        if ($row = $res->fetch_assoc()) {
+            $item = [
+                'no' => (string)($row['id_arsip_statis'] ?? $id),
+                'id_subsub' => $row['id_subsub'] ?? '',
+                'kode' => $row['kode_subsub'] ?? (string)($row['id_subsub'] ?? ''),
+                'jenis' => $row['jenis_arsip'] ?? '',
+                'tahun' => $row['tahun'] ?? '',
+                'jumlah' => $row['jumlah'] ?? '',
+                'perkembangan' => $row['tingkat_perkembangan'] ?? '',
+                'keterangan' => $row['keterangan'] ?? ''
+            ];
+        }
+        $stmt->close();
+    } catch (Exception $e) {
+        // silently ignore
+    }
+}
 ?>
 
 <div class="flex h-screen">
@@ -32,42 +61,45 @@ $pdfUrl = isset($_GET['file']) ? $_GET['file'] : '';
             </div>
 
             <div class="bg-white rounded-lg shadow-sm px-6 py-6 max-w-screen">
-                <form action="#" method="post" class="space-y-6">
+                <form action="../api/arsip/arsip_statis/proses_statis.php" method="post" class="space-y-6">
+                    <input type="hidden" name="action" value="update">
+                    <input type="hidden" name="id_arsip_statis" value="<?php echo htmlspecialchars($id); ?>">
+                    <input type="hidden" name="id_subsub" value="<?php echo htmlspecialchars($item['id_subsub']); ?>">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700">No</label>
-                            <input type="text" value="<?php echo htmlspecialchars($item['no']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                            <input type="text" value="<?php echo htmlspecialchars($item['no']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2" readonly>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Kode Klasifikasi Arsip</label>
-                            <input type="text" value="<?php echo htmlspecialchars($item['kode']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                            <input type="text" value="<?php echo htmlspecialchars($item['kode']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2" readonly>
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Jenis/Series Arsip</label>
-                            <input type="text" value="<?php echo htmlspecialchars($item['jenis']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                            <input type="text" name="jenis_arsip" value="<?php echo htmlspecialchars($item['jenis']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Tahun</label>
-                            <input type="number" value="<?php echo htmlspecialchars($item['tahun']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                            <input type="number" name="tahun" value="<?php echo htmlspecialchars($item['tahun']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Jumlah</label>
-                            <input type="number" value="<?php echo htmlspecialchars($item['jumlah']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                            <input type="number" name="jumlah" value="<?php echo htmlspecialchars($item['jumlah']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Tingkat Perkembangan</label>
-                            <select class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
-                                <option <?php echo $item['perkembangan']==='Asli'?'selected':''; ?>>Asli</option>
-                                <option <?php echo $item['perkembangan']==='Salinan'?'selected':''; ?>>Salinan</option>
-                                <option <?php echo $item['perkembangan']==='Lengkap'?'selected':''; ?>>Lengkap</option>
+                            <select name="tingkat_perkembangan" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                                <option value="Asli" <?php echo $item['perkembangan']==='Asli'?'selected':''; ?>>Asli</option>
+                                <option value="Salinan" <?php echo $item['perkembangan']==='Salinan'?'selected':''; ?>>Salinan</option>
+                                <option value="Lengkap" <?php echo $item['perkembangan']==='Lengkap'?'selected':''; ?>>Lengkap</option>
                             </select>
                         </div>
 
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700">Keterangan</label>
-                            <textarea rows="3" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2"><?php echo htmlspecialchars($item['keterangan']); ?></textarea>
+                            <textarea name="keterangan" rows="3" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2"><?php echo htmlspecialchars($item['keterangan']); ?></textarea>
                         </div>
                     </div>
 

@@ -1,17 +1,51 @@
 <?php
 include_once "../layouts/master/header.php";
+include_once "../config/database.php";
 
-$id = isset($_GET['id']) ? $_GET['id'] : 'IT-1001';
-$data = [
-    'IT-1001' => ['berkas' => 'A-001','item' => 'IT-1001','kode' => '101.2','uraian' => 'Surat Keputusan Direktur','tanggal' => '2023-01-10','jumlah' => '5','skaad' => 'Biasa','keterangan' => 'Arsip penting'],
-    'IT-1002' => ['berkas' => 'A-001','item' => 'IT-1002','kode' => '101.3','uraian' => 'Laporan Tahunan','tanggal' => '2022-12-05','jumlah' => '3','skaad' => 'Terbatas','keterangan' => 'Perlu verifikasi'],
-    'IT-1003' => ['berkas' => 'A-001','item' => 'IT-1003','kode' => '101.4','uraian' => 'Dokumen Kontrak','tanggal' => '2021-07-21','jumlah' => '2','skaad' => 'Biasa','keterangan' => 'Sudah diverifikasi'],
-    'IT-1004' => ['berkas' => 'A-002','item' => 'IT-1004','kode' => '102.1','uraian' => 'Berita Acara','tanggal' => '2024-02-15','jumlah' => '4','skaad' => 'Biasa','keterangan' => '-'],
-    'IT-1005' => ['berkas' => 'A-002','item' => 'IT-1005','kode' => '102.2','uraian' => 'Memo Internal','tanggal' => '2023-11-30','jumlah' => '1','skaad' => 'Rahasia','keterangan' => 'Butuh lampiran'],
-    'IT-1006' => ['berkas' => 'A-003','item' => 'IT-1006','kode' => '103.1','uraian' => 'Surat Perjanjian','tanggal' => '2023-09-18','jumlah' => '7','skaad' => 'Biasa','keterangan' => 'Sudah disetujui'],
-];
-$item = $data[$id] ?? $data['IT-1001'];
+$id = isset($_GET['id']) ? $_GET['id'] : '';
 $pdfUrl = isset($_GET['file']) ? $_GET['file'] : '';
+
+// Default item placeholder
+$item = [
+    'berkas' => '',
+    'item' => htmlspecialchars($id ?: ''),
+    'kode' => '',
+    'uraian' => '',
+    'tanggal' => '',
+    'jumlah' => '',
+    'skaad' => '',
+    'keterangan' => ''
+];
+
+// Fetch from DB if ID provided
+if (!empty($id)) {
+    try {
+        if (ctype_digit($id)) {
+            $stmt = $conn->prepare("SELECT id_arsip_aktif, nomor_berkas, nomor_item_arsip, kode_klasifikasi_arsip, uraian_informasi_arsip, tanggal, jumlah_item_arsip, keterangan_skaad, keterangan FROM arsip_aktif WHERE id_arsip_aktif = ?");
+            $stmt->bind_param("i", $id);
+        } else {
+            $stmt = $conn->prepare("SELECT id_arsip_aktif, nomor_berkas, nomor_item_arsip, kode_klasifikasi_arsip, uraian_informasi_arsip, tanggal, jumlah_item_arsip, keterangan_skaad, keterangan FROM arsip_aktif WHERE nomor_item_arsip = ?");
+            $stmt->bind_param("s", $id);
+        }
+        $stmt->execute();
+        $res = $stmt->get_result();
+        if ($row = $res->fetch_assoc()) {
+            $item = [
+                'berkas' => $row['nomor_berkas'] ?? '',
+                'item' => $row['nomor_item_arsip'] ?? ($row['id_arsip_aktif'] ?? ''),
+                'kode' => $row['kode_klasifikasi_arsip'] ?? '',
+                'uraian' => $row['uraian_informasi_arsip'] ?? '',
+                'tanggal' => $row['tanggal'] ?? '',
+                'jumlah' => $row['jumlah_item_arsip'] ?? '',
+                'skaad' => $row['keterangan_skaad'] ?? '',
+                'keterangan' => $row['keterangan'] ?? ''
+            ];
+        }
+        $stmt->close();
+    } catch (Exception $e) {
+        // silent fail, keep defaults
+    }
+}
 ?>
 
 <div class="flex h-screen">

@@ -12,7 +12,7 @@ include_once "../layouts/master/header.php";
         <?php include_once "../layouts/components/topbar.php"; ?>
 
         <!-- Main content -->
-        <div class="p-6 mt-16 overflow-y-auto">
+        <div class="p-6 mt-16 overflow-y-auto max-w-[calc(100vw-16rem)] flex-1">
             <!-- Header with search and add user button -->
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-3xl font-medium text-slate-700">Arsip Aktif</h2>
@@ -39,13 +39,39 @@ include_once "../layouts/master/header.php";
                         </div>
                         <input type="text" id="searchInput" placeholder="Nomor Berkas, Kode Klasifikasi, Uraian Arsip, Nomor Kotak" class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0092B8]">
                     </div>
-                    <div class="flex items-center">
+                    <div class="relative">
                         <button id="filtersBtn" class="border border-gray-300 bg-white text-slate-700 px-4 py-2 rounded-md flex items-center hover:bg-gray-100">
                             <svg class="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
                             </svg>
                             Filters
                         </button>
+                        <!-- Dropdown filter anchored under button -->
+                        <div id="filterDropdown" class="hidden absolute top-full right-0 mt-2 z-50 bg-white border border-gray-200 rounded-md shadow p-4 w-[300px] transition ease-out duration-200 transform origin-top-right opacity-0 translate-y-2">
+                            <div class="mb-3">
+                                <label for="filterSkaad" class="block text-sm text-gray-700 font-medium">Keterangan SKAAD</label>
+                                <select id="filterSkaad" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                                    <option value="">Semua</option>
+                                    <option value="Biasa">Biasa</option>
+                                    <option value="Terbatas">Terbatas</option>
+                                    <option value="Rahasia">Rahasia</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label for="filterTahun" class="block text-sm text-gray-700 font-medium">Tahun</label>
+                                <select id="filterTahun" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                                    <option value="">Semua</option>
+                                    <option value="2024">2024</option>
+                                    <option value="2023">2023</option>
+                                    <option value="2022">2022</option>
+                                    <option value="2021">2021</option>
+                                </select>
+                            </div>
+                            <div class="flex justify-between mt-4">
+                                <button id="resetFilterBtn" class="border border-gray-300 bg-white text-slate-700 px-3 py-2 rounded-md hover:bg-gray-100">Reset</button>
+                                <button id="applyFilterBtn" class="bg-[#0092B8] hover:bg-[#007A99] text-white px-3 py-2 rounded-md">Terapkan</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -69,7 +95,7 @@ include_once "../layouts/master/header.php";
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 <!-- Archive 1 with 3 documents -->
-                                <tr class="divide-x divide-gray-200 text-center">
+                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Biasa" data-year="2023">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 align-top" rowspan="3">A-001</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1001</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">101.2</td>
@@ -86,7 +112,7 @@ include_once "../layouts/master/header.php";
                                         </a>
                                     </td>
                                 </tr>
-                                <tr class="divide-x divide-gray-200 text-center">
+                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Terbatas" data-year="2022">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1002</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">101.3</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-left text-gray-900">Laporan Tahunan</td>
@@ -102,7 +128,7 @@ include_once "../layouts/master/header.php";
                                         </a>
                                     </td>
                                 </tr>
-                                <tr class="divide-x divide-gray-200 text-center">
+                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Biasa" data-year="2021">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1003</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">101.4</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-left text-gray-900">Dokumen Kontrak</td>
@@ -120,7 +146,7 @@ include_once "../layouts/master/header.php";
                                 </tr>
                                 
                                 <!-- Archive 2 with 2 documents -->
-                                <tr class="divide-x divide-gray-200 text-center">
+                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Biasa" data-year="2024">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 align-top" rowspan="2">A-002</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1004</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">102.1</td>
@@ -137,7 +163,7 @@ include_once "../layouts/master/header.php";
                                         </a>
                                     </td>
                                 </tr>
-                                <tr class="divide-x divide-gray-200 text-center">
+                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Rahasia" data-year="2023">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1005</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">102.2</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-left text-gray-900">Memo Internal</td>
@@ -155,7 +181,7 @@ include_once "../layouts/master/header.php";
                                 </tr>
                                 
                                 <!-- Archive 3 with 1 document -->
-                                <tr class="divide-x divide-gray-200 text-center">
+                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Biasa" data-year="2023">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">A-003</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1006</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">103.1</td>
@@ -200,14 +226,70 @@ include_once "../layouts/master/header.php";
                                 </svg>
                             </button>
                         </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+</div>
+</div>
+</div>
+</div>
+</div>
 </div>
 
 <?php
 // Include footer
 include_once "../layouts/master/footer.php";
 ?>
+
+<script>
+// Client-side search and filter
+let currentSearch = '';
+
+function applyFilters() {
+  const skaad = document.getElementById('filterSkaad').value;
+  const tahun = document.getElementById('filterTahun').value;
+  const rows = document.querySelectorAll('tbody tr.divide-x');
+
+  rows.forEach(row => {
+    const rowSkaad = row.dataset.skaad || '';
+    const rowYear = row.dataset.year || '';
+    const textMatch = row.innerText.toLowerCase().includes(currentSearch);
+
+    const matchSkaad = !skaad || rowSkaad === skaad;
+    const matchTahun = !tahun || rowYear === tahun;
+    const matchSearch = !currentSearch || textMatch;
+
+    row.style.display = (matchSkaad && matchTahun && matchSearch) ? '' : 'none';
+  });
+}
+
+document.getElementById('searchInput').addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') {
+    currentSearch = e.target.value.trim().toLowerCase();
+    applyFilters();
+  }
+});
+
+// toggle dropdown filter with animation
+document.getElementById('filtersBtn').addEventListener('click', function() {
+  const dd = document.getElementById('filterDropdown');
+  if (dd.classList.contains('hidden')) {
+    dd.classList.remove('hidden');
+    dd.classList.remove('opacity-0', 'translate-y-2');
+    dd.classList.add('opacity-100', 'translate-y-0');
+  } else {
+    dd.classList.remove('opacity-100', 'translate-y-0');
+    dd.classList.add('opacity-0', 'translate-y-2');
+    setTimeout(() => dd.classList.add('hidden'), 200);
+  }
+});
+
+document.getElementById('applyFilterBtn').addEventListener('click', function() {
+  applyFilters();
+});
+
+document.getElementById('resetFilterBtn').addEventListener('click', function() {
+  document.getElementById('filterSkaad').value = '';
+  document.getElementById('filterTahun').value = '';
+  document.getElementById('searchInput').value = '';
+  currentSearch = '';
+  applyFilters();
+});
+</script>

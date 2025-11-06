@@ -1,17 +1,62 @@
 <?php
 include_once "../layouts/master/header.php";
+include_once "../config/database.php";
 
-$id = isset($_GET['id']) ? $_GET['id'] : 'INA-1001';
-$data = [
-    'INA-1001' => ['berkas' => 'IN-001','item' => 'INA-1001','kode' => '201.1','uraian' => 'Nota Dinas Internal','kurun' => '2021-2023','perkembangan' => 'Asli','jumlah' => '2','keterangan' => 'Sudah dipindahkan ke gudang','definitif' => 'F-01/B-01','lokasi' => 'Gudang Arsip Rak A-1','jangka' => '10 tahun - Musnah','kategori' => 'Keuangan'],
-    'INA-1002' => ['berkas' => 'IN-001','item' => 'INA-1002','kode' => '201.2','uraian' => 'Laporan Keuangan Triwulan','kurun' => '2022-2023','perkembangan' => 'Copy','jumlah' => '4','keterangan' => 'Perlu pengecekan kelengkapan','definitif' => 'F-01/B-02','lokasi' => 'Gudang Arsip Rak A-1','jangka' => '5 tahun - Permanen','kategori' => 'Keuangan'],
-    'INA-1003' => ['berkas' => 'IN-001','item' => 'INA-1003','kode' => '201.3','uraian' => 'Dokumen Pajak Tahunan','kurun' => '2019-2021','perkembangan' => 'Asli','jumlah' => '3','keterangan' => 'Lengkap dan tersusun rapi','definitif' => 'F-01/B-03','lokasi' => 'Gudang Arsip Rak A-1','jangka' => '15 tahun - Musnah','kategori' => 'Pajak'],
-    'INA-1004' => ['berkas' => 'IN-002','item' => 'INA-1004','kode' => '202.1','uraian' => 'Laporan Proyek Selesai','kurun' => '2020-2022','perkembangan' => 'Copy','jumlah' => '4','keterangan' => 'Perlu pengecekan kelengkapan','definitif' => 'F-02/B-01','lokasi' => 'Gudang Arsip Rak A-2','jangka' => '5 tahun - Permanen','kategori' => 'Proyek'],
-    'INA-1005' => ['berkas' => 'IN-002','item' => 'INA-1005','kode' => '202.2','uraian' => 'Dokumen Kontrak Proyek','kurun' => '2019-2021','perkembangan' => 'Asli','jumlah' => '6','keterangan' => 'Kontrak sudah selesai','definitif' => 'F-02/B-02','lokasi' => 'Gudang Arsip Rak A-2','jangka' => '10 tahun - Musnah','kategori' => 'Proyek'],
-    'INA-1006' => ['berkas' => 'IN-003','item' => 'INA-1006','kode' => '203.1','uraian' => 'Surat Masuk Eksternal','kurun' => '2018-2020','perkembangan' => 'Copy','jumlah' => '1','keterangan' => 'Arsip lama yang sudah digitalisasi','definitif' => 'F-03/B-01','lokasi' => 'Gudang Arsip Rak B-1','jangka' => 'Permanen','kategori' => 'Surat Menyurat'],
-];
-$item = $data[$id] ?? $data['INA-1001'];
+$id = isset($_GET['id']) ? $_GET['id'] : '';
 $pdfUrl = isset($_GET['file']) ? $_GET['file'] : '';
+
+// Default item placeholder
+$item = [
+    'berkas' => '',
+    'item' => htmlspecialchars($id ?: ''),
+    'kode' => '',
+    'uraian' => '',
+    'kurun' => '',
+    'perkembangan' => '',
+    'jumlah' => '',
+    'keterangan' => '',
+    'definitif' => '',
+    'lokasi' => '',
+    'jangka' => '',
+    'kategori' => ''
+];
+$notFound = false;
+
+// Fetch from DB if ID provided
+if (!empty($id)) {
+    try {
+        if (ctype_digit($id)) {
+            $stmt = $conn->prepare("SELECT id_arsip_inaktif, nomor_berkas, nomor_item_arsip, kode_klasifikasi_arsip, uraian_informasi_arsip, kurun_waktu, tingkat_perkembangan, jumlah_item_arsip, keterangan, nomor_definitif_folder_boks, lokasi_simpan, jangka_simpan_nasib_akhir, kategori_arsip FROM arsip_inaktif WHERE id_arsip_inaktif = ?");
+            $stmt->bind_param("i", $id);
+        } else {
+            $stmt = $conn->prepare("SELECT id_arsip_inaktif, nomor_berkas, nomor_item_arsip, kode_klasifikasi_arsip, uraian_informasi_arsip, kurun_waktu, tingkat_perkembangan, jumlah_item_arsip, keterangan, nomor_definitif_folder_boks, lokasi_simpan, jangka_simpan_nasib_akhir, kategori_arsip FROM arsip_inaktif WHERE nomor_item_arsip = ?");
+            $stmt->bind_param("s", $id);
+        }
+        $stmt->execute();
+        $res = $stmt->get_result();
+        if ($row = $res->fetch_assoc()) {
+            $item = [
+                'berkas' => $row['nomor_berkas'] ?? '',
+                'item' => $row['nomor_item_arsip'] ?? ($row['id_arsip_inaktif'] ?? ''),
+                'kode' => $row['kode_klasifikasi_arsip'] ?? '',
+                'uraian' => $row['uraian_informasi_arsip'] ?? '',
+                'kurun' => $row['kurun_waktu'] ?? '',
+                'perkembangan' => $row['tingkat_perkembangan'] ?? '',
+                'jumlah' => $row['jumlah_item_arsip'] ?? '',
+                'keterangan' => $row['keterangan'] ?? '',
+                'definitif' => $row['nomor_definitif_folder_boks'] ?? '',
+                'lokasi' => $row['lokasi_simpan'] ?? '',
+                'jangka' => $row['jangka_simpan_nasib_akhir'] ?? '',
+                'kategori' => $row['kategori_arsip'] ?? ''
+            ];
+        } else {
+            $notFound = true;
+        }
+        $stmt->close();
+    } catch (Exception $e) {
+        $notFound = true;
+    }
+}
 ?>
 
 <div class="flex h-screen overflow-x-auto">
@@ -33,6 +78,9 @@ $pdfUrl = isset($_GET['file']) ? $_GET['file'] : '';
             </div>
 
             <div class="bg-white rounded-lg shadow-sm px-6 py-6 max-w-[calc(100vw-16rem)]">
+                <?php if ($notFound): ?>
+                    <div class="p-4 mb-4 text-red-700 bg-red-50 border border-red-200 rounded">Data arsip tidak ditemukan untuk ID yang diberikan.</div>
+                <?php endif; ?>
                 <form action="#" method="post" class="space-y-6" id="detailForm">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>

@@ -1,72 +1,41 @@
 <?php
 include_once "../layouts/master/header.php";
+include_once "../config/database.php";
 
-// Dummy data map by id
-$id = isset($_GET['id']) ? intval($_GET['id']) : 1;
-$data = [
-    1 => [
-        'no' => '1',
-        'uraian' => 'Rencana Kontingensi',
-        'unit' => 'TI',
-        'kurun' => '2022–2024',
-        'media' => 'Kertas',
-        'jumlah' => '3',
-        'jangka' => 'Permanen',
-        'lokasi' => 'Ruang Arsip 1',
-        'perlindungan' => 'Scan & Laminasi',
-        'keterangan' => 'Akses terbatas, arsip vital',
-    ],
-    2 => [
-        'no' => '2',
-        'uraian' => 'Data Karyawan Kritis',
-        'unit' => 'SDM',
-        'kurun' => '2018–2023',
-        'media' => 'Digital',
-        'jumlah' => '2',
-        'jangka' => '10 Tahun',
-        'lokasi' => 'Vault Digital',
-        'perlindungan' => 'Backup Harian + Enkripsi',
-        'keterangan' => 'Rahasia',
-    ],
-    3 => [
-        'no' => '3',
-        'uraian' => 'Konfigurasi Sistem Keamanan',
-        'unit' => 'TI',
-        'kurun' => '2020–2024',
-        'media' => 'Digital',
-        'jumlah' => '1',
-        'jangka' => 'Permanen',
-        'lokasi' => 'Server Room',
-        'perlindungan' => 'Redundansi + Enkripsi',
-        'keterangan' => 'Dokumen kritikal',
-    ],
-    4 => [
-        'no' => '4',
-        'uraian' => 'Prosedur Penanggulangan Bencana',
-        'unit' => 'Operasional',
-        'kurun' => '2019–2024',
-        'media' => 'Kertas',
-        'jumlah' => '8',
-        'jangka' => '5 Tahun',
-        'lokasi' => 'Ruang Arsip 2',
-        'perlindungan' => 'Laminasi + Kedap Air',
-        'keterangan' => 'Untuk audit',
-    ],
-    5 => [
-        'no' => '5',
-        'uraian' => 'Backup Database Bulanan',
-        'unit' => 'TI',
-        'kurun' => '2021–2024',
-        'media' => 'Digital',
-        'jumlah' => '12',
-        'jangka' => 'Permanen',
-        'lokasi' => 'Vault Digital',
-        'perlindungan' => 'Backup Offsite + Enkripsi',
-        'keterangan' => 'High priority',
-    ],
-];
+// Ambil parameter id dari query string
+$idParam = isset($_GET['id']) ? $_GET['id'] : null;
 
-$item = $data[$id] ?? $data[1];
+// Ambil data dari database
+$item = null;
+if ($idParam !== null && is_numeric($idParam)) {
+    $id = (int)$idParam;
+    $stmt = $conn->prepare("SELECT id_arsip, uraian_arsip, unit_kerja, kurun_waktu, media, jumlah, jangka_simpan, lokasi_simpan, metode_perlindungan, keterangan FROM arsip_vital WHERE id_arsip = ?");
+    if ($stmt) {
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $item = $result->fetch_assoc();
+        $stmt->close();
+    }
+}
+
+$notFound = false;
+if (!$item) {
+    $notFound = true;
+    $item = [
+        'id_arsip' => '',
+        'uraian_arsip' => '',
+        'unit_kerja' => '',
+        'kurun_waktu' => '',
+        'media' => '',
+        'jumlah' => '',
+        'jangka_simpan' => '',
+        'lokasi_simpan' => '',
+        'metode_perlindungan' => '',
+        'keterangan' => '',
+    ];
+}
+
 $pdfUrl = isset($_GET['file']) ? $_GET['file'] : '';
 ?>
 
@@ -80,41 +49,46 @@ $pdfUrl = isset($_GET['file']) ? $_GET['file'] : '';
             <div class="flex justify-between items-center mb-8">
                 <div class="flex items-center gap-3">
                     <h2 class="text-3xl font-medium text-slate-700">Detail Arsip Vital</h2>
-                    <span class="text-sm text-gray-500">#<?php echo htmlspecialchars($item['no']); ?></span>
+                    <span class="text-sm text-gray-500">#<?php echo htmlspecialchars($item['id_arsip']); ?></span>
                 </div>
                 <div class="flex items-center gap-3">
                     <a href="vital.php" class="text-sm text-cyan-700 hover:underline">Kembali ke Arsip Vital</a>
-                    <a href="edit_vital.php?id=<?php echo $id; ?>" class="text-sm text-slate-700 hover:underline">Buka Halaman Edit</a>
+                    <a href="edit_vital.php?id=<?php echo htmlspecialchars($item['id_arsip']); ?>" class="text-sm text-slate-700 hover:underline">Buka Halaman Edit</a>
                 </div>
             </div>
 
             <div class="bg-white rounded-lg shadow-sm px-6 py-6 max-w-screen">
+                <?php if ($notFound): ?>
+                    <div class="p-4 mb-6 rounded bg-yellow-50 text-yellow-700 border border-yellow-200">
+                        Data arsip tidak ditemukan.
+                    </div>
+                <?php endif; ?>
                 <form action="#" method="post" class="space-y-6" id="detailForm">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
                             <label class="block text-sm font-medium text-gray-700">No</label>
-                            <input type="text" value="<?php echo htmlspecialchars($item['no']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
+                            <input type="text" value="<?php echo htmlspecialchars($item['id_arsip']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Uraian Arsip</label>
-                            <input type="text" value="<?php echo htmlspecialchars($item['uraian']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
+                            <input type="text" value="<?php echo htmlspecialchars($item['uraian_arsip']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Unit Kerja</label>
-                            <input type="text" value="<?php echo htmlspecialchars($item['unit']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
+                            <input type="text" value="<?php echo htmlspecialchars($item['unit_kerja']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Kurun Waktu</label>
-                            <input type="text" value="<?php echo htmlspecialchars($item['kurun']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
+                            <input type="text" value="<?php echo htmlspecialchars($item['kurun_waktu']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Media</label>
                             <select disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
-                                <option <?php echo $item['media']==='Kertas'?'selected':''; ?>>Kertas</option>
-                                <option <?php echo $item['media']==='Digital'?'selected':''; ?>>Digital</option>
-                                <option <?php echo $item['media']==='Microfilm'?'selected':''; ?>>Microfilm</option>
+                                <option <?php echo $item['media']==='Kertas'? 'selected' : ''; ?>>Kertas</option>
+                                <option <?php echo $item['media']==='Digital'? 'selected' : ''; ?>>Digital</option>
+                                <option <?php echo $item['media']==='Microfilm'? 'selected' : ''; ?>>Microfilm</option>
                             </select>
                         </div>
                         <div>
@@ -124,16 +98,16 @@ $pdfUrl = isset($_GET['file']) ? $_GET['file'] : '';
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Jangka Simpan</label>
-                            <input type="text" value="<?php echo htmlspecialchars($item['jangka']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
+                            <input type="text" value="<?php echo htmlspecialchars($item['jangka_simpan']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Lokasi Simpan</label>
-                            <input type="text" value="<?php echo htmlspecialchars($item['lokasi']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
+                            <input type="text" value="<?php echo htmlspecialchars($item['lokasi_simpan']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
                         </div>
 
                         <div class="md:col-span-2">
                             <label class="block text-sm font-medium text-gray-700">Metode Perlindungan</label>
-                            <input type="text" value="<?php echo htmlspecialchars($item['perlindungan']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
+                            <input type="text" value="<?php echo htmlspecialchars($item['metode_perlindungan']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
                         </div>
 
                         <div class="md:col-span-2">

@@ -1,16 +1,46 @@
 <?php
 include_once "../layouts/master/header.php";
+include_once "../config/database.php";
 
-$id = isset($_GET['id']) ? intval($_GET['id']) : 1;
-$data = [
-    1 => ['no' => '1','kode' => '001.1','jenis' => 'Surat Keputusan','tahun' => '2020','jumlah' => '3','perkembangan' => 'Asli','keterangan' => 'Arsip statis penting'],
-    2 => ['no' => '2','kode' => '101.2','jenis' => 'Laporan Tahunan','tahun' => '2022','jumlah' => '5','perkembangan' => 'Salinan','keterangan' => 'Untuk referensi'],
-    3 => ['no' => '3','kode' => '201.4','jenis' => 'Notulen Rapat','tahun' => '2019','jumlah' => '2','perkembangan' => 'Asli','keterangan' => 'Dokumen terdigitalisasi'],
-    4 => ['no' => '4','kode' => '305.6','jenis' => 'Buku Agenda','tahun' => '2015','jumlah' => '7','perkembangan' => 'Lengkap','keterangan' => 'Disimpan permanen'],
-    5 => ['no' => '5','kode' => '410.2','jenis' => 'Dokumen Proyek Final','tahun' => '2021','jumlah' => '4','perkembangan' => 'Asli','keterangan' => 'Arsip statis untuk audit'],
-];
-$item = $data[$id] ?? $data[1];
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 $pdfUrl = isset($_GET['file']) ? $_GET['file'] : '';
+
+// Default item placeholder
+$item = [
+    'no' => $id ? (string)$id : '',
+    'kode' => '',
+    'jenis' => '',
+    'tahun' => '',
+    'jumlah' => '',
+    'perkembangan' => '',
+    'keterangan' => ''
+];
+$notFound = false;
+
+if ($id > 0) {
+    try {
+        $stmt = $conn->prepare("SELECT a.id_arsip_statis, a.id_subsub, s.kode_subsub, a.jenis_arsip, a.tahun, a.jumlah, a.tingkat_perkembangan, a.keterangan FROM arsip_statis a LEFT JOIN sub_sub_masalah s ON a.id_subsub = s.id_subsub WHERE a.id_arsip_statis = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $res = $stmt->get_result();
+        if ($row = $res->fetch_assoc()) {
+            $item = [
+                'no' => (string)($row['id_arsip_statis'] ?? $id),
+                'kode' => $row['kode_subsub'] ?? (string)($row['id_subsub'] ?? ''),
+                'jenis' => $row['jenis_arsip'] ?? '',
+                'tahun' => $row['tahun'] ?? '',
+                'jumlah' => $row['jumlah'] ?? '',
+                'perkembangan' => $row['tingkat_perkembangan'] ?? '',
+                'keterangan' => $row['keterangan'] ?? ''
+            ];
+        } else {
+            $notFound = true;
+        }
+        $stmt->close();
+    } catch (Exception $e) {
+        $notFound = true;
+    }
+}
 ?>
 
 <div class="flex h-screen">
@@ -32,6 +62,9 @@ $pdfUrl = isset($_GET['file']) ? $_GET['file'] : '';
             </div>
 
             <div class="bg-white rounded-lg shadow-sm px-6 py-6 max-w-screen">
+                <?php if ($notFound): ?>
+                    <div class="p-4 mb-4 text-red-700 bg-red-50 border border-red-200 rounded">Data arsip tidak ditemukan untuk ID yang diberikan.</div>
+                <?php endif; ?>
                 <form action="#" method="post" class="space-y-6" id="detailForm">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>

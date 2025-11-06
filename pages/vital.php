@@ -71,7 +71,7 @@ $metode_result = mysqli_query($conn, "SELECT DISTINCT metode_perlindungan FROM a
         <?php include_once "../layouts/components/topbar.php"; ?>
 
         <!-- Main content -->
-        <div class="p-6 mt-16 overflow-y-auto">
+        <div class="p-6 mt-16 overflow-y-auto max-w-[calc(100vw-16rem)] flex-1">
             <!-- Header with search and actions -->
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-3xl font-medium text-slate-700">Arsip Vital</h2>
@@ -96,59 +96,59 @@ $metode_result = mysqli_query($conn, "SELECT DISTINCT metode_perlindungan FROM a
                                 <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
                             </svg>
                         </div>
-                        <input type="text" id="searchInput" placeholder="Uraian Arsip, Unit Kerja, Lokasi Simpan" class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0092B8]">
+                        <input type="text" id="searchInput" value="<?= htmlspecialchars($keyword) ?>" placeholder="Uraian Arsip, Unit Kerja, Lokasi Simpan" class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0092B8]">
                     </div>
-                    <div class="flex items-center">
+                    <div class="relative">
                         <button id="filtersBtn" class="border border-gray-300 bg-white text-slate-700 px-4 py-2 rounded-md flex items-center hover:bg-gray-100">
                             <svg class="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
                             </svg>
                             Filters
                         </button>
+                        <!-- Dropdown filter anchored under button -->
+                        <div id="filterDropdown" class="hidden absolute top-full right-0 mt-2 z-50 bg-white border border-gray-200 rounded-md shadow p-4 w-[320px] transition ease-out duration-200 transform origin-top-right opacity-0 translate-y-2">
+                            <div class="mb-3">
+                                <label for="filterMedia" class="block text-sm text-gray-700 font-medium">Media</label>
+                                <select id="filterMedia" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                                    <option value="">Semua</option>
+                                    <?php while ($m = mysqli_fetch_assoc($media_result)): ?>
+                                        <option value="<?= htmlspecialchars($m['media']) ?>" <?= ($filter_media == $m['media']) ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($m['media']) ?>
+                                        </option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+
+                            <div class="mb-3">
+                                <label for="filterLokasi" class="block text-sm text-gray-700 font-medium">Lokasi Simpan</label>
+                                <select id="filterLokasi" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                                    <option value="">Semua</option>
+                                    <?php while ($l = mysqli_fetch_assoc($lokasi_result)): ?>
+                                        <option value="<?= htmlspecialchars($l['lokasi_simpan']) ?>" <?= ($filter_lokasi == $l['lokasi_simpan']) ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($l['lokasi_simpan']) ?>
+                                        </option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="filterMetode" class="block text-sm text-gray-700 font-medium">Metode Perlindungan</label>
+                                <select id="filterMetode" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                                    <option value="">Semua</option>
+                                    <?php while ($p = mysqli_fetch_assoc($metode_result)): ?>
+                                        <option value="<?= htmlspecialchars($p['metode_perlindungan']) ?>" <?= ($filter_metode == $p['metode_perlindungan']) ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($p['metode_perlindungan']) ?>
+                                        </option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+
+                            <div class="flex justify-between mt-4">
+                                <button id="resetFilterBtn" class="border border-gray-300 bg-white text-slate-700 px-3 py-2 rounded-md hover:bg-gray-100">Reset</button>
+                                <button id="applyFilterBtn" class="bg-[#0092B8] hover:bg-[#007A99] text-white px-3 py-2 rounded-md">Terapkan</button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Dropdown filter -->
-            <div id="filterDropdown" class="hidden mt-3 bg-white border border-gray-200 rounded-md shadow p-4 w-[320px]">
-                <div class="mb-3">
-                    <label for="filterMedia" class="block text-sm text-gray-700 font-medium">Media</label>
-                    <select id="filterMedia" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
-                        <option value="">Semua</option>
-                        <?php while ($m = mysqli_fetch_assoc($media_result)): ?>
-                            <option value="<?= htmlspecialchars($m['media']) ?>" <?= ($filter_media == $m['media']) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($m['media']) ?>
-                            </option>
-                        <?php endwhile; ?>
-                    </select>
-                </div>
-
-                <div class="mb-3">
-                    <label for="filterLokasi" class="block text-sm text-gray-700 font-medium">Lokasi Simpan</label>
-                    <select id="filterLokasi" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
-                        <option value="">Semua</option>
-                        <?php while ($l = mysqli_fetch_assoc($lokasi_result)): ?>
-                            <option value="<?= htmlspecialchars($l['lokasi_simpan']) ?>" <?= ($filter_lokasi == $l['lokasi_simpan']) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($l['lokasi_simpan']) ?>
-                            </option>
-                        <?php endwhile; ?>
-                    </select>
-                </div>
-
-                <div>
-                    <label for="filterMetode" class="block text-sm text-gray-700 font-medium">Metode Perlindungan</label>
-                    <select id="filterMetode" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
-                        <option value="">Semua</option>
-                        <?php while ($p = mysqli_fetch_assoc($metode_result)): ?>
-                            <option value="<?= htmlspecialchars($p['metode_perlindungan']) ?>" <?= ($filter_metode == $p['metode_perlindungan']) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($p['metode_perlindungan']) ?>
-                            </option>
-                        <?php endwhile; ?>
-                    </select>
-                </div>
-
-                <div class="flex justify-end mt-4">
-                    <button id="applyFilterBtn" class="bg-[#0092B8] hover:bg-[#007A99] text-white px-3 py-2 rounded-md">Terapkan</button>
                 </div>
             </div>
 
@@ -242,8 +242,18 @@ document.getElementById('searchInput').addEventListener('keypress', function(e) 
     }
 });
 
+// toggle dropdown filter with animation
 document.getElementById('filtersBtn').addEventListener('click', function() {
-    document.getElementById('filterDropdown').classList.toggle('hidden');
+    const dd = document.getElementById('filterDropdown');
+    if (dd.classList.contains('hidden')) {
+        dd.classList.remove('hidden');
+        dd.classList.remove('opacity-0', 'translate-y-2');
+        dd.classList.add('opacity-100', 'translate-y-0');
+    } else {
+        dd.classList.remove('opacity-100', 'translate-y-0');
+        dd.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => dd.classList.add('hidden'), 200);
+    }
 });
 
 document.getElementById('applyFilterBtn').addEventListener('click', function() {
@@ -255,6 +265,20 @@ document.getElementById('applyFilterBtn').addEventListener('click', function() {
     if (media) params.set('media', media); else params.delete('media');
     if (lokasi) params.set('lokasi', lokasi); else params.delete('lokasi');
     if (metode) params.set('metode', metode); else params.delete('metode');
+    params.set('page', 1);
+    window.location.search = params.toString();
+});
+
+// reset filter
+document.getElementById('resetFilterBtn').addEventListener('click', function() {
+    document.getElementById('filterMedia').value = '';
+    document.getElementById('filterLokasi').value = '';
+    document.getElementById('filterMetode').value = '';
+
+    const params = new URLSearchParams(window.location.search);
+    params.delete('media');
+    params.delete('lokasi');
+    params.delete('metode');
     params.set('page', 1);
     window.location.search = params.toString();
 });

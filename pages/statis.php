@@ -70,7 +70,7 @@ $tahun_result = mysqli_query($conn, "SELECT DISTINCT tahun FROM arsip_statis ORD
         <?php include_once "../layouts/components/topbar.php"; ?>
 
         <!-- Main content -->
-        <div class="p-6 mt-16 overflow-y-auto">
+        <div class="p-6 mt-16 overflow-y-auto max-w-[calc(100vw-16rem)] flex-1">
             <!-- Header with search and actions -->
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-3xl font-medium text-slate-700">Arsip Statis</h2>
@@ -97,45 +97,45 @@ $tahun_result = mysqli_query($conn, "SELECT DISTINCT tahun FROM arsip_statis ORD
                         </div>
                         <input type="text" id="searchInput" value="<?= htmlspecialchars($keyword) ?>" placeholder="Kode Klasifikasi, Jenis Arsip, Tahun" class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0092B8]">
                     </div>
-                    <div class="flex items-center">
+                    <div class="relative">
                         <button id="filtersBtn" class="border border-gray-300 bg-white text-slate-700 px-4 py-2 rounded-md flex items-center hover:bg-gray-100">
                             <svg class="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.293.707l-2 2A1 1 0 018 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd" />
                             </svg>
                             Filters
                         </button>
+                        <!-- Dropdown filter anchored under button -->
+                        <div id="filterDropdown" class="hidden absolute top-full right-0 mt-2 z-50 bg-white border border-gray-200 rounded-md shadow p-4 w-[300px] transition ease-out duration-200 transform origin-top-right opacity-0 translate-y-2">
+                            <div class="mb-3">
+                                <label for="filterJenis" class="block text-sm text-gray-700 font-medium">Jenis Arsip</label>
+                                <select id="filterJenis" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                                    <option value="">Semua</option>
+                                    <?php while ($j = mysqli_fetch_assoc($jenis_result)): ?>
+                                        <option value="<?= htmlspecialchars($j['jenis_arsip']) ?>" <?= ($filter_jenis == $j['jenis_arsip']) ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($j['jenis_arsip']) ?>
+                                        </option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+
+                            <div>
+                                <label for="filterTahun" class="block text-sm text-gray-700 font-medium">Tahun</label>
+                                <select id="filterTahun" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                                    <option value="">Semua</option>
+                                    <?php while ($t = mysqli_fetch_assoc($tahun_result)): ?>
+                                        <option value="<?= htmlspecialchars($t['tahun']) ?>" <?= ($filter_tahun == $t['tahun']) ? 'selected' : '' ?>>
+                                            <?= htmlspecialchars($t['tahun']) ?>
+                                        </option>
+                                    <?php endwhile; ?>
+                                </select>
+                            </div>
+
+                            <div class="flex justify-between mt-4">
+                                <button id="resetFilterBtn" class="border border-gray-300 bg-white text-slate-700 px-3 py-2 rounded-md hover:bg-gray-100">Reset</button>
+                                <button id="applyFilterBtn" class="bg-[#0092B8] hover:bg-[#007A99] text-white px-3 py-2 rounded-md">Terapkan</button>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
-
-            <!-- Dropdown filter -->
-            <div id="filterDropdown" class="hidden mt-3 bg-white border border-gray-200 rounded-md shadow p-4 w-[300px]">
-                <div class="mb-3">
-                    <label for="filterJenis" class="block text-sm text-gray-700 font-medium">Jenis Arsip</label>
-                    <select id="filterJenis" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
-                        <option value="">Semua</option>
-                        <?php while ($j = mysqli_fetch_assoc($jenis_result)): ?>
-                            <option value="<?= htmlspecialchars($j['jenis_arsip']) ?>" <?= ($filter_jenis == $j['jenis_arsip']) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($j['jenis_arsip']) ?>
-                            </option>
-                        <?php endwhile; ?>
-                    </select>
-                </div>
-
-                <div>
-                    <label for="filterTahun" class="block text-sm text-gray-700 font-medium">Tahun</label>
-                    <select id="filterTahun" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
-                        <option value="">Semua</option>
-                        <?php while ($t = mysqli_fetch_assoc($tahun_result)): ?>
-                            <option value="<?= htmlspecialchars($t['tahun']) ?>" <?= ($filter_tahun == $t['tahun']) ? 'selected' : '' ?>>
-                                <?= htmlspecialchars($t['tahun']) ?>
-                            </option>
-                        <?php endwhile; ?>
-                    </select>
-                </div>
-
-                <div class="flex justify-end mt-4">
-                    <button id="applyFilterBtn" class="bg-[#0092B8] hover:bg-[#007A99] text-white px-3 py-2 rounded-md">Terapkan</button>
                 </div>
             </div>
 
@@ -166,9 +166,9 @@ $tahun_result = mysqli_query($conn, "SELECT DISTINCT tahun FROM arsip_statis ORD
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center"><?= $row['tahun'] ?></td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center"><?= $row['jumlah'] ?></td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900"><?= $row['tingkat_perkembangan'] ?></td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Arsip statis penting</td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900"><?= $row['keterangan'] ?></td>
                                     <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <a href="detail_statis.php?id=1" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
+                                        <a href="detail_statis.php?id=<?= $row['id_arsip_statis'] ?>" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
                                             <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
                                         </a>
                                     </td>
@@ -229,7 +229,18 @@ document.getElementById('searchInput').addEventListener('keypress', function(e) 
 
 // toggle dropdown filter
 document.getElementById('filtersBtn').addEventListener('click', function() {
-    document.getElementById('filterDropdown').classList.toggle('hidden');
+    const dd = document.getElementById('filterDropdown');
+    if (dd.classList.contains('hidden')) {
+        dd.classList.remove('hidden');
+        // animate in
+        dd.classList.remove('opacity-0', 'translate-y-2');
+        dd.classList.add('opacity-100', 'translate-y-0');
+    } else {
+        // animate out then hide
+        dd.classList.remove('opacity-100', 'translate-y-0');
+        dd.classList.add('opacity-0', 'translate-y-2');
+        setTimeout(() => dd.classList.add('hidden'), 200);
+    }
 });
 
 // tombol apply filter
@@ -240,6 +251,18 @@ document.getElementById('applyFilterBtn').addEventListener('click', function() {
     const params = new URLSearchParams(window.location.search);
     if (jenis) params.set('jenis', jenis); else params.delete('jenis');
     if (tahun) params.set('tahun', tahun); else params.delete('tahun');
+    params.set('page', 1);
+    window.location.search = params.toString();
+});
+
+// reset filter
+document.getElementById('resetFilterBtn').addEventListener('click', function() {
+    document.getElementById('filterJenis').value = '';
+    document.getElementById('filterTahun').value = '';
+
+    const params = new URLSearchParams(window.location.search);
+    params.delete('jenis');
+    params.delete('tahun');
     params.set('page', 1);
     window.location.search = params.toString();
 });
