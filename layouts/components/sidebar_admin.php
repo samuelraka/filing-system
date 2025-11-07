@@ -60,33 +60,6 @@ include_once __DIR__ . '/../../config/session.php';
             </button>
             <div class="pl-9 mt-1 hidden space-y-1" id="arsipMgmtSubmenu">
                 <a href="<?php echo dirname($_SERVER['PHP_SELF']) . '/../admin/kategori.php'; ?>" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 <?php echo basename($_SERVER['PHP_SELF']) == 'kategori.php' ? 'text-cyan-600 font-medium' : 'text-slate-700'; ?>">Kategori Arsip</a>
-                <a href="#" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 text-slate-700">Retensi Arsip</a>
-                <a href="#" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 text-slate-700">Pemusnahan</a>
-            </div>
-        </div>
-
-        <!-- Reports -->
-        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-cyan-600/5 text-slate-700">
-            <span class="material-icons">assessment</span>Laporan
-        </a>
-
-        <!-- Audit Logs -->
-        <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg hover:bg-cyan-600/5 text-slate-700">
-            <span class="material-icons">history</span>Audit Log
-        </a>
-
-        <!-- System Settings -->
-        <div class="menu-item">
-            <button class="w-full flex items-center justify-between px-3 py-2 rounded-lg hover:bg-cyan-600/5 focus:outline-none text-slate-700" id="systemMenu">
-                <div class="flex items-center gap-3">
-                    <span class="material-icons">admin_panel_settings</span>Pengaturan Sistem
-                </div>
-                <span class="material-icons transform transition-transform" id="systemMenuIcon">expand_more</span>
-            </button>
-            <div class="pl-9 mt-1 hidden space-y-1" id="systemSubmenu">
-                <a href="#" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 text-slate-700">Backup & Restore</a>
-                <a href="#" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 text-slate-700">Database</a>
-                <a href="#" class="block py-2 px-3 rounded-lg hover:bg-cyan-600/5 text-slate-700">Integrasi</a>
             </div>
         </div>
     </nav>
