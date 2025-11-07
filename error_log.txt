@@ -386,3 +386,4 @@ Stack trace:
 [07-Nov-2025 00:25:32 Europe/Berlin] Error di tambah_arsip.php: Arsip aktif dengan ID undefined tidak ditemukan.
 [07-Nov-2025 00:30:42 Europe/Berlin] Error di tambah_arsip.php: Arsip aktif dengan ID undefined tidak ditemukan.
 [2025-11-07 04:58:52] LOGOUT: unknown
+[2025-11-07 05:07:40] LOGOUT: unknown

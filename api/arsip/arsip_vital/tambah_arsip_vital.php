@@ -5,9 +5,9 @@ include "../../../config/database.php"; // sesuaikan path koneksi kamu
 $response = [];
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    $uraian_arsip = $_POST['uraian_arsip'] ?? '';
-    $unit_kerja = $_POST['unit_kerja'] ?? '';
-    $kurun_waktu = $_POST['kurun_waktu'] ?? '';
+    $jenis_arsip = $_POST['jenis_arsip'] ?? '';
+    $tingkat_perkembangan = $_POST['tingkat_perkembangan'] ?? '';
+    $kurun_tahun = $_POST['kurun_tahun'] ?? '';
     $media = $_POST['media'] ?? '';
     $jumlah = $_POST['jumlah'] ?? 0;
     $jangka_simpan = $_POST['jangka_simpan'] ?? '';
@@ -18,15 +18,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     try {
         $stmt = $conn->prepare("
             INSERT INTO arsip_vital 
-            (uraian_arsip, unit_kerja, kurun_waktu, media, jumlah, jangka_simpan, lokasi_simpan, metode_perlindungan, keterangan)
+            (jenis_arsip, tingkat_perkembangan, kurun_tahun, media, jumlah, jangka_simpan, lokasi_simpan, metode_perlindungan, keterangan)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
         ");
 
         $stmt->bind_param(
             "ssssissss",
-            $uraian_arsip,
-            $unit_kerja,
-            $kurun_waktu,
+            $jenis_arsip,
+            $tingkat_perkembangan,
+            $kurun_tahun,
             $media,
             $jumlah,
             $jangka_simpan,

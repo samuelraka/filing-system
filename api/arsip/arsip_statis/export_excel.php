@@ -118,14 +118,14 @@ $sheet->getStyle('D2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENT
 
 // Meta info rows
 $sheet->setCellValue('A4', 'Unit Kerja');
-$sheet->setCellValue('B4', ':');
-$sheet->mergeCells('C4:G4');
+$sheet->setCellValue('C4', ':');
+$sheet->mergeCells('A4:B4');
 $sheet->setCellValue('A5', 'Unit Organisasi');
-$sheet->setCellValue('B5', ':');
-$sheet->mergeCells('C5:G5');
+$sheet->setCellValue('C5', ':');
+$sheet->mergeCells('A5:B5');
 $sheet->setCellValue('A6', 'Nama Pengelola Central File');
-$sheet->setCellValue('B6', ':');
-$sheet->mergeCells('C6:G6');
+$sheet->setCellValue('C6', ':');
+$sheet->mergeCells('A6:B6');
 
 // Table header
 $headerRow = 8;
@@ -170,7 +170,8 @@ foreach ($rows as $row) {
     $sheet->setCellValue("A{$r}", $no++);
     $sheet->getRowDimension($r)->setRowHeight(30);
     $sheet->getStyle("A{$r}")->getFont()->setSize(10);
-    $sheet->getStyle("A{$r}:G{$r}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_CENTER);
+    $sheet->getStyle("A{$r}:F{$r}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+    $sheet->getStyle("A{$r}:G{$r}")->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
     $sheet->setCellValue("B{$r}", $row['kode_subsub'] ?? '');
     $sheet->setCellValue("C{$r}", $row['jenis_arsip'] ?? '');
     $sheet->setCellValue("D{$r}", $row['tahun'] ?? '');
@@ -187,14 +188,17 @@ if ($r > $startRow) {
 
 // Footer (signatures)
 $footerTop = $r + 2;
-$sheet->setCellValue("A{$footerTop}", 'Pelaksana');
-$sheet->setCellValue("A" . ($footerTop + 1), 'Ttd');
-$sheet->setCellValue("A" . ($footerTop + 3), 'Nama Petugas');
+$sheet->setCellValue("A" . ($footerTop + 1), 'Pelaksana');
+$sheet->setCellValue("A" . ($footerTop + 5), 'Nama Petugas');
+$sheet->setCellValue("A" . ($footerTop + 6), 'NIP.');
+$sheet->getStyle("A" . ($footerTop + 6))->getFont()->setBold(true);
 
-$sheet->setCellValue("E{$footerTop}", 'Kota, Tanggal/Bulan/Tahun');
-$sheet->setCellValue("E" . ($footerTop + 1), 'Jabatan');
-$sheet->setCellValue("E" . ($footerTop + 2), 'Ttd');
-$sheet->setCellValue("E" . ($footerTop + 3), 'Nama');
+$sheet->mergeCells("F{$footerTop}:G{$footerTop}");
+$sheet->setCellValue("F{$footerTop}", 'Kota, Tanggal/Bulan/Tahun');
+$sheet->setCellValue("F" . ($footerTop + 1), 'Jabatan');
+$sheet->setCellValue("F" . ($footerTop + 5), 'Nama');
+$sheet->setCellValue("F" . ($footerTop + 6), 'NIP.');
+$sheet->getStyle("F" . ($footerTop + 6))->getFont()->setBold(true);
 
 // Output to browser
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');

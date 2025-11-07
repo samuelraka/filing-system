@@ -118,7 +118,7 @@ $kat_result = mysqli_query($conn, "SELECT DISTINCT kategori_arsip FROM item_arsi
                         <span class="material-symbols-outlined">add</span>
                         <span>Tambah Arsip</span>
                     </a>
-                    <a href="#" class="bg-slate-700 hover:bg-slate-700/90 text-white px-3 py-2 gap-2 rounded-md flex items-center">
+                    <a href="../api/arsip/arsip_inaktif/export_excel.php?search=<?= urlencode($keyword) ?>&kode=<?= urlencode($filter_kode) ?>&tk=<?= urlencode($filter_tk) ?>&lok=<?= urlencode($filterLok) ?>&kat=<?= urlencode($filterKat) ?>" target="_blank" class="bg-slate-700 hover:bg-slate-700/90 text-white px-3 py-2 gap-2 rounded-md flex items-center">
                         <span class="material-symbols-outlined">print</span>
                         <span>Cetak Tabel Arsip</span>
                     </a>

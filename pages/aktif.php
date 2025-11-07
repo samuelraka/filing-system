@@ -12,6 +12,7 @@ $offset = ($page - 1) * $limit;
 $keyword = isset($_GET['search']) ? trim($_GET['search']) : '';
 $filter_kode = isset($_GET['kode']) ? trim($_GET['kode']) : '';
 $filter_skaad = isset($_GET['skaad']) ? trim($_GET['skaad']) : '';
+$filter_tahun = isset($_GET['tahun']) ? trim($_GET['tahun']) : '';
 
 // === Bangun kondisi WHERE dinamis ===
 $where = "WHERE 1=1";
@@ -96,7 +97,7 @@ $skaad_result = mysqli_query($conn, "SELECT DISTINCT keterangan_skaad FROM item_
                         <span class="material-symbols-outlined">add</span>
                         <span>Tambah Arsip</span>
                     </a>
-                    <a href="#" class="bg-slate-700 hover:bg-slate-700/90 text-white px-3 py-2 gap-2 rounded-md flex items-center">
+                    <a href="../api/arsip/arsip_aktif/export_excel.php?search=<?= urlencode($keyword) ?>&kode=<?= urlencode($filter_kode) ?>&skaad=<?= urlencode($filter_skaad) ?>&tahun=<?= urlencode($filter_tahun) ?>" class="bg-slate-700 hover:bg-slate-700/90 text-white px-3 py-2 gap-2 rounded-md flex items-center" target="_blank" rel="noopener">
                         <span class="material-symbols-outlined">print</span>
                         <span>Cetak Tabel Arsip</span>
                     </a>
