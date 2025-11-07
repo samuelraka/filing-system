@@ -26,6 +26,7 @@ if ($nomor_berkas) {
         $row = $result->fetch_assoc();
         echo json_encode([
             "status" => "existing",
+            "id_arsip" => $row['id_arsip'],
             "nomor_berkas" => $nomor_berkas,
             "nomor_item" => $row['jumlah_item'] + 1
         ]);
@@ -33,6 +34,7 @@ if ($nomor_berkas) {
         // Jika belum ada → nomor item mulai dari 1
         echo json_encode([
             "status" => "new",
+            "id_arsip" => null,
             "nomor_berkas" => $nomor_berkas,
             "nomor_item" => 1
         ]);
@@ -62,6 +64,7 @@ if ($nomor_berkas) {
 
     echo json_encode([
         "status" => "new",
+        "id_arsip" => null,
         "nomor_berkas" => $next_berkas,
         "nomor_item" => 1
     ]);
