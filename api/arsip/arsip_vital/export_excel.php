@@ -20,6 +20,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Worksheet\Drawing;
 
 // Read filters from query
 $keyword = isset($_GET['search']) ? trim($_GET['search']) : '';
@@ -92,44 +93,73 @@ if ($result) {
 $spreadsheet = new Spreadsheet();
 $sheet = $spreadsheet->getActiveSheet();
 $sheet->setTitle('Daftar Arsip Vital');
+$spreadsheet->getDefaultStyle()->getFont()->setName('Arial');
 
 // Column widths
 $sheet->getColumnDimension('A')->setWidth(6);  // NO
-$sheet->getColumnDimension('B')->setWidth(28); // JENIS/SERIES
+$sheet->getColumnDimension('B')->setWidth(20); // JENIS/SERIES
 $sheet->getColumnDimension('C')->setWidth(20); // TINGKAT PERKEMBANGAN
 $sheet->getColumnDimension('D')->setWidth(14); // KURUN TAHUN
 $sheet->getColumnDimension('E')->setWidth(14); // MEDIA
 $sheet->getColumnDimension('F')->setWidth(10); // JUMLAH
 $sheet->getColumnDimension('G')->setWidth(18); // JANGKA SIMPAN
 $sheet->getColumnDimension('H')->setWidth(18); // LOKASI SIMPAN
-$sheet->getColumnDimension('I')->setWidth(22); // METODE PERLINDUNGAN
+$sheet->getColumnDimension('I')->setWidth(21); // METODE PERLINDUNGAN
 $sheet->getColumnDimension('J')->setWidth(14); // KET
 
 // Logo box (black)
 $sheet->mergeCells('A1:C3');
-$sheet->setCellValue('A1', 'LOGO KEMENKES');
-$sheet->getStyle('A1')->getFont()->setBold(true)->setSize(12);
-$sheet->getStyle('A1')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_CENTER);
-$sheet->getStyle('A1:C3')->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('000000');
-$sheet->getStyle('A1:C3')->getFont()->getColor()->setARGB('FFFFFF');
-$sheet->getStyle('A1:C3')->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
+$sheet->setCellValue('A1', '');
+
+// Insert actual logo image (tries absolute and project-relative paths)
+$logoCandidates = [
+    __DIR__ . '/../../../assets/images/Logo KemenkesPKY.jpg',
+];
+$logoPath = null;
+foreach ($logoCandidates as $cand) {
+    if (file_exists($cand)) { $logoPath = $cand; break; }
+}
+// Optional override via query: ?logo_path=...
+if (isset($_GET['logo_path']) && is_string($_GET['logo_path']) && file_exists($_GET['logo_path'])) {
+    $logoPath = $_GET['logo_path'];
+}
+if ($logoPath) {
+    try {
+        $drawing = new Drawing();
+        $drawing->setName('Logo');
+        $drawing->setDescription('Logo Kemenkes PKY');
+        $drawing->setPath($logoPath);
+        $drawing->setHeight(70); // adjust as needed
+        $drawing->setCoordinates('A1');
+        $drawing->setOffsetX(8);
+        $drawing->setOffsetY(6);
+        $drawing->setWorksheet($sheet);
+        // Give some vertical room for the image across merged rows
+        $sheet->getRowDimension(1)->setRowHeight(25);
+        $sheet->getRowDimension(2)->setRowHeight(25);
+        $sheet->getRowDimension(3)->setRowHeight(25);
+    } catch (\Throwable $e) {
+        // If image insertion fails, keep placeholder border only
+        // No fatal error; export should proceed
+    }
+}
 
 // Title
 $sheet->mergeCells('D2:J2');
 $sheet->setCellValue('D2', 'DAFTAR ARSIP VITAL');
 $sheet->getStyle('D2')->getFont()->setBold(true)->setSize(14);
-$sheet->getStyle('D2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+$sheet->getStyle('D2')->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_CENTER);
 
 // Meta info rows
+$sheet->mergeCells('A4:B4');
 $sheet->setCellValue('A4', 'Unit Kerja');
-$sheet->setCellValue('B4', ':');
-$sheet->mergeCells('C4:J4');
+$sheet->setCellValue('C4', ':');
+$sheet->mergeCells('A5:B5');
 $sheet->setCellValue('A5', 'Unit Organisasi');
-$sheet->setCellValue('B5', ':');
-$sheet->mergeCells('C5:J5');
+$sheet->setCellValue('C5', ':');
+$sheet->mergeCells('A6:B6');
 $sheet->setCellValue('A6', 'Nama Pengelola Central File');
-$sheet->setCellValue('B6', ':');
-$sheet->mergeCells('C6:J6');
+$sheet->setCellValue('C6', ':');
 
 // Table header
 $headerRow = 8;
@@ -138,20 +168,26 @@ foreach ($headers as $i => $h) {
     $col = Coordinate::stringFromColumnIndex($i + 1);
     $sheet->setCellValue("{$col}{$headerRow}", $h);
 }
-$sheet->getStyle("A{$headerRow}:J{$headerRow}")->getFont()->setBold(true);
+$sheet->getStyle("A{$headerRow}:J{$headerRow}")->getFont()->setBold(true)->setSize(10);
 $sheet->getStyle("A{$headerRow}:J{$headerRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_CENTER);
-$sheet->getRowDimension($headerRow)->setRowHeight(22);
+$sheet->getStyle("A{$headerRow}:J{$headerRow}")->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('DAEEF3');
+$sheet->getStyle("A{$headerRow}:J{$headerRow}")->getAlignment()->setWrapText(true);
+$sheet->getRowDimension($headerRow)->setRowHeight(40);
 $sheet->getStyle("A{$headerRow}:J{$headerRow}")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+
 
 // Column numbers row
 $numRow = $headerRow + 1;
-$nums = ['(1)','(2)','(3)','(4)','(5)','(6)','(7)','(8)','(9)','(10)'];
+$nums = ['1','2','3','4','5','6','7','8','9','10'];
 foreach ($nums as $i => $n) {
     $col = Coordinate::stringFromColumnIndex($i + 1);
     $sheet->setCellValue("{$col}{$numRow}", $n);
 }
-$sheet->getStyle("A{$numRow}:J{$numRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER);
+$sheet->getStyle("A{$numRow}:J{$numRow}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_CENTER);
 $sheet->getStyle("A{$numRow}:J{$numRow}")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+$sheet->getStyle("A{$numRow}:J{$numRow}")->getFill()->setFillType(Fill::FILL_SOLID)->getStartColor()->setARGB('205867');
+$sheet->getStyle("A{$numRow}:J{$numRow}")->getFont()->setSize(10)->getColor()->setARGB('FFFFFF');
+$sheet->getRowDimension($numRow)->setRowHeight(18);
 
 // Data
 $startRow = $numRow + 1;
@@ -159,6 +195,9 @@ $r = $startRow;
 $no = 1;
 foreach ($rows as $row) {
     $sheet->setCellValue("A{$r}", $no++);
+    $sheet->getRowDimension($r)->setRowHeight(30);
+    $sheet->getStyle("A{$r}")->getFont()->setSize(10);
+    $sheet->getStyle("A{$r}:J{$r}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_CENTER);
     $sheet->setCellValue("B{$r}", $row['jenis_arsip'] ?? ($row['uraian_arsip'] ?? ''));
     $sheet->setCellValue("C{$r}", $row['tingkat_perkembangan'] ?? '');
     $sheet->setCellValue("D{$r}", $row['kurun_tahun'] ?? ($row['kurun_waktu'] ?? ''));
@@ -169,6 +208,7 @@ foreach ($rows as $row) {
     $sheet->setCellValue("I{$r}", $row['metode_perlindungan'] ?? '');
     $sheet->setCellValue("J{$r}", $row['keterangan'] ?? '');
     $r++;
+
 }
 
 // Table borders
@@ -178,21 +218,22 @@ if ($r > $startRow) {
 
 // Footer (signatures)
 $footerTop = $r + 2;
-$sheet->setCellValue("A{$footerTop}", 'Pelaksana');
-$sheet->setCellValue("A" . ($footerTop + 1), 'Ttd');
-$sheet->setCellValue("A" . ($footerTop + 3), 'Nama Petugas');
+$sheet->mergeCells("A{$footerTop}:B{$footerTop}");
+$sheet->setCellValue("A" . ($footerTop + 1), 'Pelaksana');
+$sheet->setCellValue("A" . ($footerTop + 5), 'Nama Petugas');
+$sheet->setCellValue("A" . ($footerTop + 6), 'NIP. ');
+$sheet->getStyle("A" . ($footerTop + 6))->getFont()->setBold(true);
 
-$sheet->setCellValue("G{$footerTop}", 'Kota, Tanggal/Bulan/Tahun');
-$sheet->setCellValue("G" . ($footerTop + 1), 'Jabatan');
-$sheet->setCellValue("G" . ($footerTop + 2), 'Ttd');
-$sheet->setCellValue("G" . ($footerTop + 3), 'Nama');
-
-// Outer border
-$sheet->getStyle("A1:J" . ($footerTop + 4))->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THICK);
+$sheet->mergeCells("I{$footerTop}:J{$footerTop}");
+$sheet->setCellValue("I{$footerTop}", 'Kota, Tanggal/Bulan/Tahun');
+$sheet->setCellValue("I" . ($footerTop + 1), 'Jabatan');
+$sheet->setCellValue("I" . ($footerTop + 5), 'Nama');
+$sheet->setCellValue("I" . ($footerTop + 6), 'NIP.');
+$sheet->getStyle("I" . ($footerTop + 6))->getFont()->setBold(true);
 
 // Output to browser
 header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
-header('Content-Disposition: attachment; filename="Daftar_Arsip_Vital.xlsx"');
+header('Content-Disposition: attachment; filename="Daftar Arsip Vital.xlsx"');
 header('Cache-Control: max-age=0');
 $writer = new Xlsx($spreadsheet);
 $writer->save('php://output');

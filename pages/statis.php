@@ -83,7 +83,7 @@ $tahun_result = mysqli_query($conn, "SELECT DISTINCT tahun FROM arsip_statis ORD
                         <span class="material-symbols-outlined">add</span>
                         <span>Tambah Arsip</span>
                     </a>
-                    <a href="#" class="bg-slate-700 hover:bg-slate-700/90 text-white px-3 py-2 gap-2 rounded-md flex items-center">
+                    <a href="../api/arsip/arsip_statis/export_excel.php?search=<?= urlencode($keyword) ?>&jenis=<?= urlencode($filter_jenis) ?>&tahun=<?= urlencode($filter_tahun) ?>" class="bg-slate-700 hover:bg-slate-700/90 text-white px-3 py-2 gap-2 rounded-md flex items-center" target="_blank" rel="noopener">
                         <span class="material-symbols-outlined">print</span>
                         <span>Cetak Tabel Arsip</span>
                     </a>
