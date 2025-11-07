@@ -65,7 +65,7 @@ $query = "
     LEFT JOIN arsip_aktif aa ON ia.id_arsip = aa.id_arsip
     LEFT JOIN sub_sub_masalah ssm ON aa.id_subsub = ssm.id_subsub
     $where
-    ORDER BY aa.nomor_berkas ASC, ia.nomor_item ASC
+    ORDER BY ssm.kode_subsub ASC, aa.nomor_berkas ASC, ia.nomor_item ASC
     LIMIT $limit OFFSET $offset
 ";
 $result = mysqli_query($conn, $query);
@@ -158,9 +158,9 @@ $skaad_result = mysqli_query($conn, "SELECT DISTINCT keterangan_skaad FROM item_
                         <table class="min-w-full border border-gray-200 divide-y divide-gray-200 table-auto">
                             <thead class="bg-gray-50">
                                 <tr class="divide-x divide-gray-200 text-center">
+                                    <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Kode Klasifikasi Arsip</th>
                                     <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Nomor Berkas</th>
                                     <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Nomor Item Arsip</th>
-                                    <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Kode Klasifikasi Arsip</th>
                                     <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Uraian Informasi Arsip</th>
                                     <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Tanggal</th>
                                     <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah Item Arsip</th>
@@ -192,7 +192,7 @@ $skaad_result = mysqli_query($conn, "SELECT DISTINCT keterangan_skaad FROM item_
                                     LEFT JOIN item_arsip ia ON aa.id_arsip = ia.id_arsip
                                     LEFT JOIN sub_sub_masalah ssm ON aa.id_subsub = ssm.id_subsub
                                     $where
-                                    ORDER BY aa.nomor_berkas ASC, ia.nomor_item ASC
+                                    ORDER BY ssm.kode_subsub ASC, aa.nomor_berkas ASC, ia.nomor_item ASC
                                     LIMIT $limit OFFSET $offset
                                 ";
 
@@ -203,45 +203,60 @@ $skaad_result = mysqli_query($conn, "SELECT DISTINCT keterangan_skaad FROM item_
                                     exit;
                                 }
 
-                                // Kelompokkan berdasarkan nomor_berkas
-                                $arsip_data = [];
-                                while ($row = mysqli_fetch_assoc($result)) {
-                                    $arsip_data[$row['nomor_berkas']][] = $row;
+                                // Loop tampilkan data berurutan; merge Kode Klasifikasi (rowspan) dan tampilkan Nomor Berkas pada baris pertama setiap pasangan (nomor_berkas,kode_klasifikasi)
+                                $rows = [];
+                                while ($row = mysqli_fetch_assoc($result)) { $rows[] = $row; }
+
+                                // Hitung jumlah baris per Kode Klasifikasi untuk rowspan
+                                $kodeRowspanCounts = [];
+                                foreach ($rows as $r) {
+                                    $k = isset($r['kode_klasifikasi']) ? $r['kode_klasifikasi'] : '';
+                                    if (!isset($kodeRowspanCounts[$k])) $kodeRowspanCounts[$k] = 0;
+                                    $kodeRowspanCounts[$k]++;
                                 }
 
-                                // Loop tampilkan data
-                                foreach ($arsip_data as $nomor_berkas => $items) {
-                                    $rowspan = count($items);
-                                    $first = true;
+                                $lastKode = null; // track kode klasifikasi untuk rowspan
+                                $lastComposite = null; // nomor_berkas|kode_klasifikasi
+                                foreach ($rows as $item) {
+                                    $composite = ($item['nomor_berkas'] ?? '') . '|' . ($item['kode_klasifikasi'] ?? '');
+                                    $currentKode = isset($item['kode_klasifikasi']) ? $item['kode_klasifikasi'] : '';
+                                    echo "<tr class='divide-x divide-gray-200 text-center'>";
 
-                                    foreach ($items as $item) {
-                                        echo "<tr class='divide-x divide-gray-200 text-center'>";
-
-                                        // Kolom nomor berkas hanya tampil sekali di atas item pertama
-                                        if ($first) {
-                                            echo "<td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900 align-top font-medium' rowspan='{$rowspan}'>" . htmlspecialchars($nomor_berkas) . "</td>";
-                                            $first = false;
-                                        }
-
-                                        echo "
-                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-500'>" . htmlspecialchars($item['nomor_item']) . "</td>
-                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['kode_klasifikasi']) . "</td>
-                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-left text-gray-900'>" . htmlspecialchars($item['uraian_informasi']) . "</td>
-                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['tanggal']) . "</td>
-                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($items[0]['jumlah_item']) . "</td>
-                                            <td class='px-3 py-4 whitespace-nowrap text-center'>
-                                                <span class='bg-green-50 text-green-600 px-2 py-1 rounded-full text-sm'>" . htmlspecialchars($item['keterangan_skaad']) . "</span>
-                                            </td>
-                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($items[0]['keterangan_berkas']) . "</td>
-                                            <td class='px-3 py-4 whitespace-nowrap text-center text-sm font-medium'>
-                                                <a href='detail_aktif.php?id=" . urlencode($item['id_item']) . "' class='border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm' title='Lihat Detail'>
-                                                    <span class='material-symbols-outlined text-gray-700 text-xs'>quick_reference_all</span>
-                                                </a>
-                                            </td>
-                                        ";
-
-                                        echo "</tr>";
+                                    // Cetak Kode Klasifikasi sekali dengan rowspan
+                                    if ($lastKode === null || $lastKode !== $currentKode) {
+                                        $rowspan = isset($kodeRowspanCounts[$currentKode]) ? $kodeRowspanCounts[$currentKode] : 1;
+                                        echo "<td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900' rowspan='" . intval($rowspan) . "'>" . htmlspecialchars($currentKode) . "</td>";
                                     }
+
+                                    // Cetak Nomor Berkas pada baris pertama untuk setiap pasangan (nomor_berkas, kode_klasifikasi)
+                                    if ($lastComposite === null || $lastComposite !== $composite) {
+                                        echo "<td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900 font-medium'>" . htmlspecialchars($item['nomor_berkas']) . "</td>";
+                                    } else {
+                                        echo "<td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'></td>";
+                                    }
+
+                                    echo "
+                                        <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-500'>" . htmlspecialchars($item['nomor_item']) . "</td>
+                                        <td class='px-3 py-4 whitespace-nowrap text-sm text-left text-gray-900'>" . htmlspecialchars($item['uraian_singkat'] ?? '') . "</td>
+                                        <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['tanggal']) . "</td>
+                                        <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['jumlah_item']) . "</td>
+                                        <td class='px-3 py-4 whitespace-nowrap text-center'>
+                                            <span class='bg-green-50 text-green-600 px-2 py-1 rounded-full text-sm'>" . htmlspecialchars($item['keterangan_skaad']) . "</span>
+                                        </td>
+                                        <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['keterangan_berkas']) . "</td>
+                                        <td class='px-3 py-4 whitespace-nowrap text-center text-sm font-medium'>
+                                            <a href='detail_aktif.php?id=" . urlencode($item['id_item']) . "' class='border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm' title='Lihat Detail'>
+                                                <span class='material-symbols-outlined text-gray-700 text-xs'>quick_reference_all</span>
+                                            </a>
+                                            " . (isAdminOrSuperAdmin() ? "<a href='delete_aktif.php?id=" . urlencode($item['id_item']) . "' class='border border-red-300 inline-flex bg-white hover:bg-red-50 rounded-md p-1 shadow-sm ml-2' title='Hapus'>
+                                                <span class='material-symbols-outlined text-red-600 text-xs'>delete</span>
+                                            </a>" : "") . "
+                                        </td>
+                                    ";
+
+                                    echo "</tr>";
+                                    $lastComposite = $composite;
+                                    $lastKode = $currentKode;
                                 }
                                 ?>
                                 </tbody>

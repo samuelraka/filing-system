@@ -9,6 +9,7 @@
       "Courier New", monospace;
     --color-red-50: oklch(97.1% 0.013 17.38);
     --color-red-200: oklch(88.5% 0.062 18.334);
+    --color-red-300: oklch(80.8% 0.114 19.571);
     --color-red-500: oklch(63.7% 0.237 25.331);
     --color-red-600: oklch(57.7% 0.245 27.325);
     --color-red-700: oklch(50.5% 0.213 27.518);
@@ -513,6 +514,9 @@
   .h-screen {
     height: 100vh;
   }
+  .max-h-\[calc\(100vh-400px\)\] {
+    max-height: calc(100vh - 400px);
+  }
   .max-h-screen {
     max-height: 100vh;
   }
@@ -940,6 +944,9 @@
   }
   .border-red-200 {
     border-color: var(--color-red-200);
+  }
+  .border-red-300 {
+    border-color: var(--color-red-300);
   }
   .border-red-500 {
     border-color: var(--color-red-500);

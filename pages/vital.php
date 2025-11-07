@@ -199,7 +199,7 @@ $metode_result = mysqli_query($conn, "SELECT DISTINCT metode_perlindungan FROM a
                                             <td class="px-3 py-4"><?= htmlspecialchars($row['keterangan']); ?></td>
                                             <td class="px-3 py-4 text-center">
                                                 <a href="detail_vital.php?id=<?= $row['id_arsip'] ?>" 
-                                                class="action-button border border-gray-300 bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm"
+                                                class="action-button border border-gray-300 bg-white hover:bg-gray-100 inline-flex rounded-md p-1 shadow-sm"
                                                 title="Lihat Detail">
                                                     <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
                                                 </a>

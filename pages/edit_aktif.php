@@ -17,28 +17,40 @@ $item = [
     'keterangan' => ''
 ];
 
-// Fetch from DB if ID provided
-if (!empty($id)) {
+// Fetch from DB based on item_arsip.id_item and join arsip_aktif + sub_sub_masalah
+if (!empty($id) && ctype_digit($id)) {
     try {
-        if (ctype_digit($id)) {
-            $stmt = $conn->prepare("SELECT id_arsip_aktif, nomor_berkas, nomor_item_arsip, kode_klasifikasi_arsip, uraian_informasi_arsip, tanggal, jumlah_item_arsip, keterangan_skaad, keterangan FROM arsip_aktif WHERE id_arsip_aktif = ?");
-            $stmt->bind_param("i", $id);
-        } else {
-            $stmt = $conn->prepare("SELECT id_arsip_aktif, nomor_berkas, nomor_item_arsip, kode_klasifikasi_arsip, uraian_informasi_arsip, tanggal, jumlah_item_arsip, keterangan_skaad, keterangan FROM arsip_aktif WHERE nomor_item_arsip = ?");
-            $stmt->bind_param("s", $id);
-        }
+        $idInt = intval($id);
+        $stmt = $conn->prepare(
+            "SELECT 
+                ia.id_item,
+                ia.nomor_item,
+                ia.uraian_informasi,
+                ia.tanggal,
+                ia.keterangan_skaad,
+                aa.id_arsip,
+                aa.nomor_berkas,
+                aa.jumlah_item,
+                aa.keterangan AS keterangan_berkas,
+                ssm.kode_subsub
+             FROM item_arsip ia
+             JOIN arsip_aktif aa ON ia.id_arsip = aa.id_arsip
+             LEFT JOIN sub_sub_masalah ssm ON ia.id_subsub = ssm.id_subsub
+             WHERE ia.id_item = ?"
+        );
+        $stmt->bind_param("i", $idInt);
         $stmt->execute();
         $res = $stmt->get_result();
         if ($row = $res->fetch_assoc()) {
             $item = [
                 'berkas' => $row['nomor_berkas'] ?? '',
-                'item' => $row['nomor_item_arsip'] ?? ($row['id_arsip_aktif'] ?? ''),
-                'kode' => $row['kode_klasifikasi_arsip'] ?? '',
-                'uraian' => $row['uraian_informasi_arsip'] ?? '',
+                'item' => $row['nomor_item'] ?? ($row['id_item'] ?? ''),
+                'kode' => $row['kode_subsub'] ?? '',
+                'uraian' => $row['uraian_informasi'] ?? '',
                 'tanggal' => $row['tanggal'] ?? '',
-                'jumlah' => $row['jumlah_item_arsip'] ?? '',
+                'jumlah' => $row['jumlah_item'] ?? '',
                 'skaad' => $row['keterangan_skaad'] ?? '',
-                'keterangan' => $row['keterangan'] ?? ''
+                'keterangan' => $row['keterangan_berkas'] ?? ''
             ];
         }
         $stmt->close();
@@ -58,11 +70,6 @@ if (!empty($id)) {
             <div class="flex justify-between items-center mb-8">
                 <div class="flex items-center gap-3">
                     <h2 class="text-3xl font-medium text-slate-700">Edit Arsip Aktif</h2>
-                    <span class="text-sm text-gray-500">#<?php echo htmlspecialchars($item['item']); ?></span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <a href="detail_aktif.php?id=<?php echo urlencode($id); ?>" class="text-sm text-cyan-700 hover:underline">Kembali ke Detail</a>
-                    <a href="aktif.php" class="text-sm text-slate-700 hover:underline">Kembali ke Arsip Aktif</a>
                 </div>
             </div>
 

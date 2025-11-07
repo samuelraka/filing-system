@@ -52,7 +52,6 @@ if ($id > 0) {
             <div class="flex justify-between items-center mb-8">
                 <div class="flex items-center gap-3">
                     <h2 class="text-3xl font-medium text-slate-700">Edit Arsip Statis</h2>
-                    <span class="text-sm text-gray-500">#<?php echo htmlspecialchars($item['no']); ?></span>
                 </div>
                 <div class="flex items-center gap-3">
                     <a href="detail_statis.php?id=<?php echo $id; ?>" class="text-sm text-cyan-700 hover:underline">Kembali ke Detail</a>
@@ -66,10 +65,10 @@ if ($id > 0) {
                     <input type="hidden" name="id_arsip_statis" value="<?php echo htmlspecialchars($id); ?>">
                     <input type="hidden" name="id_subsub" value="<?php echo htmlspecialchars($item['id_subsub']); ?>">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
+                        <!-- <div>
                             <label class="block text-sm font-medium text-gray-700">No</label>
                             <input type="text" value="<?php echo htmlspecialchars($item['no']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2" readonly>
-                        </div>
+                        </div> -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Kode Klasifikasi Arsip</label>
                             <input type="text" value="<?php echo htmlspecialchars($item['kode']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2" readonly>
@@ -109,7 +108,7 @@ if ($id > 0) {
                     </div>
                 </form>
 
-                <div class="mt-8">
+                <!-- <div class="mt-8">
                     <h3 class="text-lg font-medium text-gray-900 mb-3">File Arsip (Preview PDF)</h3>
                     <div class="border border-dashed border-gray-300 rounded-md p-4 bg-gray-50">
                         <?php if (!empty($pdfUrl)) : ?>
@@ -119,7 +118,7 @@ if ($id > 0) {
                             <div class="flex items-center justify-center h-64 text-gray-400">Preview PDF akan ditampilkan di sini.</div>
                         <?php endif; ?>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>

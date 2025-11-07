@@ -22,37 +22,53 @@ $item = [
 ];
 $notFound = false;
 
-// Fetch from DB if ID provided
+// Fetch from DB if ID provided (use item_arsip_inaktif.id_item)
 if (!empty($id)) {
     try {
-        if (ctype_digit($id)) {
-            $stmt = $conn->prepare("SELECT id_arsip_inaktif, nomor_berkas, nomor_item_arsip, kode_klasifikasi_arsip, uraian_informasi_arsip, kurun_waktu, tingkat_perkembangan, jumlah_item_arsip, keterangan, nomor_definitif_folder_boks, lokasi_simpan, jangka_simpan_nasib_akhir, kategori_arsip FROM arsip_inaktif WHERE id_arsip_inaktif = ?");
-            $stmt->bind_param("i", $id);
-        } else {
-            $stmt = $conn->prepare("SELECT id_arsip_inaktif, nomor_berkas, nomor_item_arsip, kode_klasifikasi_arsip, uraian_informasi_arsip, kurun_waktu, tingkat_perkembangan, jumlah_item_arsip, keterangan, nomor_definitif_folder_boks, lokasi_simpan, jangka_simpan_nasib_akhir, kategori_arsip FROM arsip_inaktif WHERE nomor_item_arsip = ?");
-            $stmt->bind_param("s", $id);
-        }
-        $stmt->execute();
-        $res = $stmt->get_result();
-        if ($row = $res->fetch_assoc()) {
-            $item = [
-                'berkas' => $row['nomor_berkas'] ?? '',
-                'item' => $row['nomor_item_arsip'] ?? ($row['id_arsip_inaktif'] ?? ''),
-                'kode' => $row['kode_klasifikasi_arsip'] ?? '',
-                'uraian' => $row['uraian_informasi_arsip'] ?? '',
-                'kurun' => $row['kurun_waktu'] ?? '',
-                'perkembangan' => $row['tingkat_perkembangan'] ?? '',
-                'jumlah' => $row['jumlah_item_arsip'] ?? '',
-                'keterangan' => $row['keterangan'] ?? '',
-                'definitif' => $row['nomor_definitif_folder_boks'] ?? '',
-                'lokasi' => $row['lokasi_simpan'] ?? '',
-                'jangka' => $row['jangka_simpan_nasib_akhir'] ?? '',
-                'kategori' => $row['kategori_arsip'] ?? ''
-            ];
+        $id_int = intval($id);
+        if ($id_int > 0) {
+            $stmt = $conn->prepare("SELECT 
+                    ai.nomor_berkas,
+                    ai.jumlah_item,
+                    ia.nomor_item,
+                    ssm.kode_subsub AS kode_klasifikasi,
+                    ia.uraian_informasi,
+                    ia.kurun_waktu,
+                    ia.tingkat_perkembangan,
+                    ia.keterangan,
+                    ia.nomor_boks,
+                    ia.lokasi_simpan,
+                    ia.jangka_simpan,
+                    ia.kategori_arsip
+                FROM item_arsip_inaktif ia
+                LEFT JOIN arsip_inaktif ai ON ia.id_arsip = ai.id_arsip
+                LEFT JOIN sub_sub_masalah ssm ON ai.id_subsub = ssm.id_subsub
+                WHERE ia.id_item = ?");
+            $stmt->bind_param("i", $id_int);
+            $stmt->execute();
+            $res = $stmt->get_result();
+            if ($row = $res->fetch_assoc()) {
+                $item = [
+                    'berkas' => $row['nomor_berkas'] ?? '',
+                    'item' => $row['nomor_item'] ?? (string)$id_int,
+                    'kode' => $row['kode_klasifikasi'] ?? '',
+                    'uraian' => $row['uraian_informasi'] ?? '',
+                    'kurun' => $row['kurun_waktu'] ?? '',
+                    'perkembangan' => $row['tingkat_perkembangan'] ?? '',
+                    'jumlah' => $row['jumlah_item'] ?? '',
+                    'keterangan' => $row['keterangan'] ?? '',
+                    'definitif' => $row['nomor_boks'] ?? '',
+                    'lokasi' => $row['lokasi_simpan'] ?? '',
+                    'jangka' => $row['jangka_simpan'] ?? '',
+                    'kategori' => $row['kategori_arsip'] ?? ''
+                ];
+            } else {
+                $notFound = true;
+            }
+            $stmt->close();
         } else {
             $notFound = true;
         }
-        $stmt->close();
     } catch (Exception $e) {
         $notFound = true;
     }
@@ -69,15 +85,18 @@ if (!empty($id)) {
             <div class="flex justify-between items-center mb-8">
                 <div class="flex items-center gap-3">
                     <h2 class="text-3xl font-medium text-gray-900">Detail Arsip Inaktif</h2>
-                    <span class="text-sm text-gray-500">#<?php echo htmlspecialchars($item['item']); ?></span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <a href="inaktif.php" class="text-sm text-cyan-700 hover:underline">Kembali ke Arsip Inaktif</a>
-                    <a href="edit_inaktif.php?id=<?php echo urlencode($id); ?>" class="text-sm text-slate-700 hover:underline">Buka Halaman Edit</a>
                 </div>
             </div>
 
             <div class="bg-white rounded-lg shadow-sm px-6 py-6 max-w-[calc(100vw-16rem)]">
+                <div class="flex justify-between items-center mb-8">
+                    <a href="inaktif.php" class="flex items-center text-2xl border-b">
+                        <svg class="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                        </svg>
+                        Kembali
+                    </a>
+                </div>
                 <?php if ($notFound): ?>
                     <div class="p-4 mb-4 text-red-700 bg-red-50 border border-red-200 rounded">Data arsip tidak ditemukan untuk ID yang diberikan.</div>
                 <?php endif; ?>
@@ -141,12 +160,6 @@ if (!empty($id)) {
                             <input type="text" value="<?php echo htmlspecialchars($item['kategori']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
                         </div>
                     </div>
-
-                    <div class="flex items-center gap-3">
-                        <button type="button" id="toggleEditBtn" class="bg-slate-700 hover:bg-slate-700/90 text-white px-4 py-2 rounded-md">Edit</button>
-                        <button type="submit" id="saveBtn" class="bg-cyan-600 hover:bg-cyan-600/90 text-white px-4 py-2 rounded-md hidden">Simpan</button>
-                        <button type="button" id="cancelBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md hidden">Batal</button>
-                    </div>
                 </form>
 
                 <div class="mt-8">
@@ -160,47 +173,12 @@ if (!empty($id)) {
                         <?php endif; ?>
                     </div>
                 </div>
+                <a href="edit_inaktif.php?id=<?php echo urlencode($id); ?>" class="bg-slate-700 hover:bg-slate-700/90 text-white px-4 py-2 mt-4 rounded-md inline-flex items-center">Edit</a>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('detailForm');
-    const inputs = form.querySelectorAll('input, select, textarea');
-    const toggleBtn = document.getElementById('toggleEditBtn');
-    const saveBtn = document.getElementById('saveBtn');
-    const cancelBtn = document.getElementById('cancelBtn');
 
-    function setDisabled(state) {
-        inputs.forEach(el => {
-            el.disabled = state;
-            if (state) {
-                el.classList.add('bg-gray-50', 'border-gray-200');
-                el.classList.remove('border-gray-300');
-            } else {
-                el.classList.remove('bg-gray-50');
-                el.classList.add('border-gray-300');
-            }
-        });
-    }
-
-    toggleBtn.addEventListener('click', function () {
-        const isDisabled = inputs[0].disabled;
-        setDisabled(!isDisabled);
-        saveBtn.classList.toggle('hidden');
-        cancelBtn.classList.toggle('hidden');
-        toggleBtn.textContent = isDisabled ? 'Edit' : 'Selesai Edit';
-    });
-
-    cancelBtn.addEventListener('click', function () {
-        setDisabled(true);
-        saveBtn.classList.add('hidden');
-        cancelBtn.classList.add('hidden');
-        toggleBtn.textContent = 'Edit';
-    });
-});
-</script>
 
 <?php include_once "../layouts/master/footer.php"; ?>

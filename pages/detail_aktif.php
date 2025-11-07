@@ -18,35 +18,51 @@ $item = [
 ];
 $notFound = false;
 
-// Fetch from DB if ID provided
+// Fetch from DB if ID provided (use item_arsip.id_item)
 if (!empty($id)) {
     try {
-        if (ctype_digit($id)) {
-            // Numeric ID -> assume primary key id_arsip_aktif
-            $stmt = $conn->prepare("SELECT id_arsip_aktif, nomor_berkas, nomor_item_arsip, kode_klasifikasi_arsip, uraian_informasi_arsip, tanggal, jumlah_item_arsip, keterangan_skaad, keterangan FROM arsip_aktif WHERE id_arsip_aktif = ?");
-            $stmt->bind_param("i", $id);
-        } else {
-            // Non-numeric -> fallback by nomor_item_arsip
-            $stmt = $conn->prepare("SELECT id_arsip_aktif, nomor_berkas, nomor_item_arsip, kode_klasifikasi_arsip, uraian_informasi_arsip, tanggal, jumlah_item_arsip, keterangan_skaad, keterangan FROM arsip_aktif WHERE nomor_item_arsip = ?");
-            $stmt->bind_param("s", $id);
-        }
-        $stmt->execute();
-        $res = $stmt->get_result();
-        if ($row = $res->fetch_assoc()) {
-            $item = [
-                'berkas' => $row['nomor_berkas'] ?? '',
-                'item' => $row['nomor_item_arsip'] ?? ($row['id_arsip_aktif'] ?? ''),
-                'kode' => $row['kode_klasifikasi_arsip'] ?? '',
-                'uraian' => $row['uraian_informasi_arsip'] ?? '',
-                'tanggal' => $row['tanggal'] ?? '',
-                'jumlah' => $row['jumlah_item_arsip'] ?? '',
-                'skaad' => $row['keterangan_skaad'] ?? '',
-                'keterangan' => $row['keterangan'] ?? ''
-            ];
+        $id_int = intval($id);
+        if ($id_int > 0) {
+            $stmt = $conn->prepare("SELECT 
+                    aa.nomor_berkas,
+                    ia.nomor_item,
+                    ssm.kode_subsub AS kode_klasifikasi,
+                    ia.uraian_informasi,
+                    ia.tanggal,
+                    aa.jumlah_item,
+                    ia.keterangan_skaad,
+                    aa.keterangan AS keterangan_berkas,
+                    ia.file_path
+                FROM item_arsip ia
+                LEFT JOIN arsip_aktif aa ON ia.id_arsip = aa.id_arsip
+                LEFT JOIN sub_sub_masalah ssm ON aa.id_subsub = ssm.id_subsub
+                WHERE ia.id_item = ?");
+            $stmt->bind_param("i", $id_int);
+            $stmt->execute();
+            $res = $stmt->get_result();
+            if ($row = $res->fetch_assoc()) {
+                // If no explicit file param provided, use stored file_path when available
+                if (empty($pdfUrl) && !empty($row['file_path'])) {
+                    $pdfUrl = $row['file_path'];
+                }
+                $item = [
+                    'berkas' => $row['nomor_berkas'] ?? '',
+                    'item' => $row['nomor_item'] ?? (string)$id_int,
+                    'kode' => $row['kode_klasifikasi'] ?? '',
+                    // Show full description on detail page
+                    'uraian' => $row['uraian_informasi'] ?? '',
+                    'tanggal' => $row['tanggal'] ?? '',
+                    'jumlah' => $row['jumlah_item'] ?? '',
+                    'skaad' => $row['keterangan_skaad'] ?? '',
+                    'keterangan' => $row['keterangan_berkas'] ?? ''
+                ];
+            } else {
+                $notFound = true;
+            }
+            $stmt->close();
         } else {
             $notFound = true;
         }
-        $stmt->close();
     } catch (Exception $e) {
         $notFound = true;
     }
@@ -63,15 +79,18 @@ if (!empty($id)) {
             <div class="flex justify-between items-center mb-8">
                 <div class="flex items-center gap-3">
                     <h2 class="text-3xl font-medium text-slate-700">Detail Berkas</h2>
-                    <span class="text-sm text-gray-500"><?php echo htmlspecialchars($item['item']); ?></span>
-                </div>
-                <div class="flex items-center gap-3">
-                    <a href="aktif.php" class="text-sm text-cyan-700 hover:underline">Kembali ke Arsip Aktif</a>
-                    <a href="edit_aktif.php?id=<?php echo urlencode($id); ?>" class="text-sm text-slate-700 hover:underline">Buka Halaman Edit</a>
                 </div>
             </div>
 
             <div class="bg-white rounded-lg shadow-sm px-6 py-6 max-w-screen">
+                <div class="flex justify-between items-center mb-8">
+                    <a href="aktif.php" class="flex items-center text-2xl border-b">
+                        <svg class="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                        </svg>
+                        Kembali
+                    </a>
+                </div>
                 <?php if ($notFound): ?>
                     <div class="p-4 mb-4 text-red-700 bg-red-50 border border-red-200 rounded">Data arsip tidak ditemukan untuk ID yang diberikan.</div>
                 <?php endif; ?>
@@ -117,14 +136,9 @@ if (!empty($id)) {
                             <textarea rows="3" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2"><?php echo htmlspecialchars($item['keterangan']); ?></textarea>
                         </div>
                     </div>
-
-                    <div class="flex items-center gap-3">
-                        <button type="submit" id="saveBtn" class="bg-cyan-600 hover:bg-cyan-600/90 text-white px-4 py-2 rounded-md hidden">Simpan</button>
-                        <button type="button" id="cancelBtn" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md hidden">Batal</button>
-                    </div>
                 </form>
 
-                <div class="mt-8">
+                <div class="mt-5">
                     <h3 class="text-lg font-medium text-gray-900 mb-3">File Arsip (Preview PDF)</h3>
                     <div class="border border-dashed border-gray-300 rounded-md p-4 bg-gray-50">
                         <?php if (!empty($pdfUrl)) : ?>
@@ -135,48 +149,12 @@ if (!empty($id)) {
                         <?php endif; ?>
                     </div>
                 </div>
-                <button type="button" id="toggleEditBtn" class="bg-slate-700 hover:bg-slate-700/90 text-white px-4 py-2 rounded-md">Edit</button>
+                <a href="edit_aktif.php?id=<?php echo urlencode($id); ?>" class="bg-slate-700 hover:bg-slate-700/90 text-white px-4 py-2 mt-4 rounded-md inline-flex items-center">Edit</a>
             </div>
         </div>
     </div>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function () {
-    const form = document.getElementById('detailForm');
-    const inputs = form.querySelectorAll('input, select, textarea');
-    const toggleBtn = document.getElementById('toggleEditBtn');
-    const saveBtn = document.getElementById('saveBtn');
-    const cancelBtn = document.getElementById('cancelBtn');
 
-    function setDisabled(state) {
-        inputs.forEach(el => {
-            el.disabled = state;
-            if (state) {
-                el.classList.add('bg-gray-50', 'border-gray-200');
-                el.classList.remove('border-gray-300');
-            } else {
-                el.classList.remove('bg-gray-50');
-                el.classList.add('border-gray-300');
-            }
-        });
-    }
-
-    toggleBtn.addEventListener('click', function () {
-        const isDisabled = inputs[0].disabled;
-        setDisabled(!isDisabled);
-        saveBtn.classList.toggle('hidden');
-        cancelBtn.classList.toggle('hidden');
-        toggleBtn.textContent = isDisabled ? 'Edit' : 'Selesai Edit';
-    });
-
-    cancelBtn.addEventListener('click', function () {
-        setDisabled(true);
-        saveBtn.classList.add('hidden');
-        cancelBtn.classList.add('hidden');
-        toggleBtn.textContent = 'Edit';
-    });
-});
-</script>
 
 <?php include_once "../layouts/master/footer.php"; ?>

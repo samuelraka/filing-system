@@ -49,7 +49,6 @@ $pdfUrl = isset($_GET['file']) ? $_GET['file'] : '';
             <div class="flex justify-between items-center mb-8">
                 <div class="flex items-center gap-3">
                     <h2 class="text-3xl font-medium text-slate-700">Edit Arsip Vital</h2>
-                    <span class="text-sm text-gray-500">#<?php echo htmlspecialchars($item['id_arsip']); ?></span>
                 </div>
                 <div class="flex items-center gap-3">
                     <a href="detail_vital.php?id=<?php echo htmlspecialchars($item['id_arsip']); ?>" class="text-sm text-cyan-700 hover:underline">Kembali ke Detail</a>
@@ -65,10 +64,10 @@ $pdfUrl = isset($_GET['file']) ? $_GET['file'] : '';
                 <?php endif; ?>
                 <form action="#" method="post" class="space-y-6">
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
+                        <!-- <div>
                             <label class="block text-sm font-medium text-gray-700">No</label>
                             <input type="text" value="<?php echo htmlspecialchars($item['id_arsip']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2" disabled>
-                        </div>
+                        </div> -->
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Uraian Arsip</label>
                             <input type="text" value="<?php echo htmlspecialchars($item['jenis_arsip']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
@@ -126,7 +125,7 @@ $pdfUrl = isset($_GET['file']) ? $_GET['file'] : '';
                     </div>
                 </form>
 
-                <div class="mt-8">
+                <!-- <div class="mt-8">
                     <h3 class="text-lg font-medium text-gray-900 mb-3">File Arsip (Preview PDF)</h3>
                     <div class="border border-dashed border-gray-300 rounded-md p-4 bg-gray-50">
                         <?php if (!empty($pdfUrl)) : ?>
@@ -136,7 +135,7 @@ $pdfUrl = isset($_GET['file']) ? $_GET['file'] : '';
                             <div class="flex items-center justify-center h-64 text-gray-400">Preview PDF akan ditampilkan di sini.</div>
                         <?php endif; ?>
                     </div>
-                </div>
+                </div> -->
             </div>
         </div>
     </div>
