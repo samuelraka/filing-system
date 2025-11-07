@@ -513,6 +513,9 @@
   .h-screen {
     height: 100vh;
   }
+  .max-h-\[calc\(100vh-400px\)\] {
+    max-height: calc(100vh - 400px);
+  }
   .max-h-screen {
     max-height: 100vh;
   }
