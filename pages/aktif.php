@@ -1,6 +1,77 @@
 <?php
-// Include header
 include_once "../layouts/master/header.php";
+include_once "../config/database.php";
+
+// === Pagination Config ===
+$limit = 10;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($page < 1) $page = 1;
+$offset = ($page - 1) * $limit;
+
+// === Ambil parameter pencarian & filter ===
+$keyword = isset($_GET['search']) ? trim($_GET['search']) : '';
+$filter_kode = isset($_GET['kode']) ? trim($_GET['kode']) : '';
+$filter_skaad = isset($_GET['skaad']) ? trim($_GET['skaad']) : '';
+
+// === Bangun kondisi WHERE dinamis ===
+$where = "WHERE 1=1";
+
+if ($keyword !== '') {
+    $keyword_safe = mysqli_real_escape_string($conn, $keyword);
+    $where .= " AND (
+        ia.tanggal LIKE '%$keyword_safe%' OR
+        ssm.kode_subsub LIKE '%$keyword_safe%' OR
+        ia.keterangan_skaad LIKE '%$keyword_safe%'
+    )";
+}
+
+if ($filter_kode !== '') {
+    $kode_safe = mysqli_real_escape_string($conn, $filter_kode);
+    $where .= " AND ssm.kode_subsub = '$kode_safe'";
+}
+
+if ($filter_skaad !== '') {
+    $skaad_safe = mysqli_real_escape_string($conn, $filter_skaad);
+    $where .= " AND ia.keterangan_skaad = '$skaad_safe'";
+}
+
+// === Hitung total data untuk pagination ===
+$total_result = mysqli_query($conn, "
+    SELECT COUNT(*) AS total
+    FROM item_arsip ia
+    LEFT JOIN arsip_aktif aa ON ia.id_arsip = aa.id_arsip
+    LEFT JOIN sub_sub_masalah ssm ON aa.id_subsub = ssm.id_subsub
+    $where
+");
+$total_row = mysqli_fetch_assoc($total_result);
+$total_data = $total_row['total'];
+$total_pages = ceil($total_data / $limit);
+
+// === Ambil data sesuai page & filter ===
+$query = "
+    SELECT 
+        aa.id_arsip,
+        aa.nomor_berkas,
+        aa.jumlah_item,
+        aa.keterangan AS keterangan_berkas,
+        ssm.kode_subsub AS kode_klasifikasi,
+        ia.id_item,
+        ia.nomor_item,
+        ia.tanggal,
+        ia.keterangan_skaad,
+        ia.uraian_informasi
+    FROM item_arsip ia
+    LEFT JOIN arsip_aktif aa ON ia.id_arsip = aa.id_arsip
+    LEFT JOIN sub_sub_masalah ssm ON aa.id_subsub = ssm.id_subsub
+    $where
+    ORDER BY aa.nomor_berkas ASC, ia.nomor_item ASC
+    LIMIT $limit OFFSET $offset
+";
+$result = mysqli_query($conn, $query);
+
+// Ambil data dropdown untuk filter
+$kode_result = mysqli_query($conn, "SELECT DISTINCT kode_subsub FROM sub_sub_masalah ORDER BY kode_subsub ASC");
+$skaad_result = mysqli_query($conn, "SELECT DISTINCT keterangan_skaad FROM item_arsip ORDER BY keterangan_skaad ASC");
 ?>
 
 <div class="flex h-screen">
@@ -12,7 +83,7 @@ include_once "../layouts/master/header.php";
         <?php include_once "../layouts/components/topbar.php"; ?>
 
         <!-- Main content -->
-        <div class="p-6 mt-16 overflow-y-auto max-w-[calc(100vw-16rem)] flex-1">
+        <div class="p-6 mt-16 overflow-y-auto">
             <!-- Header with search and add user button -->
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-3xl font-medium text-slate-700">Arsip Aktif</h2>
@@ -98,111 +169,81 @@ include_once "../layouts/master/header.php";
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                <!-- Archive 1 with 3 documents -->
-                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Biasa" data-year="2023" data-kode="101.2">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 align-top" rowspan="3">A-001</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1001</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">101.2</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-left text-gray-900">Surat Keputusan Direktur</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2023-01-10</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">5</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center">
-                                        <span class="bg-green-50 text-green-600 px-2 py-1 rounded-full text-sm">Biasa</span>
-                                    </td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Arsip penting</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <a href="detail_aktif.php?id=IT-1001" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
-                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Terbatas" data-year="2022" data-kode="101.3">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1002</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">101.3</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-left text-gray-900">Laporan Tahunan</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2022-12-05</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">3</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center">
-                                        <span class="bg-yellow-50 text-yellow-700 px-2 py-1 rounded-full text-sm">Terbatas</span>
-                                    </td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Perlu verifikasi</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <a href="detail_aktif.php?id=IT-1002" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
-                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Biasa" data-year="2021" data-kode="101.4">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1003</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">101.4</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-left text-gray-900">Dokumen Kontrak</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2021-07-21</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center">
-                                        <span class="bg-green-50 text-green-600 px-2 py-1 rounded-full text-sm">Biasa</span>
-                                    </td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Sudah diverifikasi</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <a href="detail_aktif.php?id=IT-1003" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
-                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </a>
-                                    </td>
-                                </tr>
-                                
-                                <!-- Archive 2 with 2 documents -->
-                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Biasa" data-year="2024" data-kode="102.1">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 align-top" rowspan="2">A-002</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1004</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">102.1</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-left text-gray-900">Berita Acara</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2024-02-15</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">4</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center">
-                                        <span class="bg-green-50 text-green-600 px-2 py-1 rounded-full text-sm">Biasa</span>
-                                    </td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">-</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <a href="detail_aktif.php?id=IT-1004" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
-                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Rahasia" data-year="2023" data-kode="102.2">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1005</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">102.2</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-left text-gray-900">Memo Internal</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2023-11-30</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">1</td>
-                                    <td class="px-3 py-4 whitespace-nowrap">
-                                        <span class="bg-gray-500 px-2 py-1 rounded-full text-sm">Rahasia</span>
-                                    </td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Butuh lampiran</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <a href="detail_aktif.php?id=IT-1005" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
-                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </a>
-                                    </td>
-                                </tr>
-                                
-                                <!-- Archive 3 with 1 document -->
-                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Biasa" data-year="2023" data-kode="103.1">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">A-003</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1006</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">103.1</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-left text-gray-900">Surat Perjanjian</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2023-09-18</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">7</td>
-                                    <td class="px-3 py-4 whitespace-nowrap">
-                                        <span class="bg-green-50 text-green-600 px-2 py-1 rounded-full text-sm">Biasa</span>
-                                    </td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Sudah disetujui</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm font-medium">
-                                        <a href="detail_aktif.php?id=IT-1006" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
-                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </a>
-                                    </td>
-                                </tr>
-                            </tbody>
+                                <?php
+                                require_once "../config/database.php";
+
+                                // Ambil data gabungan arsip & item arsip
+                                $query = "
+                                    SELECT 
+                                        aa.id_arsip,
+                                        aa.nomor_berkas,
+                                        aa.jumlah_item,
+                                        aa.keterangan AS keterangan_berkas,
+                                        ssm.kode_subsub AS kode_klasifikasi,
+                                        ia.id_item,
+                                        ia.nomor_item,
+                                        ia.tanggal,
+                                        ia.keterangan_skaad,
+                                        ia.uraian_singkat,
+                                        ia.uraian_informasi,
+                                        ia.file_path
+                                    FROM arsip_aktif aa
+                                    LEFT JOIN item_arsip ia ON aa.id_arsip = ia.id_arsip
+                                    LEFT JOIN sub_sub_masalah ssm ON aa.id_subsub = ssm.id_subsub
+                                    $where
+                                    ORDER BY aa.nomor_berkas ASC, ia.nomor_item ASC
+                                    LIMIT $limit OFFSET $offset
+                                ";
+
+                                $result = mysqli_query($conn, $query);
+
+                                if (!$result) {
+                                    echo "<tr><td colspan='9' class='text-center text-red-500 py-4'>Gagal mengambil data: " . mysqli_error($conn) . "</td></tr>";
+                                    exit;
+                                }
+
+                                // Kelompokkan berdasarkan nomor_berkas
+                                $arsip_data = [];
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    $arsip_data[$row['nomor_berkas']][] = $row;
+                                }
+
+                                // Loop tampilkan data
+                                foreach ($arsip_data as $nomor_berkas => $items) {
+                                    $rowspan = count($items);
+                                    $first = true;
+
+                                    foreach ($items as $item) {
+                                        echo "<tr class='divide-x divide-gray-200 text-center'>";
+
+                                        // Kolom nomor berkas hanya tampil sekali di atas item pertama
+                                        if ($first) {
+                                            echo "<td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900 align-top font-medium' rowspan='{$rowspan}'>" . htmlspecialchars($nomor_berkas) . "</td>";
+                                            $first = false;
+                                        }
+
+                                        echo "
+                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-500'>" . htmlspecialchars($item['nomor_item']) . "</td>
+                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['kode_klasifikasi']) . "</td>
+                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-left text-gray-900'>" . htmlspecialchars($item['uraian_informasi']) . "</td>
+                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['tanggal']) . "</td>
+                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($items[0]['jumlah_item']) . "</td>
+                                            <td class='px-3 py-4 whitespace-nowrap text-center'>
+                                                <span class='bg-green-50 text-green-600 px-2 py-1 rounded-full text-sm'>" . htmlspecialchars($item['keterangan_skaad']) . "</span>
+                                            </td>
+                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($items[0]['keterangan_berkas']) . "</td>
+                                            <td class='px-3 py-4 whitespace-nowrap text-center text-sm font-medium'>
+                                                <a href='detail_aktif.php?id=" . urlencode($item['id_item']) . "' class='border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm' title='Lihat Detail'>
+                                                    <span class='material-symbols-outlined text-gray-700 text-xs'>quick_reference_all</span>
+                                                </a>
+                                            </td>
+                                        ";
+
+                                        echo "</tr>";
+                                    }
+                                }
+                                ?>
+                                </tbody>
                         </table>
                     </div>
 
@@ -230,75 +271,73 @@ include_once "../layouts/master/header.php";
                                 </svg>
                             </button>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-</div>
+
+<script>
+// Toggle dropdown filter
+const filtersBtn = document.getElementById('filtersBtn');
+const filterDropdown = document.getElementById('filterDropdown');
+
+filtersBtn.addEventListener('click', () => {
+    const isHidden = filterDropdown.classList.contains('hidden');
+    if(isHidden){
+        filterDropdown.classList.remove('hidden', 'opacity-0', 'translate-y-2');
+        filterDropdown.classList.add('opacity-100', 'translate-y-0');
+    } else {
+        filterDropdown.classList.add('hidden', 'opacity-0', 'translate-y-2');
+        filterDropdown.classList.remove('opacity-100', 'translate-y-0');
+    }
+});
+
+// Search by Enter
+document.getElementById('searchInput').addEventListener('keypress', function(e){
+    if(e.key === 'Enter'){
+        const search = e.target.value.trim();
+        const params = new URLSearchParams(window.location.search);
+        params.set('search', search);
+        params.set('page', 1); // reset halaman
+        window.location.search = params.toString();
+    }
+});
+
+// Apply filter button
+document.getElementById('applyFilterBtn').addEventListener('click', () => {
+    const kode = document.getElementById('filterKode').value.trim();
+    const skaad = document.getElementById('filterSkaad').value;
+    const tahun = document.getElementById('filterTahun').value;
+    const params = new URLSearchParams(window.location.search);
+
+    // set atau hapus parameter sesuai input
+    if(kode) params.set('kode', kode); else params.delete('kode');
+    if(skaad) params.set('skaad', skaad); else params.delete('skaad');
+    if(tahun) params.set('tahun', tahun); else params.delete('tahun');
+
+    params.set('page', 1); // reset ke halaman 1
+    window.location.search = params.toString();
+});
+
+// Reset filter button
+document.getElementById('resetFilterBtn').addEventListener('click', () => {
+    document.getElementById('filterKode').value = '';
+    document.getElementById('filterSkaad').value = '';
+    document.getElementById('filterTahun').value = '';
+
+    const params = new URLSearchParams(window.location.search);
+    params.delete('kode');
+    params.delete('skaad');
+    params.delete('tahun');
+    params.set('page', 1);
+
+    window.location.search = params.toString();
+});
+</script>
 
 <?php
 // Include footer
 include_once "../layouts/master/footer.php";
 ?>
-
-<script>
-// Client-side search and filter
-let currentSearch = '';
-
-function applyFilters() {
-  const skaad = document.getElementById('filterSkaad').value;
-  const tahun = document.getElementById('filterTahun').value;
-  const kode = (document.getElementById('filterKode').value || '').trim().toLowerCase();
-  const rows = document.querySelectorAll('tbody tr.divide-x');
-
-  rows.forEach(row => {
-    const rowSkaad = row.dataset.skaad || '';
-    const rowYear = row.dataset.year || '';
-    const rowKode = (row.dataset.kode || '').toLowerCase();
-    const textMatch = row.innerText.toLowerCase().includes(currentSearch);
-
-    const matchSkaad = !skaad || rowSkaad === skaad;
-    const matchTahun = !tahun || rowYear === tahun;
-    const matchKode = !kode || rowKode.includes(kode);
-    const matchSearch = !currentSearch || textMatch;
-
-    row.style.display = (matchSkaad && matchTahun && matchKode && matchSearch) ? '' : 'none';
-  });
-}
-
-document.getElementById('searchInput').addEventListener('keypress', function(e) {
-  if (e.key === 'Enter') {
-    currentSearch = e.target.value.trim().toLowerCase();
-    applyFilters();
-  }
-});
-
-// toggle dropdown filter with animation
-document.getElementById('filtersBtn').addEventListener('click', function() {
-  const dd = document.getElementById('filterDropdown');
-  if (dd.classList.contains('hidden')) {
-    dd.classList.remove('hidden');
-    dd.classList.remove('opacity-0', 'translate-y-2');
-    dd.classList.add('opacity-100', 'translate-y-0');
-  } else {
-    dd.classList.remove('opacity-100', 'translate-y-0');
-    dd.classList.add('opacity-0', 'translate-y-2');
-    setTimeout(() => dd.classList.add('hidden'), 200);
-  }
-});
-
-document.getElementById('applyFilterBtn').addEventListener('click', function() {
-  applyFilters();
-});
-
-document.getElementById('resetFilterBtn').addEventListener('click', function() {
-  document.getElementById('filterSkaad').value = '';
-  document.getElementById('filterTahun').value = '';
-  const kodeEl = document.getElementById('filterKode');
-  if (kodeEl) kodeEl.value = '';
-  document.getElementById('searchInput').value = '';
-  currentSearch = '';
-  applyFilters();
-});
-</script>

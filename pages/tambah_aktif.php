@@ -149,8 +149,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const fileInput = document.getElementById('fileUpload');
     const fileList = document.getElementById('fileList');
     const buatBerkasBaru = document.getElementById('buatBerkasBaru');
+    const idArsipInput = document.getElementById('idArsip'); // hidden input untuk id_arsip
 
-    // ✅ Preview nama file PDF
+    // ✅ Preview nama file
     fileInput.addEventListener('change', function() {
         fileList.innerHTML = '';
         const files = Array.from(this.files);
@@ -165,41 +166,50 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // ✅ Ambil nomor berkas & item arsip berdasarkan id_subsub
-    idSubsub.addEventListener('change', function() {
-        const id_subsub = this.value;
+    // ✅ Ambil nomor berkas & item arsip
+    function getNomorBerkas() {
+        const id_subsub = idSubsub.value;
         const buatBaru = buatBerkasBaru.checked ? 1 : 0;
+        const nomorBerkasValue = nomorBerkas.value ? `&nomor_berkas=${nomorBerkas.value}` : "";
 
         if (!id_subsub) return;
 
-        fetch(`../api/arsip/arsip_aktif/get_nomor_berkas.php?id_subsub=${id_subsub}&buatBaru=${buatBaru}`)
-            .then(response => response.json())
+        fetch(`../api/arsip/arsip_aktif/get_nomor_berkas.php?id_subsub=${id_subsub}&buatBaru=${buatBaru}${nomorBerkasValue}`)
+            .then(res => res.json())
             .then(data => {
-                nomorBerkas.value = data.nomor_berkas || '';
-                nomorItemArsip.value = data.nomor_item || '';
+                console.log("Response get_nomor_berkas:", data);
 
-                // 🔥 Tambahan penting — isi idArsip (jika sudah ada arsip aktif)
-                const idArsipInput = document.getElementById('idArsip');
                 if (data.status === 'existing') {
-                    idArsipInput.value = data.id_arsip; // simpan ID arsip ke hidden input
+                    nomorBerkas.value = data.nomor_berkas;
+                    nomorItemArsip.value = data.nomor_item;
+                    idArsipInput.value = data.id_arsip || '';
                 } else {
-                    idArsipInput.value = ''; // kosongkan jika arsip baru
+                    // Jika buat baru atau belum ada arsip, reset item ke 1
+                    nomorBerkas.value = data.nomor_berkas || '';
+                    nomorItemArsip.value = 1;
+                    idArsipInput.value = '';
                 }
             })
-            .catch(err => console.error("Error:", err));
-    });
+            .catch(err => console.error("Error get_nomor_berkas:", err));
+    }
 
+    // 🔄 Trigger perubahan ketika user pilih kode klasifikasi
+    idSubsub.addEventListener('change', getNomorBerkas);
+
+    // 🔄 Ketika checkbox buat berkas baru dicentang
     buatBerkasBaru.addEventListener("change", function() {
-        const nomorBerkasInput = document.getElementById('nomorBerkas');
         if (this.checked) {
-            nomorBerkasInput.removeAttribute('readonly');
-            nomorBerkasInput.focus();
+            nomorBerkas.removeAttribute('readonly');
+            nomorBerkas.focus();
+            nomorItemArsip.value = 1; // reset item arsip
+            idArsipInput.value = '';  // kosongkan id arsip
         } else {
-            nomorBerkasInput.setAttribute('readonly', true);
+            nomorBerkas.setAttribute('readonly', true);
+            getNomorBerkas(); // ambil ulang data default
         }
     });
 
-    // ✅ Submit form ke PHP backend
+    // ✅ Saat form disubmit
     archiveForm.addEventListener('submit', function(e) {
         e.preventDefault();
 
@@ -229,7 +239,6 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
-
 
 <?php
 // Include footer
