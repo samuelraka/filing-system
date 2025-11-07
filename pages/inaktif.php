@@ -51,6 +51,10 @@ include_once "../layouts/master/header.php";
                         <div id="filterDropdown" class="absolute right-0 top-[calc(100%+8px)] w-80 bg-white border border-gray-200 rounded-md shadow-lg p-4 transition-transform duration-150 ease-out transform opacity-0 scale-95 pointer-events-none" style="z-index: 50;">
                             <div class="space-y-3">
                                 <div>
+                                    <label for="filterKode" class="block text-sm font-medium text-gray-700">Kode Klasifikasi</label>
+                                    <input id="filterKode" type="text" placeholder="mis. 201.1" class="mt-1 w-full border border-gray-300 rounded-md px-2 py-1 text-sm" />
+                                </div>
+                                <div>
                                     <label for="filterTk" class="block text-sm font-medium text-gray-700">Tingkat Perkembangan</label>
                                     <select id="filterTk" class="mt-1 w-full border border-gray-300 rounded-md px-2 py-1 text-sm">
                                         <option value="">Semua</option>
@@ -111,7 +115,7 @@ include_once "../layouts/master/header.php";
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 <!-- Archive 1 with 3 documents -->
-                                <tr class="divide-x divide-gray-200 text-center" data-tk="Asli" data-lok="Gudang Arsip Rak A-1" data-kat="Keuangan">
+                                <tr class="divide-x divide-gray-200 text-center" data-tk="Asli" data-lok="Gudang Arsip Rak A-1" data-kat="Keuangan" data-kode="201.1">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 align-top" rowspan="3">IN-001</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">INA-1001</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">201.1</td>
@@ -130,7 +134,7 @@ include_once "../layouts/master/header.php";
                                         </a>
                                     </td>
                                 </tr>
-                                <tr class="divide-x divide-gray-200 text-center" data-tk="Copy" data-lok="Gudang Arsip Rak A-1" data-kat="Keuangan">
+                                <tr class="divide-x divide-gray-200 text-center" data-tk="Copy" data-lok="Gudang Arsip Rak A-1" data-kat="Keuangan" data-kode="201.2">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">INA-1002</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">201.2</td>
                                     <td class="px-3 py-4 text-left whitespace-nowrap">Laporan Keuangan Triwulan</td>
@@ -148,7 +152,7 @@ include_once "../layouts/master/header.php";
                                         </a>
                                     </td>
                                 </tr>
-                                <tr class="divide-x divide-gray-200 text-center" data-tk="Asli" data-lok="Gudang Arsip Rak A-1" data-kat="Pajak">
+                                <tr class="divide-x divide-gray-200 text-center" data-tk="Asli" data-lok="Gudang Arsip Rak A-1" data-kat="Pajak" data-kode="201.3">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">INA-1003</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">201.3</td>
                                     <td class="px-3 py-4 text-left whitespace-nowrap">Dokumen Pajak Tahunan</td>
@@ -168,7 +172,7 @@ include_once "../layouts/master/header.php";
                                 </tr>
                                 
                                 <!-- Archive 2 with 2 documents -->
-                                <tr class="divide-x divide-gray-200 text-center" data-tk="Copy" data-lok="Gudang Arsip Rak A-2" data-kat="Proyek">
+                                <tr class="divide-x divide-gray-200 text-center" data-tk="Copy" data-lok="Gudang Arsip Rak A-2" data-kat="Proyek" data-kode="202.1">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 align-top" rowspan="2">IN-002</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">INA-1004</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">202.1</td>
@@ -187,7 +191,7 @@ include_once "../layouts/master/header.php";
                                         </a>
                                     </td>
                                 </tr>
-                                <tr class="divide-x divide-gray-200 text-center" data-tk="Asli" data-lok="Gudang Arsip Rak A-2" data-kat="Proyek">
+                                <tr class="divide-x divide-gray-200 text-center" data-tk="Asli" data-lok="Gudang Arsip Rak A-2" data-kat="Proyek" data-kode="202.2">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">INA-1005</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">202.2</td>
                                     <td class="px-3 py-4 text-left whitespace-nowrap">Dokumen Kontrak Proyek</td>
@@ -207,7 +211,7 @@ include_once "../layouts/master/header.php";
                                 </tr>
                                 
                                 <!-- Archive 3 with 1 document -->
-                                <tr class="divide-x divide-gray-200 text-center" data-tk="Copy" data-lok="Gudang Arsip Rak B-1" data-kat="Surat Menyurat">
+                                <tr class="divide-x divide-gray-200 text-center" data-tk="Copy" data-lok="Gudang Arsip Rak B-1" data-kat="Surat Menyurat" data-kode="203.1">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">IN-003</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">INA-1006</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">203.1</td>
@@ -269,6 +273,7 @@ include_once "../layouts/master/header.php";
   const searchInput = document.getElementById('searchInput');
   const resetBtn = document.getElementById('resetFilters');
   const applyBtn = document.getElementById('applyFilters');
+  const filterKode = document.getElementById('filterKode');
   const filterTk = document.getElementById('filterTk');
   const filterLok = document.getElementById('filterLok');
   const filterKat = document.getElementById('filterKat');
@@ -292,18 +297,21 @@ include_once "../layouts/master/header.php";
 
   function getFilteredRows() {
     const term = (searchInput?.value || '').trim().toLowerCase();
+    const kodeVal = (filterKode?.value || '').trim().toLowerCase();
     const tkVal = (filterTk?.value || '').toLowerCase();
     const lokVal = (filterLok?.value || '').toLowerCase();
     const katVal = (filterKat?.value || '').toLowerCase();
     return rows.filter(row => {
+      const kode = (row.dataset.kode || '').toLowerCase();
       const tk = (row.dataset.tk || '').toLowerCase();
       const lok = (row.dataset.lok || '').toLowerCase();
       const kat = (row.dataset.kat || '').toLowerCase();
       const matchSearch = term === '' || row.textContent.toLowerCase().includes(term);
+      const matchKode = kodeVal === '' || kode.includes(kodeVal);
       const matchTk = tkVal === '' || tk === tkVal;
       const matchLok = lokVal === '' || lok === lokVal;
       const matchKat = katVal === '' || kat === katVal;
-      return matchSearch && matchTk && matchLok && matchKat;
+      return matchSearch && matchKode && matchTk && matchLok && matchKat;
     });
   }
 
@@ -359,6 +367,7 @@ include_once "../layouts/master/header.php";
 
   if (resetBtn) {
     resetBtn.addEventListener('click', () => {
+      if (filterKode) filterKode.value = '';
       if (filterTk) filterTk.value = '';
       if (filterLok) filterLok.value = '';
       if (filterKat) filterKat.value = '';

@@ -47,7 +47,11 @@ include_once "../layouts/master/header.php";
                             Filters
                         </button>
                         <!-- Dropdown filter anchored under button -->
-                        <div id="filterDropdown" class="hidden absolute top-full right-0 mt-2 z-50 bg-white border border-gray-200 rounded-md shadow p-4 w-[300px] transition ease-out duration-200 transform origin-top-right opacity-0 translate-y-2">
+                        <div id="filterDropdown" class="hidden absolute top-full right-0 mt-2 z-50 bg-white border border-gray-200 rounded-md shadow p-4 w-[320px] transition ease-out duration-200 transform origin-top-right opacity-0 translate-y-2">
+                            <div class="mb-3">
+                                <label for="filterKode" class="block text-sm text-gray-700 font-medium">Kode Klasifikasi</label>
+                                <input id="filterKode" type="text" placeholder="mis. 101.2" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2" />
+                            </div>
                             <div class="mb-3">
                                 <label for="filterSkaad" class="block text-sm text-gray-700 font-medium">Keterangan SKAAD</label>
                                 <select id="filterSkaad" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
@@ -95,7 +99,7 @@ include_once "../layouts/master/header.php";
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
                                 <!-- Archive 1 with 3 documents -->
-                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Biasa" data-year="2023">
+                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Biasa" data-year="2023" data-kode="101.2">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 align-top" rowspan="3">A-001</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1001</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">101.2</td>
@@ -112,7 +116,7 @@ include_once "../layouts/master/header.php";
                                         </a>
                                     </td>
                                 </tr>
-                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Terbatas" data-year="2022">
+                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Terbatas" data-year="2022" data-kode="101.3">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1002</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">101.3</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-left text-gray-900">Laporan Tahunan</td>
@@ -128,7 +132,7 @@ include_once "../layouts/master/header.php";
                                         </a>
                                     </td>
                                 </tr>
-                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Biasa" data-year="2021">
+                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Biasa" data-year="2021" data-kode="101.4">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1003</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">101.4</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-left text-gray-900">Dokumen Kontrak</td>
@@ -146,7 +150,7 @@ include_once "../layouts/master/header.php";
                                 </tr>
                                 
                                 <!-- Archive 2 with 2 documents -->
-                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Biasa" data-year="2024">
+                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Biasa" data-year="2024" data-kode="102.1">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 align-top" rowspan="2">A-002</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1004</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">102.1</td>
@@ -163,7 +167,7 @@ include_once "../layouts/master/header.php";
                                         </a>
                                     </td>
                                 </tr>
-                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Rahasia" data-year="2023">
+                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Rahasia" data-year="2023" data-kode="102.2">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1005</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">102.2</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-left text-gray-900">Memo Internal</td>
@@ -181,7 +185,7 @@ include_once "../layouts/master/header.php";
                                 </tr>
                                 
                                 <!-- Archive 3 with 1 document -->
-                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Biasa" data-year="2023">
+                                <tr class="divide-x divide-gray-200 text-center" data-skaad="Biasa" data-year="2023" data-kode="103.1">
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">A-003</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">IT-1006</td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">103.1</td>
@@ -245,18 +249,21 @@ let currentSearch = '';
 function applyFilters() {
   const skaad = document.getElementById('filterSkaad').value;
   const tahun = document.getElementById('filterTahun').value;
+  const kode = (document.getElementById('filterKode').value || '').trim().toLowerCase();
   const rows = document.querySelectorAll('tbody tr.divide-x');
 
   rows.forEach(row => {
     const rowSkaad = row.dataset.skaad || '';
     const rowYear = row.dataset.year || '';
+    const rowKode = (row.dataset.kode || '').toLowerCase();
     const textMatch = row.innerText.toLowerCase().includes(currentSearch);
 
     const matchSkaad = !skaad || rowSkaad === skaad;
     const matchTahun = !tahun || rowYear === tahun;
+    const matchKode = !kode || rowKode.includes(kode);
     const matchSearch = !currentSearch || textMatch;
 
-    row.style.display = (matchSkaad && matchTahun && matchSearch) ? '' : 'none';
+    row.style.display = (matchSkaad && matchTahun && matchKode && matchSearch) ? '' : 'none';
   });
 }
 
@@ -288,6 +295,8 @@ document.getElementById('applyFilterBtn').addEventListener('click', function() {
 document.getElementById('resetFilterBtn').addEventListener('click', function() {
   document.getElementById('filterSkaad').value = '';
   document.getElementById('filterTahun').value = '';
+  const kodeEl = document.getElementById('filterKode');
+  if (kodeEl) kodeEl.value = '';
   document.getElementById('searchInput').value = '';
   currentSearch = '';
   applyFilters();

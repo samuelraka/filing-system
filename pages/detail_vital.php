@@ -9,7 +9,7 @@ $idParam = isset($_GET['id']) ? $_GET['id'] : null;
 $item = null;
 if ($idParam !== null && is_numeric($idParam)) {
     $id = (int)$idParam;
-    $stmt = $conn->prepare("SELECT id_arsip, uraian_arsip, unit_kerja, kurun_waktu, media, jumlah, jangka_simpan, lokasi_simpan, metode_perlindungan, keterangan FROM arsip_vital WHERE id_arsip = ?");
+    $stmt = $conn->prepare("SELECT id_arsip, jenis_arsip, tingkat_perkembangan, kurun_tahun, media, jumlah, jangka_simpan, lokasi_simpan, metode_perlindungan, keterangan FROM arsip_vital WHERE id_arsip = ?");
     if ($stmt) {
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -24,9 +24,9 @@ if (!$item) {
     $notFound = true;
     $item = [
         'id_arsip' => '',
-        'uraian_arsip' => '',
-        'unit_kerja' => '',
-        'kurun_waktu' => '',
+        'jenis_arsip' => '',
+        'tingkat_perkembangan' => '',
+        'kurun_tahun' => '',
         'media' => '',
         'jumlah' => '',
         'jangka_simpan' => '',
@@ -70,17 +70,16 @@ $pdfUrl = isset($_GET['file']) ? $_GET['file'] : '';
                             <input type="text" value="<?php echo htmlspecialchars($item['id_arsip']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Uraian Arsip</label>
-                            <input type="text" value="<?php echo htmlspecialchars($item['uraian_arsip']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700">Unit Kerja</label>
-                            <input type="text" value="<?php echo htmlspecialchars($item['unit_kerja']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
+                            <label class="block text-sm font-medium text-gray-700">Jenis Arsip</label>
+                            <input type="text" value="<?php echo htmlspecialchars($item['jenis_arsip']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Kurun Waktu</label>
-                            <input type="text" value="<?php echo htmlspecialchars($item['kurun_waktu']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
+                            <label class="block text-sm font-medium text-gray-700">Tingkat Perkembangan</label>
+                            <input type="text" value="<?php echo htmlspecialchars($item['tingkat_perkembangan']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Kurun Tahun</label>
+                            <input type="text" value="<?php echo htmlspecialchars($item['kurun_tahun']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
                         </div>
 
                         <div>

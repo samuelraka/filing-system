@@ -9,7 +9,7 @@ $idParam = isset($_GET['id']) ? $_GET['id'] : null;
 $item = null;
 if ($idParam !== null && is_numeric($idParam)) {
     $id = (int)$idParam;
-    $stmt = $conn->prepare("SELECT id_arsip, uraian_arsip, unit_kerja, kurun_waktu, media, jumlah, jangka_simpan, lokasi_simpan, metode_perlindungan, keterangan FROM arsip_vital WHERE id_arsip = ?");
+    $stmt = $conn->prepare("SELECT id_arsip, jenis_arsip, tingkat_perkembangan, kurun_tahun, media, jumlah, jangka_simpan, lokasi_simpan, metode_perlindungan, keterangan FROM arsip_vital WHERE id_arsip = ?");
     if ($stmt) {
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -24,9 +24,9 @@ if (!$item) {
     $notFound = true;
     $item = [
         'id_arsip' => '',
-        'uraian_arsip' => '',
-        'unit_kerja' => '',
-        'kurun_waktu' => '',
+        'jenis_arsip' => '',
+        'tingkat_perkembangan' => '',
+        'kurun_tahun' => '',
         'media' => '',
         'jumlah' => '',
         'jangka_simpan' => '',
@@ -71,7 +71,11 @@ $pdfUrl = isset($_GET['file']) ? $_GET['file'] : '';
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Uraian Arsip</label>
-                            <input type="text" value="<?php echo htmlspecialchars($item['uraian_arsip']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                            <input type="text" value="<?php echo htmlspecialchars($item['jenis_arsip']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Tingkat Perkembangan</label>
+                            <input type="text" value="<?php echo htmlspecialchars($item['tingkat_perkembangan']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
                         </div>
 
                         <div>
@@ -79,8 +83,8 @@ $pdfUrl = isset($_GET['file']) ? $_GET['file'] : '';
                             <input type="text" value="<?php echo htmlspecialchars($item['unit_kerja']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
                         </div>
                         <div>
-                            <label class="block text-sm font-medium text-gray-700">Kurun Waktu</label>
-                            <input type="text" value="<?php echo htmlspecialchars($item['kurun_waktu']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                            <label class="block text-sm font-medium text-gray-700">Kurun Tahun</label>
+                            <input type="text" value="<?php echo htmlspecialchars($item['kurun_tahun']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
                         </div>
 
                         <div>

@@ -13,6 +13,7 @@ $keyword = isset($_GET['search']) ? trim($_GET['search']) : '';
 $filter_media = isset($_GET['media']) ? trim($_GET['media']) : '';
 $filter_lokasi = isset($_GET['lokasi']) ? trim($_GET['lokasi']) : '';
 $filter_metode = isset($_GET['metode']) ? trim($_GET['metode']) : '';
+$filter_kode = isset($_GET['kode']) ? trim($_GET['kode']) : '';
 
 // WHERE dinamis
 $where = "WHERE 1=1";
@@ -37,6 +38,11 @@ if ($filter_lokasi !== '') {
 if ($filter_metode !== '') {
     $metode_safe = mysqli_real_escape_string($conn, $filter_metode);
     $where .= " AND v.metode_perlindungan = '$metode_safe'";
+}
+
+if ($filter_kode !== '') {
+    $kode_safe = mysqli_real_escape_string($conn, $filter_kode);
+    $where .= " AND v.kode_klasifikasi LIKE '%$kode_safe%'";
 }
 
 // Hitung total data
@@ -106,7 +112,11 @@ $metode_result = mysqli_query($conn, "SELECT DISTINCT metode_perlindungan FROM a
                             Filters
                         </button>
                         <!-- Dropdown filter anchored under button -->
-                        <div id="filterDropdown" class="hidden absolute top-full right-0 mt-2 z-50 bg-white border border-gray-200 rounded-md shadow p-4 w-[320px] transition ease-out duration-200 transform origin-top-right opacity-0 translate-y-2">
+                        <div id="filterDropdown" class="hidden absolute top-full right-0 mt-2 z-50 bg-white border border-gray-200 rounded-md shadow p-4 w-[360px] transition ease-out duration-200 transform origin-top-right opacity-0 translate-y-2">
+                            <div class="mb-3">
+                                <label for="filterKode" class="block text-sm text-gray-700 font-medium">Kode Klasifikasi</label>
+                                <input id="filterKode" type="text" value="<?= htmlspecialchars($filter_kode) ?>" placeholder="mis. 123.45" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                            </div>
                             <div class="mb-3">
                                 <label for="filterMedia" class="block text-sm text-gray-700 font-medium">Media</label>
                                 <select id="filterMedia" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
@@ -160,9 +170,9 @@ $metode_result = mysqli_query($conn, "SELECT DISTINCT metode_perlindungan FROM a
                             <thead class="bg-gray-50">
                                 <tr class="divide-x divide-gray-200 text-center">
                                     <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">No</th>
-                                    <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Uraian Arsip</th>
-                                    <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Unit Kerja</th>
-                                    <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Kurun Waktu</th>
+                                    <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Jenis/Series Arsip</th>
+                                    <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Tingkat Perkembangan</th>
+                                    <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Kurun Tahun</th>
                                     <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Media</th>
                                     <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah</th>
                                     <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Jangka Simpan</th>
@@ -178,9 +188,9 @@ $metode_result = mysqli_query($conn, "SELECT DISTINCT metode_perlindungan FROM a
                                     <?php while ($row = mysqli_fetch_assoc($result)): ?>
                                         <tr class="hover:bg-gray-50 divide-x divide-gray-200">
                                             <td class="px-3 py-4 text-center"><?= $no++; ?></td>
-                                            <td class="px-3 py-4"><?= htmlspecialchars($row['uraian_arsip']); ?></td>
-                                            <td class="px-3 py-4 text-center"><?= htmlspecialchars($row['unit_kerja']); ?></td>
-                                            <td class="px-3 py-4 text-center"><?= htmlspecialchars($row['kurun_waktu']); ?></td>
+                                            <td class="px-3 py-4"><?= htmlspecialchars($row['jenis_arsip']); ?></td>
+                                            <td class="px-3 py-4 text-center"><?= htmlspecialchars($row['tingkat_perkembangan']); ?></td>
+                                            <td class="px-3 py-4 text-center"><?= htmlspecialchars($row['kurun_tahun']); ?></td>
                                             <td class="px-3 py-4 text-center"><?= htmlspecialchars($row['media']); ?></td>
                                             <td class="px-3 py-4 text-center"><?= htmlspecialchars($row['jumlah']); ?></td>
                                             <td class="px-3 py-4 text-center"><?= htmlspecialchars($row['jangka_simpan']); ?></td>
@@ -212,15 +222,15 @@ $metode_result = mysqli_query($conn, "SELECT DISTINCT metode_perlindungan FROM a
                         </p>
                         <div class="flex items-center space-x-1">
                             <?php if ($page > 1): ?>
-                                <a href="?page=<?= $page - 1 ?>&search=<?= $keyword ?>&media=<?= $filter_media ?>&lokasi=<?= $filter_lokasi ?>&metode=<?= $filter_metode ?>" class="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100">&laquo; Sebelumnya</a>
+                                <a href="?page=<?= $page - 1 ?>&search=<?= $keyword ?>&media=<?= $filter_media ?>&lokasi=<?= $filter_lokasi ?>&metode=<?= $filter_metode ?>&kode=<?= $filter_kode ?>" class="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100">&laquo; Sebelumnya</a>
                             <?php endif; ?>
 
                             <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                                <a href="?page=<?= $i ?>&search=<?= $keyword ?>&media=<?= $filter_media ?>&lokasi=<?= $filter_lokasi ?>&metode=<?= $filter_metode ?>" class="px-3 py-1 border border-gray-300 rounded-md text-sm <?= ($i == $page) ? 'bg-cyan-600 text-white' : 'hover:bg-gray-100' ?>"><?= $i ?></a>
+                                <a href="?page=<?= $i ?>&search=<?= $keyword ?>&media=<?= $filter_media ?>&lokasi=<?= $filter_lokasi ?>&metode=<?= $filter_metode ?>&kode=<?= $filter_kode ?>" class="px-3 py-1 border border-gray-300 rounded-md text-sm <?= ($i == $page) ? 'bg-cyan-600 text-white' : 'hover:bg-gray-100' ?>"><?= $i ?></a>
                             <?php endfor; ?>
 
                             <?php if ($page < $total_pages): ?>
-                                <a href="?page=<?= $page + 1 ?>&search=<?= $keyword ?>&media=<?= $filter_media ?>&lokasi=<?= $filter_lokasi ?>&metode=<?= $filter_metode ?>" class="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100">Berikutnya &raquo;</a>
+                                <a href="?page=<?= $page + 1 ?>&search=<?= $keyword ?>&media=<?= $filter_media ?>&lokasi=<?= $filter_lokasi ?>&metode=<?= $filter_metode ?>&kode=<?= $filter_kode ?>" class="px-3 py-1 border border-gray-300 rounded-md text-sm hover:bg-gray-100">Berikutnya &raquo;</a>
                             <?php endif; ?>
                         </div>
                     </div>
@@ -260,11 +270,13 @@ document.getElementById('applyFilterBtn').addEventListener('click', function() {
     const media = document.getElementById('filterMedia').value;
     const lokasi = document.getElementById('filterLokasi').value;
     const metode = document.getElementById('filterMetode').value;
+    const kode = (document.getElementById('filterKode').value || '').trim();
     const params = new URLSearchParams(window.location.search);
 
     if (media) params.set('media', media); else params.delete('media');
     if (lokasi) params.set('lokasi', lokasi); else params.delete('lokasi');
     if (metode) params.set('metode', metode); else params.delete('metode');
+    if (kode) params.set('kode', kode); else params.delete('kode');
     params.set('page', 1);
     window.location.search = params.toString();
 });
@@ -274,11 +286,14 @@ document.getElementById('resetFilterBtn').addEventListener('click', function() {
     document.getElementById('filterMedia').value = '';
     document.getElementById('filterLokasi').value = '';
     document.getElementById('filterMetode').value = '';
+    const kodeEl = document.getElementById('filterKode');
+    if (kodeEl) kodeEl.value = '';
 
     const params = new URLSearchParams(window.location.search);
     params.delete('media');
     params.delete('lokasi');
     params.delete('metode');
+    params.delete('kode');
     params.set('page', 1);
     window.location.search = params.toString();
 });
