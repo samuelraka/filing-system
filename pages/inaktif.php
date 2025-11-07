@@ -1,6 +1,98 @@
 <?php
 // Include header
 include_once "../layouts/master/header.php";
+include_once "../config/database.php";
+
+// == Pagination ==
+$limit = 10;
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+if ($page < 1) $page = 1;
+$offset = ($page - 1) * $limit;
+
+// === Ambil parameter pencarian & filter ===
+$keyword = isset($_GET['search']) ? trim($_GET['search']) : '';
+$filter_kode = isset($_GET['kode']) ? trim($_GET['kode']) : '';
+$filter_tk = isset($_GET['tk']) ? trim($_GET['tk']) : '';
+$filterLok = isset($_GET['lok']) ? trim($_GET['lok']) : '';
+$filterKat = isset($_GET['kat']) ? trim($_GET['kat']) : '';
+
+// === Bangun kondisi WHERE dinamis ===
+$where = "WHERE 1=1";
+
+if ($keyword !== '') {
+    $keyword_safe = mysqli_real_escape_string($conn, $keyword);
+    $where .= " AND (
+        ia.tanggal LIKE '%$keyword_safe%' OR
+        ssm.kode_subsub LIKE '%$keyword_safe%' OR
+        ia.tingkat_perkembangan LIKE '%$keyword_safe%' OR
+        ia.lokasi_simpan LIKE '%$keyword_safe%' OR
+        ia.kategori_arsip LIKE '%$keyword_safe%'
+    )";
+}
+
+if ($filter_kode !== '') {
+    $kode_safe = mysqli_real_escape_string($conn, $filter_kode);
+    $where .= " AND ssm.kode_subsub = '$kode_safe'";
+}
+
+if ($filter_tk !== '') {
+    $tk_safe = mysqli_real_escape_string($conn, $filter_tk);
+    $where .= " AND ia.tingkat_perkembangan = '$tk_safe'";
+}
+
+if ($filterLok !== '') {
+    $lok_safe = mysqli_real_escape_string($conn, $filterLok);
+    $where .= " AND ia.lokasi_simpan = '$lok_safe'";
+}
+
+if ($filterKat !== '') {
+    $kat_safe = mysqli_real_escape_string($conn, $filterKat);
+    $where .= " AND ia.kategori_arsip = '$kat_safe'";
+}
+
+// === Hitung total data untuk pagination ===
+$total_result = mysqli_query($conn, "
+    SELECT COUNT(*) AS total
+    FROM item_arsip_inaktif ia
+    LEFT JOIN arsip_inaktif aa ON ia.id_arsip = aa.id_arsip
+    LEFT JOIN sub_sub_masalah ssm ON aa.id_subsub = ssm.id_subsub
+    $where
+");
+$total_row = mysqli_fetch_assoc($total_result);
+$total_data = $total_row['total'];
+$total_pages = ceil($total_data / $limit);
+
+// === Ambil data sesuai page & filter ===
+$query = "
+    SELECT 
+        ai.id_arsip,
+        ai.nomor_berkas,
+        ai.jumlah_item,
+        ssm.kode_subsub as kode_klasifikasi,
+        ia.id_item,
+        ia.nomor_item,
+        ia.uraian_informasi,
+        ia.kurun_waktu,
+        ia.tingkat_perkembangan,
+        ia.keterangan,
+        ia.nomor_boks,
+        ia.lokasi_simpan,
+        ia.jangka_simpan,
+        ia.kategori_arsip
+    FROM arsip_inaktif ai
+    LEFT JOIN item_arsip_inaktif ia ON ai.id_arsip = ia.id_arsip
+    LEFT JOIN sub_sub_masalah ssm ON ai.id_subsub = ssm.id_subsub
+    $where
+    ORDER BY ai.nomor_berkas ASC, ia.nomor_item ASC
+    LIMIT $limit OFFSET $offset
+";
+$result = mysqli_query($conn, $query);
+
+// Ambil data dropdown untuk filter
+$kode_result = mysqli_query($conn, "SELECT DISTINCT kode_subsub FROM sub_sub_masalah ORDER BY kode_subsub ASC");
+$tk_result = mysqli_query($conn, "SELECT DISTINCT tingkat_perkembangan FROM item_arsip_inaktif ORDER BY tingkat_perkembangan ASC");
+$lok_result = mysqli_query($conn, "SELECT DISTINCT lokasi_simpan FROM item_arsip_inaktif ORDER BY lokasi_simpan ASC");
+$kat_result = mysqli_query($conn, "SELECT DISTINCT kategori_arsip FROM item_arsip_inaktif ORDER BY kategori_arsip ASC");
 ?>
 
 <div class="flex h-screen overflow-x-auto">
@@ -114,122 +206,80 @@ include_once "../layouts/master/header.php";
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                <!-- Archive 1 with 3 documents -->
-                                <tr class="divide-x divide-gray-200 text-center" data-tk="Asli" data-lok="Gudang Arsip Rak A-1" data-kat="Keuangan" data-kode="201.1">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 align-top" rowspan="3">IN-001</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">INA-1001</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">201.1</td>
-                                    <td class="px-3 py-4 text-left whitespace-nowrap">Nota Dinas Internal</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2021-2023</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Asli</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2</td>
-                                    <td class="px-3 py-4 text-left whitespace-nowrap text-sm text-gray-900">Sudah dipindahkan ke gudang</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">F-01/B-01</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Gudang Arsip Rak A-1</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">10 tahun - Musnah</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Keuangan</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm">
-                                        <a href="detail_inaktif.php?id=INA-1001" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
-                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr class="divide-x divide-gray-200 text-center" data-tk="Copy" data-lok="Gudang Arsip Rak A-1" data-kat="Keuangan" data-kode="201.2">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">INA-1002</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">201.2</td>
-                                    <td class="px-3 py-4 text-left whitespace-nowrap">Laporan Keuangan Triwulan</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2022-2023</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Copy</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">4</td>
-                                    <td class="px-3 py-4 text-left whitespace-nowrap text-sm text-gray-900">Perlu pengecekan kelengkapan</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">F-01/B-02</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Gudang Arsip Rak A-1</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">5 tahun - Permanen</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Keuangan</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm">
-                                        <a href="detail_inaktif.php?id=INA-1002" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
-                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr class="divide-x divide-gray-200 text-center" data-tk="Asli" data-lok="Gudang Arsip Rak A-1" data-kat="Pajak" data-kode="201.3">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">INA-1003</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">201.3</td>
-                                    <td class="px-3 py-4 text-left whitespace-nowrap">Dokumen Pajak Tahunan</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2019-2021</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Asli</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">3</td>
-                                    <td class="px-3 py-4 text-left whitespace-nowrap text-sm text-gray-900">Lengkap dan tersusun rapi</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">F-01/B-03</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Gudang Arsip Rak A-1</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">15 tahun - Musnah</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Pajak</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm">
-                                        <a href="detail_inaktif.php?id=INA-1003" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
-                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </a>
-                                    </td>
-                                </tr>
-                                
-                                <!-- Archive 2 with 2 documents -->
-                                <tr class="divide-x divide-gray-200 text-center" data-tk="Copy" data-lok="Gudang Arsip Rak A-2" data-kat="Proyek" data-kode="202.1">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 align-top" rowspan="2">IN-002</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">INA-1004</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">202.1</td>
-                                    <td class="px-3 py-4 text-left whitespace-nowrap">Laporan Proyek Selesai</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2020-2022</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Copy</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">4</td>
-                                    <td class="px-3 py-4 text-left whitespace-nowrap text-sm text-gray-900">Perlu pengecekan kelengkapan</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">F-02/B-01</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Gudang Arsip Rak A-2</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">5 tahun - Permanen</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Proyek</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm">
-                                        <a href="detail_inaktif.php?id=INA-1004" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
-                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </a>
-                                    </td>
-                                </tr>
-                                <tr class="divide-x divide-gray-200 text-center" data-tk="Asli" data-lok="Gudang Arsip Rak A-2" data-kat="Proyek" data-kode="202.2">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">INA-1005</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">202.2</td>
-                                    <td class="px-3 py-4 text-left whitespace-nowrap">Dokumen Kontrak Proyek</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2019-2021</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Asli</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">6</td>
-                                    <td class="px-3 py-4 text-left whitespace-nowrap text-sm text-gray-900">Kontrak sudah selesai</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">F-02/B-02</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Gudang Arsip Rak A-2</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">10 tahun - Musnah</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Proyek</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm">
-                                        <a href="detail_inaktif.php?id=INA-1005" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
-                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </a>
-                                    </td>
-                                </tr>
-                                
-                                <!-- Archive 3 with 1 document -->
-                                <tr class="divide-x divide-gray-200 text-center" data-tk="Copy" data-lok="Gudang Arsip Rak B-1" data-kat="Surat Menyurat" data-kode="203.1">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">IN-003</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-500">INA-1006</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">203.1</td>
-                                    <td class="px-3 py-4 text-left whitespace-nowrap">Surat Masuk Eksternal</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">2018-2020</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Copy</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">1</td>
-                                    <td class="px-3 py-4 text-left whitespace-nowrap text-sm text-gray-900">Arsip lama yang sudah digitalisasi</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">F-03/B-01</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Gudang Arsip Rak B-1</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Permanen</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900">Surat Menyurat</td>
-                                    <td class="px-3 py-4 whitespace-nowrap text-center text-sm">
-                                        <a href="detail_inaktif.php?id=INA-1006" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
-                                            <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
-                                        </a>
-                                    </td>
-                                </tr>
+                                <?php
+                                require_once "../config/database.php";
+
+                                // Ambil data arsip_inaktif dan item_arsip_inaktif
+                                $query = "
+                                    SELECT 
+                                        ai.id_arsip,
+                                        ai.nomor_berkas,
+                                        ai.jumlah_item,
+                                        ssm.kode_subsub as kode_klasifikasi,
+                                        ia.id_item,
+                                        ia.nomor_item,
+                                        ia.uraian_informasi,
+                                        ia.kurun_waktu,
+                                        ia.tingkat_perkembangan,
+                                        ia.keterangan,
+                                        ia.nomor_boks,
+                                        ia.lokasi_simpan,
+                                        ia.jangka_simpan,
+                                        ia.kategori_arsip
+                                    FROM arsip_inaktif ai
+                                    LEFT JOIN item_arsip_inaktif ia ON ai.id_arsip = ia.id_arsip
+                                    LEFT JOIN sub_sub_masalah ssm ON ai.id_subsub = ssm.id_subsub
+                                    ORDER BY ai.nomor_berkas ASC, ia.nomor_item ASC
+                                ";
+
+                                $result = mysqli_query($conn, $query);
+
+                                if (!$result) {
+                                    echo "<tr><td colspan='13' class='text-center text-red-500 py-4'>Gagal mengambil data: " . mysqli_error($conn) . "</td></tr>";
+                                    exit;
+                                }
+
+                                // Kelompokkan data berdasarkan nomor_berkas
+                                $arsip_data = [];
+                                while ($row = mysqli_fetch_assoc($result)) {
+                                    $arsip_data[$row['nomor_berkas']][] = $row;
+                                }
+
+                                foreach ($arsip_data as $nomor_berkas => $items) {
+                                    $rowspan = count($items);
+                                    $first = true;
+
+                                    foreach ($items as $item) {
+                                        echo "<tr class='divide-x divide-gray-200 text-center'>";
+
+                                        // Nomor Berkas rowspan
+                                        if ($first) {
+                                            echo "<td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900 align-top font-medium' rowspan='{$rowspan}'>" . htmlspecialchars($nomor_berkas) . "</td>";
+                                            $first = false;
+                                        }
+
+                                        echo "
+                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-500'>" . htmlspecialchars($item['nomor_item']) . "</td>
+                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['kode_klasifikasi']) . "</td>
+                                            <td class='px-3 py-4 whitespace-nowrap text-left text-sm text-gray-900'>" . htmlspecialchars($item['uraian_informasi']) . "</td>
+                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['kurun_waktu']) . "</td>
+                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['tingkat_perkembangan']) . "</td>
+                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['jumlah_item']) . "</td>
+                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['keterangan']) . "</td>
+                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['nomor_boks']) . "</td>
+                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['lokasi_simpan']) . "</td>
+                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['jangka_simpan']) . "</td>
+                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['kategori_arsip']) . "</td>
+                                            <td class='px-3 py-4 whitespace-nowrap text-center text-sm font-medium'>
+                                                <a href='detail_inaktif.php?id=" . urlencode($item['id_item']) . "' class='border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm' title='Lihat Detail'>
+                                                    <span class='material-symbols-outlined text-gray-700 text-xs'>quick_reference_all</span>
+                                                </a>
+                                            </td>
+                                        ";
+                                        echo "</tr>";
+                                    }
+                                }
+                                ?>
                             </tbody>
                         </table>
                     </div>
@@ -266,143 +316,64 @@ include_once "../layouts/master/header.php";
 </div>
 
 <script>
-// Client-side filtering, pagination, and dropdown behavior for Inaktif
-(function() {
-  const filtersBtn = document.getElementById('filtersBtn');
-  const dropdown = document.getElementById('filterDropdown');
-  const searchInput = document.getElementById('searchInput');
-  const resetBtn = document.getElementById('resetFilters');
-  const applyBtn = document.getElementById('applyFilters');
-  const filterKode = document.getElementById('filterKode');
-  const filterTk = document.getElementById('filterTk');
-  const filterLok = document.getElementById('filterLok');
-  const filterKat = document.getElementById('filterKat');
-  const perPageSelect = document.getElementById('perPage');
-  const prevPageBtn = document.getElementById('prevPage');
-  const nextPageBtn = document.getElementById('nextPage');
-  const tbody = document.querySelector('tbody');
-  const rows = Array.from(tbody.querySelectorAll('tr'));
-  let currentPage = 1;
+// Toggle dropdown filter
+const filtersBtn = document.getElementById('filtersBtn');
+const filterDropdown = document.getElementById('filterDropdown');
 
-  function toggleDropdown(show) {
-    if (!dropdown) return;
-    if (show) {
-      dropdown.classList.remove('opacity-0','scale-95','pointer-events-none');
-      dropdown.classList.add('opacity-100','scale-100','pointer-events-auto');
+filtersBtn.addEventListener('click', () => {
+    const isHidden = filterDropdown.classList.contains('hidden');
+    if(isHidden){
+        filterDropdown.classList.remove('hidden', 'opacity-0', 'translate-y-2', 'pointer-events-none');
+        filterDropdown.classList.add('opacity-100', 'translate-y-0');
     } else {
-      dropdown.classList.add('opacity-0','scale-95','pointer-events-none');
-      dropdown.classList.remove('opacity-100','scale-100','pointer-events-auto');
+        filterDropdown.classList.add('hidden', 'opacity-0', 'translate-y-2', 'pointer-events-none');
+        filterDropdown.classList.remove('opacity-100', 'translate-y-0');
     }
-  }
+});
 
-  function getFilteredRows() {
-    const term = (searchInput?.value || '').trim().toLowerCase();
-    const kodeVal = (filterKode?.value || '').trim().toLowerCase();
-    const tkVal = (filterTk?.value || '').toLowerCase();
-    const lokVal = (filterLok?.value || '').toLowerCase();
-    const katVal = (filterKat?.value || '').toLowerCase();
-    return rows.filter(row => {
-      const kode = (row.dataset.kode || '').toLowerCase();
-      const tk = (row.dataset.tk || '').toLowerCase();
-      const lok = (row.dataset.lok || '').toLowerCase();
-      const kat = (row.dataset.kat || '').toLowerCase();
-      const matchSearch = term === '' || row.textContent.toLowerCase().includes(term);
-      const matchKode = kodeVal === '' || kode.includes(kodeVal);
-      const matchTk = tkVal === '' || tk === tkVal;
-      const matchLok = lokVal === '' || lok === lokVal;
-      const matchKat = katVal === '' || kat === katVal;
-      return matchSearch && matchKode && matchTk && matchLok && matchKat;
-    });
-  }
-
-  function renderPagination(totalPages) {
-    const pagination = document.getElementById('pagination');
-    if (!pagination) return;
-    pagination.querySelectorAll('button.page-number').forEach(b => b.remove());
-    for (let p = 1; p <= totalPages; p++) {
-      const btn = document.createElement('button');
-      btn.className = 'page-number px-2 py-1 border border-gray-300 rounded-md text-sm ' + (p === currentPage ? 'bg-gray-100' : 'bg-white');
-      btn.textContent = p;
-      btn.addEventListener('click', () => { currentPage = p; render(); });
-      pagination.insertBefore(btn, nextPageBtn);
+// Search by Enter
+document.getElementById('searchInput').addEventListener('keypress', function(e){
+    if(e.key === 'Enter'){
+        const search = e.target.value.trim();
+        const params = new URLSearchParams(window.location.search);
+        params.set('search', search);
+        params.set('page', 1); // reset halaman
+        window.location.search = params.toString();
     }
-  }
+});
 
-  function render() {
-    const perPage = parseInt(perPageSelect?.value || '12', 10);
-    const filtered = getFilteredRows();
-    const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
-    if (currentPage > totalPages) currentPage = totalPages;
-    rows.forEach(r => r.classList.add('hidden'));
-    const startIdx = (currentPage - 1) * perPage;
-    const endIdx = startIdx + perPage;
-    filtered.slice(startIdx, endIdx).forEach(r => r.classList.remove('hidden'));
-    renderPagination(totalPages);
-    if (prevPageBtn) prevPageBtn.disabled = currentPage <= 1;
-    if (nextPageBtn) nextPageBtn.disabled = currentPage >= totalPages;
-  }
+// Apply filter button
+document.getElementById('applyFilters').addEventListener('click', () => {
+    const kode = document.getElementById('filterKode').value.trim();
+    const lokasi = document.getElementById('filterLok').value;
+    const kategori = document.getElementById('filterKat').value;
+    const params = new URLSearchParams(window.location.search);
 
-  // Events
-  if (filtersBtn) {
-    filtersBtn.addEventListener('click', (e) => {
-      e.stopPropagation();
-      const isOpen = dropdown.classList.contains('opacity-100');
-      toggleDropdown(!isOpen);
-    });
-    document.addEventListener('click', (e) => {
-      const container = filtersBtn.parentElement;
-      if (container && !container.contains(e.target)) {
-        toggleDropdown(false);
-      }
-    });
-  }
+    // set atau hapus parameter sesuai input
+    if(kode) params.set('kode', kode); else params.delete('kode');
+    if(lokasi) params.set('lokasi', lokasi); else params.delete('lokasi');
+    if(kategori) params.set('kategori', kategori); else params.delete('kategori');
 
-  if (applyBtn) {
-    applyBtn.addEventListener('click', () => {
-      currentPage = 1;
-      render();
-      toggleDropdown(false);
-    });
-  }
+    params.set('page', 1); // reset ke halaman 1
+    window.location.search = params.toString();
+});
 
-  if (resetBtn) {
-    resetBtn.addEventListener('click', () => {
-      if (filterKode) filterKode.value = '';
-      if (filterTk) filterTk.value = '';
-      if (filterLok) filterLok.value = '';
-      if (filterKat) filterKat.value = '';
-      if (searchInput) searchInput.value = '';
-      currentPage = 1;
-      render();
-    });
-  }
+// Reset filter button
+document.getElementById('resetFilters').addEventListener('click', () => {
+    document.getElementById('filterKode').value = '';
+    document.getElementById('filterTk').value = '';
+    document.getElementById('filterLok').value = '';
+    document.getElementById('filterKat').value = '';
 
-  if (searchInput) {
-    searchInput.addEventListener('input', () => { currentPage = 1; render(); });
-  }
+    const params = new URLSearchParams(window.location.search);
+    params.delete('kode');
+    params.delete('lokasi');
+    params.delete('kategori');
+    params.delete('tk');
+    params.set('page', 1);
 
-  if (perPageSelect) {
-    perPageSelect.addEventListener('change', () => { currentPage = 1; render(); });
-  }
-
-  if (prevPageBtn) {
-    prevPageBtn.addEventListener('click', () => {
-      if (currentPage > 1) { currentPage--; render(); }
-    });
-  }
-
-  if (nextPageBtn) {
-    nextPageBtn.addEventListener('click', () => {
-      const perPage = parseInt(perPageSelect?.value || '12', 10);
-      const filtered = getFilteredRows();
-      const totalPages = Math.max(1, Math.ceil(filtered.length / perPage));
-      if (currentPage < totalPages) { currentPage++; render(); }
-    });
-  }
-
-  // Initial render
-  render();
-})();
+    window.location.search = params.toString();
+});
 </script>
 
 <?php

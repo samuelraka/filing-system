@@ -29,6 +29,32 @@ include_once "../layouts/master/header.php";
                     <!-- Form -->
                     <form id="archiveForm" class="space-y-6">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <input type="hidden" id="idArsip" name="idArsip">
+
+                            <!-- Kode Klasifikasi Correct One -->
+                            <div>
+                                <label for="id_subsub" class="block text-sm font-medium text-gray-700 mb-1">Kode Klasifikasi</label>
+                                <select id="id_subsub" name="id_subsub" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                    <option value="">Pilih Kode Klasifikasi</option>
+                                    <?php
+                                    include "../config/database.php";
+                                    $query = $conn->query("SELECT id_subsub, kode_subsub, topik_subsub FROM sub_sub_masalah ORDER BY kode_subsub ASC");
+                                    while ($row = $query->fetch_assoc()) {
+                                        echo "<option value='{$row['id_subsub']}'>{$row['kode_subsub']} - {$row['topik_subsub']}</option>";
+                                    }
+                                    ?>
+                                </select>
+                            </div>
+
+                            <!-- Checkbox Buat Berkas Baru -->
+                            <div class="flex items-center mt-2">
+                                <input id="buatBerkasBaru" name="buatBerkasBaru" type="checkbox"
+                                    class="h-4 w-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500">
+                                <label for="buatBerkasBaru" class="ml-2 block text-sm text-gray-700">
+                                    Buat nomor berkas baru untuk kode klasifikasi ini
+                                </label>
+                            </div>
+
                             <!-- Nomor Berkas -->
                             <div>
                                 <label for="nomorBerkas" class="block text-sm font-medium text-gray-700 mb-1">Nomor Berkas</label>
@@ -39,13 +65,6 @@ include_once "../layouts/master/header.php";
                             <div>
                                 <label for="nomorItemArsip" class="block text-sm font-medium text-gray-700 mb-1">Nomor Item Arsip</label>
                                 <input type="text" id="nomorItemArsip" name="nomorItemArsip" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                            </div>
-
-                            <!-- Kode Klasifikasi Correct One -->
-
-                            <div>
-                                <label for="kodeKlasifikasi" class="block text-sm font-medium text-gray-700 mb-1">Kode Klasifikasi</label>
-                                <input type="text" id="kodeKlasifikasi" name="kodeKlasifikasi" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                             </div>
 
                             <!-- <div>
@@ -77,12 +96,6 @@ include_once "../layouts/master/header.php";
                                 <label for="jangkaSimpan" class="block text-sm font-medium text-gray-700 mb-1">Jangka Simpan</label>
                                 <input type="date" id="jangkaSimpan" name="jangkaSimpan" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
                             </div>
-
-                            <!-- Jumlah -->
-                            <div>
-                                <label for="jumlahItemArsip" class="block text-sm font-medium text-gray-700 mb-1">Jumlah</label>
-                                <input type="number" id="jumlahItemArsip" name="jumlahItemArsip" min="1" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
-                            </div>
                             
                             <div>
                                 <label for="nomorBoks" class="block text-sm font-medium text-gray-700 mb-1">Nomor Definitif Folder dan Boks</label>
@@ -110,6 +123,12 @@ include_once "../layouts/master/header.php";
                                     <option value="Dinilai Kembali">Dinilai Kembali</option>
                                 </select>
                             </div> -->
+                        </div>
+
+                        <!-- Uraian Singkat -->
+                        <div>
+                            <label for="uraianSingkat" class="block text-sm font-medium text-gray-700 mb-1">Uraian Singkat</label>
+                            <textarea id="uraianSingkat" name="uraianSingkat" rows="3" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required></textarea>
                         </div>
 
                         <!-- Uraian Informasi -->
@@ -160,239 +179,102 @@ include_once "../layouts/master/header.php";
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const archiveForm = document.getElementById('archiveForm');
-    const resetBtn = document.getElementById('resetBtn');
-    const fileUpload = document.getElementById('fileUpload');
+    const idSubsub = document.getElementById('id_subsub');
+    const nomorBerkas = document.getElementById('nomorBerkas');
+    const nomorItemArsip = document.getElementById('nomorItemArsip');
+    const fileInput = document.getElementById('fileUpload');
     const fileList = document.getElementById('fileList');
+    const buatBerkasBaru = document.getElementById('buatBerkasBaru');
+    const idArsipInput = document.getElementById('idArsip'); // hidden input untuk id_arsip
 
-    // Form submission handler
+    // ✅ Preview nama file
+    fileInput.addEventListener('change', function() {
+        fileList.innerHTML = '';
+        const files = Array.from(this.files);
+        files.forEach((file, index) => {
+            const div = document.createElement('div');
+            div.classList.add('flex', 'items-center', 'justify-between', 'p-2', 'border', 'rounded', 'bg-gray-50');
+            div.innerHTML = `
+                <span class="text-sm text-gray-700">${index + 1}. ${file.name}</span>
+                <span class="text-xs text-gray-500">${(file.size / 1024).toFixed(1)} KB</span>
+            `;
+            fileList.appendChild(div);
+        });
+    });
+
+    // ✅ Ambil nomor berkas & item arsip
+    function getNomorBerkas() {
+        const id_subsub = idSubsub.value;
+        const buatBaru = buatBerkasBaru.checked ? 1 : 0;
+        const nomorBerkasValue = nomorBerkas.value ? `&nomor_berkas=${nomorBerkas.value}` : "";
+
+        if (!id_subsub) return;
+
+        fetch(`../api/arsip/arsip_inaktif/get_nomor_berkas_inaktif.php?id_subsub=${id_subsub}&buatBaru=${buatBaru}${nomorBerkasValue}`)
+            .then(res => res.json())
+            .then(data => {
+                console.log("Response get_nomor_berkas_inaktif:", data);
+
+                if (data.status === 'existing') {
+                    nomorBerkas.value = data.nomor_berkas;
+                    nomorItemArsip.value = data.nomor_item;
+                    idArsipInput.value = data.id_arsip || '';
+                } else {
+                    // Jika buat baru atau belum ada arsip, reset item ke 1
+                    nomorBerkas.value = data.nomor_berkas || '';
+                    nomorItemArsip.value = 1;
+                    idArsipInput.value = '';
+                }
+            })
+            .catch(error => {
+                console.error("Error get_nomor_berkas_inaktif:", error);
+            });
+    }
+
+    // 🔄 Trigger perubahan ketika user pilih kode klasifikasi
+    idSubsub.addEventListener('change', getNomorBerkas);
+
+    // 🔄 Ketika checkbox buat berkas baru dicentang
+    buatBerkasBaru.addEventListener("change", function() {
+        if (this.checked) {
+            nomorBerkas.removeAttribute('readonly');
+            nomorBerkas.focus();
+            nomorItemArsip.value = 1; // reset item arsip
+            idArsipInput.value = '';  // kosongkan id arsip
+        } else {
+            nomorBerkas.setAttribute('readonly', true);
+            getNomorBerkas(); // ambil ulang data default
+        }
+    });
+
+    // ✅ Saat form disubmit
     archiveForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        
-        // Validate form
-        if (validateForm()) {
-            // Here you would normally send the data to the server
-            // For now, we'll just show an alert
-            alert('Form submitted successfully!');
-            
-            // Redirect back to semua-arsip page after submission
-            window.location.href = 'inaktif.php';
-        }
-    });
 
-    // Reset button handler
-    resetBtn.addEventListener('click', function() {
-        archiveForm.reset();
-        // Clear file list
-        fileList.innerHTML = '';
-    });
+        const formData = new FormData(archiveForm);
 
-    // Form validation function
-    function validateForm() {
-        let isValid = true;
-        const requiredFields = archiveForm.querySelectorAll('[required]');
-        
-        requiredFields.forEach(field => {
-            if (!field.value.trim()) {
-                isValid = false;
-                field.classList.add('border-red-500');
-                
-                // Add error message if it doesn't exist
-                let errorMsg = field.parentNode.querySelector('.error-message');
-                if (!errorMsg) {
-                    errorMsg = document.createElement('p');
-                    errorMsg.className = 'error-message text-red-500 text-xs mt-1';
-                    errorMsg.textContent = 'Field ini harus diisi';
-                    field.parentNode.appendChild(errorMsg);
+        fetch('../api/arsip/arsip_inaktif/proses_tambah_arsip_inaktif.php', {
+            method: 'POST',
+            body: formData
+        })
+        .then(async (res) => {
+            const text = await res.text();
+            try {
+                const data = JSON.parse(text);
+                alert(data.message);
+                if (data.success) {
+                    window.location.href = "inaktif.php";
                 }
-            } else {
-                field.classList.remove('border-red-500');
-                
-                // Remove error message if it exists
-                const errorMsg = field.parentNode.querySelector('.error-message');
-                if (errorMsg) {
-                    errorMsg.remove();
-                }
+            } catch (err) {
+                console.error("Response bukan JSON:", text);
+                alert("Terjadi kesalahan saat menyimpan data (cek log).");
             }
-        });
-        
-        // Validate file uploads if any
-        if (fileUpload.files.length > 10) {
-            isValid = false;
-            let errorMsg = fileUpload.parentNode.parentNode.querySelector('.error-message');
-            if (!errorMsg) {
-                errorMsg = document.createElement('p');
-                errorMsg.className = 'error-message text-red-500 text-xs mt-1';
-                errorMsg.textContent = 'Maksimal 10 file yang dapat diunggah';
-                fileUpload.parentNode.parentNode.appendChild(errorMsg);
-            }
-        }
-        
-        // Check if all files are PDFs
-        if (fileUpload.files.length > 0) {
-            for (let i = 0; i < fileUpload.files.length; i++) {
-                const file = fileUpload.files[i];
-                if (!file.type.match('application/pdf')) {
-                    isValid = false;
-                    let errorMsg = fileUpload.parentNode.parentNode.querySelector('.error-message');
-                    if (!errorMsg) {
-                        errorMsg = document.createElement('p');
-                        errorMsg.className = 'error-message text-red-500 text-xs mt-1';
-                        errorMsg.textContent = 'Hanya file PDF yang diperbolehkan';
-                        fileUpload.parentNode.parentNode.appendChild(errorMsg);
-                    }
-                    break;
-                }
-            }
-        }
-        
-        return isValid;
-    }
-
-    // Add input event listeners to clear error styling when user types
-    const allInputs = archiveForm.querySelectorAll('input, select, textarea');
-    allInputs.forEach(input => {
-        input.addEventListener('input', function() {
-            this.classList.remove('border-red-500');
-            
-            const errorMsg = this.parentNode.querySelector('.error-message');
-            if (errorMsg) {
-                errorMsg.remove();
-            }
+        })
+        .catch(err => {
+            console.error('Error:', err);
+            alert('Terjadi kesalahan saat mengirim data.');
         });
     });
-    
-    // File upload handling
-    fileUpload.addEventListener('change', function(e) {
-        fileList.innerHTML = '';
-        
-        // Check if files are selected
-        if (this.files.length > 0) {
-            // Clear any existing error messages
-            const errorMsg = this.parentNode.parentNode.querySelector('.error-message');
-            if (errorMsg) {
-                errorMsg.remove();
-            }
-            
-            // Check if number of files exceeds limit
-            if (this.files.length > 10) {
-                let errorMsg = document.createElement('p');
-                errorMsg.className = 'error-message text-red-500 text-xs mt-1';
-                errorMsg.textContent = 'Maksimal 10 file yang dapat diunggah';
-                this.parentNode.parentNode.appendChild(errorMsg);
-                this.value = ''; // Clear the file input
-                return;
-            }
-            
-            // Display selected files
-            for (let i = 0; i < this.files.length; i++) {
-                const file = this.files[i];
-                
-                // Validate file type
-                if (!file.type.match('application/pdf')) {
-                    let errorMsg = document.createElement('p');
-                    errorMsg.className = 'error-message text-red-500 text-xs mt-1';
-                    errorMsg.textContent = 'Hanya file PDF yang diperbolehkan';
-                    this.parentNode.parentNode.appendChild(errorMsg);
-                    fileList.innerHTML = '';
-                    this.value = ''; // Clear the file input
-                    return;
-                }
-                
-                // Create file item
-                const fileItem = document.createElement('div');
-                fileItem.className = 'flex flex-col items-center min-w-[180px] max-w-xs bg-gray-50 rounded border border-gray-200 p-2 relative';
-
-                // Create link wrapper
-                const fileLink = document.createElement('a');
-                fileLink.href = URL.createObjectURL(file);
-                fileLink.target = '_blank';
-                fileLink.rel = 'noopener noreferrer';
-                fileLink.className = 'w-full flex flex-col items-center group';
-
-                // Try to preview PDF cover (first page)
-                const pdfPreview = document.createElement('embed');
-                pdfPreview.src = fileLink.href + "#toolbar=0&navpanes=0&scrollbar=0&page=1";
-                pdfPreview.type = 'application/pdf';
-                pdfPreview.className = 'w-16 h-20 mb-1 border border-gray-200 rounded object-cover bg-white group-hover:ring-2 group-hover:ring-blue-500';
-                pdfPreview.onerror = function() {
-                    pdfPreview.replaceWith(fileIcon); // fallback to icon if failed
-                };
-
-                // PDF icon (fallback)
-                const fileIcon = document.createElement('div');
-                fileIcon.className = 'text-red-500 mb-1';
-                fileIcon.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd" />
-                    </svg>
-                `;
-
-                fileLink.appendChild(pdfPreview);
-
-                // File info
-                const fileInfo = document.createElement('div');
-                fileInfo.className = 'flex flex-col items-center w-full';
-
-                // File name and size
-                const fileName = document.createElement('div');
-                fileName.className = 'text-sm truncate max-w-[140px]';
-                fileName.textContent = file.name;
-                
-                const fileSize = document.createElement('div');
-                fileSize.className = 'text-xs text-gray-500';
-                fileSize.textContent = formatFileSize(file.size);
-                
-                const fileNameContainer = document.createElement('div');
-                fileNameContainer.appendChild(fileName);
-                fileNameContainer.appendChild(fileSize);
-                
-                fileInfo.appendChild(fileIcon);
-                fileInfo.appendChild(fileNameContainer);
-                
-                // Remove button
-                const removeBtn = document.createElement('button');
-                removeBtn.type = 'button';
-                removeBtn.className = 'text-gray-400 hover:text-red-500 absolute top-1 right-1';
-                removeBtn.innerHTML = `
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-                        <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd" />
-                    </svg>
-                `;
-                removeBtn.dataset.index = i;
-                
-                fileItem.appendChild(fileInfo);
-                fileItem.appendChild(removeBtn);
-                fileList.appendChild(fileItem);
-            }
-            
-            // Add event listeners to remove buttons
-            const removeButtons = fileList.querySelectorAll('button');
-            removeButtons.forEach(button => {
-                button.addEventListener('click', function() {
-                    // Since we can't directly modify the FileList object, we need to reset the file input
-                    fileUpload.value = '';
-                    fileList.innerHTML = '';
-                    
-                    // Clear error message if exists
-                    const errorMsg = fileUpload.parentNode.parentNode.querySelector('.error-message');
-                    if (errorMsg) {
-                        errorMsg.remove();
-                    }
-                });
-            });
-        }
-    });
-    
-    // Format file size
-    function formatFileSize(bytes) {
-        if (bytes === 0) return '0 Bytes';
-        
-        const k = 1024;
-        const sizes = ['Bytes', 'KB', 'MB', 'GB'];
-        const i = Math.floor(Math.log(bytes) / Math.log(k));
-        
-        return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
-    }
 });
 </script>
 
