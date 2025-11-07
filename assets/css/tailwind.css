@@ -261,6 +261,12 @@
   .pointer-events-none {
     pointer-events: none;
   }
+  .collapse {
+    visibility: collapse;
+  }
+  .invisible {
+    visibility: hidden;
+  }
   .visible {
     visibility: visible;
   }
@@ -446,6 +452,9 @@
   }
   .table {
     display: table;
+  }
+  .table-cell {
+    display: table-cell;
   }
   .table-column {
     display: table-column;

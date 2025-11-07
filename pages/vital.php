@@ -90,7 +90,7 @@ $metode_result = mysqli_query($conn, "SELECT DISTINCT metode_perlindungan FROM a
                         <span class="material-symbols-outlined">add</span>
                         <span>Tambah Arsip</span>
                     </a>
-                    <a href="#" class="bg-slate-700 hover:bg-slate-700/90 text-white px-3 py-2 gap-2 rounded-md flex items-center">
+                    <a href="../api/arsip/arsip_vital/export_excel.php?search=<?= urlencode($keyword) ?>&media=<?= urlencode($filter_media) ?>&lokasi=<?= urlencode($filter_lokasi) ?>&metode=<?= urlencode($filter_metode) ?>&kode=<?= urlencode($filter_kode) ?>" class="bg-slate-700 hover:bg-slate-700/90 text-white px-3 py-2 gap-2 rounded-md flex items-center" target="_blank" rel="noopener">
                         <span class="material-symbols-outlined">print</span>
                         <span>Cetak Tabel Arsip</span>
                     </a>
