@@ -20,6 +20,7 @@ try {
     $keterangan_arsip = $_POST['keterangan'] ?? null;
     $nomor_berkas_input = $_POST['nomorBerkas'] ?? null;
     $buat_baru = isset($_POST['buatBerkasBaru']); // checkbox
+    $id_arsip = $_POST['idArsip'] ?? null;
 
     if (!$kode_klasifikasi || !$tanggal || !$uraian_singkat || !$uraian_informasi) {
         throw new Exception("Beberapa field wajib tidak diisi.");
@@ -42,6 +43,14 @@ try {
         $id_arsip = $conn->insert_id;
         $nomor_berkas = $nomor_berkas_input;
 
+    } else if($id_arsip){
+        // Gunakan id_arsip yang dikirim frontend
+        $stmt_check = $conn->prepare("SELECT id_arsip, nomor_berkas FROM arsip_aktif WHERE id_arsip = ?");
+        $stmt_check->bind_param("i", $id_arsip);
+        $stmt_check->execute();
+        $data_arsip = $stmt_check->get_result()->fetch_assoc();
+        $id_arsip = $data_arsip['id_arsip'];
+        $nomor_berkas = $data_arsip['nomor_berkas'];
     } else {
         // 🔹 Tidak buat baru → gunakan arsip terakhir
         $query_check = "SELECT id_arsip, nomor_berkas FROM arsip_aktif WHERE id_subsub = ? ORDER BY id_arsip DESC LIMIT 1";
@@ -112,6 +121,20 @@ try {
         $conn->query("UPDATE arsip_aktif SET jumlah_item = jumlah_item + 1 WHERE id_arsip = $id_arsip");
 
         $conn->commit();
+
+        // ======================
+        // Logging tambahan
+        // ======================
+        $log_message = sprintf(
+            "Arsip baru ditambahkan: ID Arsip=%d, Nomor Berkas=%s, Nomor Item=%d, Tanggal=%s, ID Subsub=%s",
+            $id_arsip,
+            $nomor_berkas,
+            $nomor_item,
+            $tanggal,
+            $kode_klasifikasi
+        );
+        error_log($log_message);
+        
         echo json_encode([
             "success" => true,
             "message" => "Arsip berhasil disimpan!",

@@ -27,6 +27,7 @@ if ($nomor_berkas) {
         echo json_encode([
             "status" => "existing",
             "nomor_berkas" => $nomor_berkas,
+            "id_arsip" => $row['id_arsip'],
             "nomor_item" => $row['jumlah_item'] + 1
         ]);
     } else {
@@ -34,6 +35,7 @@ if ($nomor_berkas) {
         echo json_encode([
             "status" => "new",
             "nomor_berkas" => $nomor_berkas,
+            "id_arsip" => null,
             "nomor_item" => 1
         ]);
     }
@@ -63,6 +65,7 @@ if ($nomor_berkas) {
     echo json_encode([
         "status" => "new",
         "nomor_berkas" => $next_berkas,
+        "id_arsip" => null,
         "nomor_item" => 1
     ]);
 }

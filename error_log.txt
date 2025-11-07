@@ -387,3 +387,5 @@ Stack trace:
 [07-Nov-2025 00:30:42 Europe/Berlin] Error di tambah_arsip.php: Arsip aktif dengan ID undefined tidak ditemukan.
 [2025-11-07 04:58:52] LOGOUT: unknown
 [2025-11-07 05:07:40] LOGOUT: unknown
+[07-Nov-2025 05:53:57 Europe/Berlin] Arsip baru ditambahkan: ID Arsip=4, Nomor Berkas=2, Nomor Item=5, Tanggal=2020-03-02, ID Subsub=1
+[07-Nov-2025 06:02:58 Europe/Berlin] Arsip baru ditambahkan: ID Arsip=1, Nomor Berkas=1, Nomor Item=4, Tanggal=2021-02-01, ID Subsub=1
