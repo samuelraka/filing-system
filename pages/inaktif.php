@@ -187,7 +187,7 @@ $kat_result = mysqli_query($conn, "SELECT DISTINCT kategori_arsip FROM item_arsi
                 <div class="flex flex-col space-y-4">
                     <!-- Table -->
                     <div class="overflow-x-auto mt-3">
-                        <table class="max-w-screen border border-gray-200 divide-y divide-gray-200">
+                        <table class="min-w-full border border-gray-200 divide-y divide-gray-200">
                             <thead class="bg-gray-50">
                                 <tr class="divide-x divide-gray-200 text-center">
                                     <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Nomor Berkas</th>
