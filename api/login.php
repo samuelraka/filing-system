@@ -1,6 +1,5 @@
 <?php
 include_once '../config/session.php';
-include_once '../utils/logging.php';
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 header('Content-Type: application/json');
@@ -28,8 +27,6 @@ if ($result->num_rows === 1) {
         $_SESSION['user_name'] = $user['nama'];
         $_SESSION['user_role'] = strtolower($user['role']);
 
-        // Log the login activity
-        logLogin($user['id_user'], "User logged in successfully");
 
         $roleLabel = ucfirst($user['role']);
         $message = "Login berhasil sebagai $roleLabel.";

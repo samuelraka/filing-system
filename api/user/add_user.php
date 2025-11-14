@@ -4,7 +4,6 @@ ini_set('display_errors', 0);
 error_reporting(E_ALL);
 include_once __DIR__ . '/../../config/database.php';
 include_once __DIR__ . '/../../config/session.php';
-include_once __DIR__ . '/../../utils/logging.php';
 
 // Lokasi file log
 $logFile = __DIR__ . '/../../error_log.txt';
@@ -71,16 +70,6 @@ try {
         "success" => true,
         "message" => "Pengguna baru berhasil ditambahkan!"
     ]);
-
-    // Log the user creation activity
-    $newUserData = [
-        'nama' => $name,
-        'email' => $email,
-        'username' => $username,
-        'role' => $role,
-        'id_unit' => $id_unit > 0 ? $id_unit : null
-    ];
-    logCreate($_SESSION['user_id'], 'user', $new_user_id, $username, $newUserData, "Created new user: $name ($username)");
 
     log_error("Berhasil tambah user ID: $new_user_id ($username) oleh " . $_SESSION['user_role']);
 

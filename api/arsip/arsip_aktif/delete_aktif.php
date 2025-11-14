@@ -2,7 +2,6 @@
 // Delete handler for Arsip Aktif items
 include_once __DIR__ . '/../config/session.php';
 include_once __DIR__ . '/../config/database.php';
-include_once __DIR__ . '/../../utils/logging.php';
 
 requireLogin();
 
@@ -54,12 +53,6 @@ try {
     }
 
     $conn->commit();
-    
-    // Log the deletion activity
-    if ($item_data) {
-        logDelete($_SESSION['user_id'], 'item_arsip', $id, "Item ID: {$id}", $item_data, "Deleted arsip aktif item");
-    }
-
     header('Location: ../pages/aktif.php?msg=deleted');
     exit();
 } catch (Exception $e) {

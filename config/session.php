@@ -22,7 +22,7 @@ if ($conn->connect_error) {
  * Check if user is logged in
  */
 function isLoggedIn() {
-    return isset($_SESSION['id_user']);
+    return isset($_SESSION['user_id']) || isset($_SESSION['id_user']);
 }
 
 /**
@@ -50,7 +50,7 @@ function getUserRole() {
  * Get current username
  */
 function getUserName() {
-    return $_SESSION['user_name'] ?? 'Guest';
+    return $_SESSION['user_name'] ?? ($_SESSION['username'] ?? ($_SESSION['nama'] ?? 'Guest'));
 }
 
 /**
@@ -96,7 +96,7 @@ function login($username, $password) {
 }
 
 function getFullName() {
-    return $_SESSION['user_name'] ?? getUserName();
+    return $_SESSION['user_name'] ?? ($_SESSION['nama'] ?? ($_SESSION['username'] ?? 'Guest'));
 }
 
 
