@@ -274,7 +274,7 @@ $kat_result = mysqli_query($conn, "SELECT DISTINCT kategori_arsip FROM item_arsi
                                                 <a href='detail_inaktif.php?id=" . urlencode($item['id_item']) . "' class='border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm' title='Lihat Detail'>
                                                     <span class='material-symbols-outlined text-gray-700 text-xs'>quick_reference_all</span>
                                                 </a>
-                                                " . (isAdminOrSuperAdmin() ? "<a href='delete_inaktif.php?id=" . urlencode($item['id_item']) . "' class='border border-red-300 inline-flex bg-white hover:bg-red-50 rounded-md p-1 shadow-sm ml-2' title='Hapus'>
+                                                " . (isAdminOrSuperAdmin() ? "<a href='../api/arsip/arsip_inaktif/delete_inaktif.php?id=" . urlencode($item['id_item']) . "' class='border border-red-300 inline-flex bg-white hover:bg-red-50 rounded-md p-1 shadow-sm ml-2' title='Hapus'>
                                                     <span class='material-symbols-outlined text-red-600 text-xs'>delete</span>
                                                 </a>" : "") . "
                                             </td>

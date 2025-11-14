@@ -2,6 +2,7 @@
 // Delete handler for Arsip Aktif items
 include_once __DIR__ . '/../config/session.php';
 include_once __DIR__ . '/../config/database.php';
+include_once __DIR__ . '/../../utils/logging.php';
 
 requireLogin();
 
@@ -19,6 +20,14 @@ if ($id <= 0) {
 
 $conn->begin_transaction();
 try {
+    // Get the item details before deletion for logging
+    $stmt_get = $conn->prepare('SELECT * FROM item_arsip WHERE id_item = ?');
+    $stmt_get->bind_param('i', $id);
+    $stmt_get->execute();
+    $item_result = $stmt_get->get_result();
+    $item_data = $item_result->fetch_assoc();
+    $stmt_get->close();
+
     // Find parent arsip for counter update
     $stmt = $conn->prepare('SELECT id_arsip FROM item_arsip WHERE id_item = ?');
     $stmt->bind_param('i', $id);
@@ -45,6 +54,12 @@ try {
     }
 
     $conn->commit();
+    
+    // Log the deletion activity
+    if ($item_data) {
+        logDelete($_SESSION['user_id'], 'item_arsip', $id, "Item ID: {$id}", $item_data, "Deleted arsip aktif item");
+    }
+
     header('Location: ../pages/aktif.php?msg=deleted');
     exit();
 } catch (Exception $e) {

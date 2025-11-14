@@ -227,8 +227,28 @@ $sheet->getStyle("A{$numRow}:H{$numRow}")->getFill()->setFillType(Fill::FILL_SOL
 $sheet->getStyle("A{$numRow}:H{$numRow}")->getFont()->setSize(10)->getColor()->setARGB('FFFFFF');
 $sheet->getRowDimension($numRow)->setRowHeight(18);
 
+$detail_row = $numRow + 1;
+$details = [
+    'Nomor Urut Berkas',
+    'Nomor urut Arsip yang tersimpan dalam Folder',
+    'Berisi Tanda Pengenal Arsip (Lihat Pola Klasifikasi Arsip)',
+    'Berisi isi Keseluruhan Surat : Asal surat, Nomor, tanggal Surat, Perihal, Penerima, tempat kegiatan (Undangan), tembusan (URAIAN LENGKAP)',
+    'Tanggal surat',
+    'Berisi Jumlah Arsip dalam Setiap Jenis Arsip (diatas 10lembar ditulis 1 Berkas)',
+    'Biasa, Terbatas, dan Rahasia',
+    'KETERANGAN'
+];
+foreach ($details as $i => $d) {
+    $col = Coordinate::stringFromColumnIndex($i + 1);
+    $sheet->setCellValue("{$col}{$detail_row}", $d);
+}
+$sheet->getStyle("A{$detail_row}:H{$detail_row}")->getAlignment()->setWrapText(true);
+$sheet->getStyle("A{$detail_row}:H{$detail_row}")->getAlignment()->setHorizontal(Alignment::HORIZONTAL_CENTER)->setVertical(Alignment::VERTICAL_CENTER);
+$sheet->getStyle("A{$detail_row}:H{$detail_row}")->getBorders()->getAllBorders()->setBorderStyle(Border::BORDER_THIN);
+$sheet->getRowDimension($detail_row)->setRowHeight(95);
+
 // Data rows with grouped headers (Pokok/Sub/Sub-Sub)
-$startRow = $numRow + 1;
+$startRow = $detail_row + 1;
 $r = $startRow;
 foreach ($groups as $group) {
     $m = $group['meta'];

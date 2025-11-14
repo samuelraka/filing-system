@@ -43,7 +43,11 @@ if (!empty($id)) {
             if ($row = $res->fetch_assoc()) {
                 // If no explicit file param provided, use stored file_path when available
                 if (empty($pdfUrl) && !empty($row['file_path'])) {
-                    $pdfUrl = $row['file_path'];
+                    $files = explode(',', $row['file_path']);
+                    $firstFile = trim($files[0] ?? '');
+                    if (!empty($firstFile)) {
+                        $pdfUrl = '../uploads/' . $firstFile;
+                    }
                 }
                 $item = [
                     'berkas' => $row['nomor_berkas'] ?? '',

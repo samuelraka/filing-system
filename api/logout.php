@@ -1,5 +1,6 @@
 <?php
 include_once '../config/session.php';
+include_once '../utils/logging.php';
 
 // Pastikan session dimulai
 if (session_status() === PHP_SESSION_NONE) {
@@ -8,6 +9,11 @@ if (session_status() === PHP_SESSION_NONE) {
 
 // Simpan dulu role sebelum session dihapus
 $role = $_SESSION['user_role'] ?? null;
+
+// Log the logout activity if user is logged in
+if (isset($_SESSION['user_id'])) {
+    logLogout($_SESSION['user_id'], "User logged out");
+}
 
 // Jalankan fungsi logout() → ini biasanya akan session_destroy()
 logout();

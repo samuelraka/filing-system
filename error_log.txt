@@ -392,3 +392,9 @@ Stack trace:
 [07-Nov-2025 06:40:23 Europe/Berlin] Arsip diperbarui: ID Item=12, Tanggal=2021-02-01, SKAAD=Biasa
 [2025-11-07 06:43:10] LOGOUT: unknown
 [2025-11-07 06:44:28] LOGOUT: unknown
+[ACTIVITY_LOG_ERROR] Failed to log activity: UserID=1, Action=LOGIN, Table=NULL, RecordID=NULL, Error=Table 'archives_db.activity_logs' doesn't exist
+[ACTIVITY_LOG_ERROR] Failed to log activity: UserID=1, Action=CREATE, Table=user, RecordID=999, Error=Table 'archives_db.activity_logs' doesn't exist
+[ACTIVITY_LOG_ERROR] Failed to log activity: UserID=1, Action=UPDATE, Table=user, RecordID=999, Error=Table 'archives_db.activity_logs' doesn't exist
+[ACTIVITY_LOG_ERROR] Failed to log activity: UserID=1, Action=DELETE, Table=user, RecordID=999, Error=Table 'archives_db.activity_logs' doesn't exist
+[ACTIVITY_LOG_ERROR] Failed to log activity: UserID=1, Action=LOGOUT, Table=NULL, RecordID=NULL, Error=Table 'archives_db.activity_logs' doesn't exist
+[2025-11-14 06:07:32] LOGOUT: unknown

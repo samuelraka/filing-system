@@ -39,7 +39,8 @@ if (!empty($id)) {
                     ia.nomor_boks,
                     ia.lokasi_simpan,
                     ia.jangka_simpan,
-                    ia.kategori_arsip
+                    ia.kategori_arsip,
+                    ia.file_path
                 FROM item_arsip_inaktif ia
                 LEFT JOIN arsip_inaktif ai ON ia.id_arsip = ai.id_arsip
                 LEFT JOIN sub_sub_masalah ssm ON ai.id_subsub = ssm.id_subsub
@@ -48,6 +49,13 @@ if (!empty($id)) {
             $stmt->execute();
             $res = $stmt->get_result();
             if ($row = $res->fetch_assoc()) {
+                if (empty($pdfUrl) && !empty($row['file_path'])) {
+                    $files = explode(',', $row['file_path']);
+                    $firstFile = trim($files[0] ?? '');
+                    if (!empty($firstFile)) {
+                        $pdfUrl = '../uploads_inaktif/' . $firstFile;
+                    }
+                }
                 $item = [
                     'berkas' => $row['nomor_berkas'] ?? '',
                     'item' => $row['nomor_item'] ?? (string)$id_int,

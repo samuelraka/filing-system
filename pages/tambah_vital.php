@@ -32,7 +32,7 @@ include_once "../layouts/master/header.php";
                                     class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 
                                         focus:outline-none focus:ring-2 focus:ring-cyan-600" 
                                     placeholder="Deskripsi singkat arsip" 
-                                    name="uraian_arsip" required>
+                                    name="jenis_arsip" required>
                             </div>
 
                             <!-- Unit Kerja -->
@@ -42,8 +42,8 @@ include_once "../layouts/master/header.php";
                                     type="text" 
                                     class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 
                                         focus:outline-none focus:ring-2 focus:ring-cyan-600" 
-                                    placeholder="Contoh: TI, SDM, Operasional"
-                                    name="unit_kerja" required>
+                                    placeholder=""
+                                    name="tingkat_perkembangan" required>
                             </div>
 
                             <!-- Kurun Waktu -->
@@ -54,7 +54,7 @@ include_once "../layouts/master/header.php";
                                     class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2 
                                         focus:outline-none focus:ring-2 focus:ring-cyan-600" 
                                     placeholder="Contoh: 2022–2024"
-                                    name="kurun_waktu" required>
+                                    name="kurun_tahun" required>
                             </div>
 
                             <!-- Media (ubah ke input manual) -->
