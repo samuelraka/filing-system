@@ -22,7 +22,7 @@ include_once "../layouts/master/header.php";
                             Kembali
                         </a>
                     </div>
-                    <form action="#" method="post" class="space-y-6">
+                    <form action="#" method="post" class="space-y-6" enctype="multipart/form-data">
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <!-- Uraian Arsip -->
                             <div>
@@ -124,6 +124,26 @@ include_once "../layouts/master/header.php";
                             </div>
                         </div>
 
+                        <!-- File Upload -->
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Upload Dokumen PDF</label>
+                            <div class="flex flex-col space-y-2">
+                                <div class="flex items-center justify-center w-full">
+                                    <label for="fileUpload" class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                            <svg class="w-8 h-8 mb-3 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                            </svg>
+                                            <p class="mb-1 text-sm text-gray-500">Klik area ini untuk memulai upload file</p>
+                                            <p class="text-xs text-gray-500">PDF (Maksimal 10 file)</p>
+                                        </div>
+                                        <input id="fileUpload" name="files[]" type="file" class="hidden" accept=".pdf" multiple />
+                                    </label>
+                                </div>
+                                <div id="fileList" class="mt-2 space-y-2"></div>
+                            </div>
+                        </div>
+
                         <!-- Tombol -->
                         <div class="flex justify-end space-x-3">
                             <button type="reset" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md">Reset</button>
@@ -143,6 +163,25 @@ include_once "../layouts/master/header.php";
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const fileInput = document.getElementById('fileUpload');
+    const fileList = document.getElementById('fileList');
+
+    fileInput.addEventListener('change', function() {
+        fileList.innerHTML = '';
+        const files = Array.from(this.files);
+        files.forEach((file, index) => {
+            const div = document.createElement('div');
+            div.classList.add('flex', 'items-center', 'justify-between', 'p-2', 'border', 'rounded', 'bg-gray-50');
+            div.innerHTML = `
+                <span class="text-sm text-gray-700">${index + 1}. ${file.name}</span>
+                <span class="text-xs text-gray-500">${(file.size / 1024).toFixed(1)} KB</span>
+            `;
+            fileList.appendChild(div);
+        });
+    });
+});
+
 $(document).ready(function() {
     $("form").on("submit", function(e) {
         e.preventDefault();
@@ -165,6 +204,7 @@ $(document).ready(function() {
                         showConfirmButton: false
                     });
                     $("form")[0].reset();
+                    fileList.innerHTML = '';
                 } else {
                     Swal.fire({
                         icon: "error",
@@ -184,7 +224,6 @@ $(document).ready(function() {
     });
 });
 </script>
-
 
 <?php
 include_once "../layouts/master/footer.php";

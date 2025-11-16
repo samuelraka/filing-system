@@ -157,10 +157,10 @@ $tahun_result = mysqli_query($conn, "SELECT DISTINCT tahun FROM arsip_statis ORD
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
-                                <?php while ($row = mysqli_fetch_assoc($result)) : ?>
+                                <?php $no = 1; while ($row = mysqli_fetch_assoc($result)) : ?>
                                 <!-- Row 1 -->
                                 <tr class="hover:bg-gray-50 divide-x divide-gray-200">
-                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center"><?= $row['id_subsub'] ?></td>
+                                    <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center"><?= $no++ ?></td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900"><?= $row['kode_subsub'] ?></td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900"><?= $row['jenis_arsip'] ?></td>
                                     <td class="px-3 py-4 whitespace-nowrap text-sm text-gray-900 text-center"><?= $row['tahun'] ?></td>

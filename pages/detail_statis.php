@@ -13,13 +13,14 @@ $item = [
     'tahun' => '',
     'jumlah' => '',
     'perkembangan' => '',
-    'keterangan' => ''
+    'keterangan' => '',
+    'file_path' => ''
 ];
 $notFound = false;
 
 if ($id > 0) {
     try {
-        $stmt = $conn->prepare("SELECT a.id_arsip_statis, a.id_subsub, s.kode_subsub, a.jenis_arsip, a.tahun, a.jumlah, a.tingkat_perkembangan, a.keterangan FROM arsip_statis a LEFT JOIN sub_sub_masalah s ON a.id_subsub = s.id_subsub WHERE a.id_arsip_statis = ?");
+        $stmt = $conn->prepare("SELECT a.id_arsip_statis, a.id_subsub, s.kode_subsub, a.jenis_arsip, a.tahun, a.jumlah, a.tingkat_perkembangan, a.keterangan, a.file_path FROM arsip_statis a LEFT JOIN sub_sub_masalah s ON a.id_subsub = s.id_subsub WHERE a.id_arsip_statis = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $res = $stmt->get_result();
@@ -31,7 +32,8 @@ if ($id > 0) {
                 'tahun' => $row['tahun'] ?? '',
                 'jumlah' => $row['jumlah'] ?? '',
                 'perkembangan' => $row['tingkat_perkembangan'] ?? '',
-                'keterangan' => $row['keterangan'] ?? ''
+                'keterangan' => $row['keterangan'] ?? '',
+                'file_path' => $row['file_path'] ?? ''
             ];
         } else {
             $notFound = true;
@@ -112,17 +114,67 @@ if ($id > 0) {
                     </div>
                 </form>
 
-                <!-- <div class="mt-8">
+                <!-- File Arsip Section -->
+                <div class="mt-8">
                     <h3 class="text-lg font-medium text-gray-900 mb-3">File Arsip (Preview PDF)</h3>
-                    <div class="border border-dashed border-gray-300 rounded-md p-4 bg-gray-50">
-                        <?php if (!empty($pdfUrl)) : ?>
-                            <iframe src="<?php echo htmlspecialchars($pdfUrl); ?>" class="w-full h-[500px]" title="Preview PDF"></iframe>
-                            <p class="text-sm text-gray-500 mt-2">Pratinjau dokumen PDF.</p>
-                        <?php else: ?>
-                            <div class="flex items-center justify-center h-64 text-gray-400">Preview PDF akan ditampilkan di sini.</div>
-                        <?php endif; ?>
-                    </div>
-                </div> -->
+                    <?php 
+                    $files = [];
+                    if (!empty($item['file_path'])) {
+                        $files = json_decode($item['file_path'], true);
+                        if (!is_array($files)) {
+                            $files = [];
+                        }
+                    }
+                    ?>
+                    <?php if (!empty($files) && count($files) > 0) : ?>
+                        <div class="space-y-4">
+                            <!-- File List -->
+                            <div class="border border-gray-300 rounded-md p-4 bg-gray-50">
+                                <h4 class="text-sm font-medium text-gray-700 mb-3">Daftar File (<?php echo count($files); ?> file)</h4>
+                                <div class="space-y-2">
+                                    <?php foreach ($files as $index => $file) : ?>
+                                        <div class="flex items-center justify-between p-3 bg-white border border-gray-200 rounded-md hover:bg-gray-50">
+                                            <div class="flex items-center gap-2">
+                                                <svg class="w-5 h-5 text-red-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                                    <path d="M7 3H4a1 1 0 00-1 1v16a1 1 0 001 1h16a1 1 0 001-1V8.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0014.586 2H8a1 1 0 00-1 1v1H7V3zm0 2v1h10V5H7zm10 14H7v-2h10v2z"/>
+                                                </svg>
+                                                <span class="text-sm text-gray-700"><?php echo htmlspecialchars($file); ?></span>
+                                            </div>
+                                            <a href="../api/arsip/arsip_statis/download_file.php?file=<?php echo urlencode($file); ?>&id=<?php echo $id; ?>" class="bg-cyan-600 hover:bg-cyan-600/90 text-white px-3 py-1 rounded text-sm inline-flex items-center gap-1">
+                                                <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                                    <polyline points="7 10 12 15 17 10"></polyline>
+                                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                                </svg>
+                                                Download
+                                            </a>
+                                        </div>
+                                    <?php endforeach; ?>
+                                </div>
+                            </div>
+
+                            <!-- PDF Preview -->
+                            <div class="border border-gray-300 rounded-md p-4 bg-gray-50">
+                                <h4 class="text-sm font-medium text-gray-700 mb-3">Preview PDF</h4>
+                                <div class="bg-white rounded-md overflow-hidden">
+                                    <iframe src="../uploads/arsip_statis/<?php echo htmlspecialchars($files[0]); ?>" class="w-full h-[600px]" title="Preview PDF"></iframe>
+                                </div>
+                                <p class="text-xs text-gray-500 mt-2">Menampilkan file pertama. Gunakan tombol download untuk mengakses file lainnya.</p>
+                            </div>
+                        </div>
+                    <?php else: ?>
+                        <div class="border border-dashed border-gray-300 rounded-md p-4 bg-gray-50">
+                            <div class="flex items-center justify-center h-64 text-gray-400">
+                                <div class="text-center">
+                                    <svg class="w-12 h-12 mx-auto mb-2 text-gray-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                                    </svg>
+                                    <p>Belum ada file yang diunggah</p>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                </div>
             </div>
         </div>
     </div>

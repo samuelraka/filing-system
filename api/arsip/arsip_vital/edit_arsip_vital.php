@@ -1,6 +1,6 @@
 <?php
 header("Content-Type: application/json");
-include "../../../config/database.php"; // sesuaikan path koneksi kamu
+include "../../../config/database.php";
 
 $response = [];
 
@@ -61,6 +61,7 @@ function handleFileUpload($files) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    $id_arsip = $_POST['id_arsip'] ?? 0;
     $jenis_arsip = $_POST['jenis_arsip'] ?? '';
     $tingkat_perkembangan = $_POST['tingkat_perkembangan'] ?? '';
     $kurun_tahun = $_POST['kurun_tahun'] ?? '';
@@ -72,34 +73,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $keterangan = $_POST['keterangan'] ?? '';
 
     try {
-        // Handle file upload
+        // Handle file upload jika ada
         $uploadedFiles = handleFileUpload($_FILES['files'] ?? []);
-        $filesJson = !empty($uploadedFiles) ? json_encode($uploadedFiles) : null;
+        
+        if (!empty($uploadedFiles)) {
+            $filesJson = json_encode($uploadedFiles);
+            $stmt = $conn->prepare("
+                UPDATE arsip_vital 
+                SET jenis_arsip = ?, tingkat_perkembangan = ?, kurun_tahun = ?, media = ?, jumlah = ?, jangka_simpan = ?, lokasi_simpan = ?, metode_perlindungan = ?, keterangan = ?, file_path = ?
+                WHERE id_arsip = ?
+            ");
 
-        $stmt = $conn->prepare("
-            INSERT INTO arsip_vital 
-            (jenis_arsip, tingkat_perkembangan, kurun_tahun, media, jumlah, jangka_simpan, lokasi_simpan, metode_perlindungan, keterangan, file_path)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        ");
+            $stmt->bind_param(
+                "ssssisssssi",
+                $jenis_arsip,
+                $tingkat_perkembangan,
+                $kurun_tahun,
+                $media,
+                $jumlah,
+                $jangka_simpan,
+                $lokasi_simpan,
+                $metode_perlindungan,
+                $keterangan,
+                $filesJson,
+                $id_arsip
+            );
+        } else {
+            $stmt = $conn->prepare("
+                UPDATE arsip_vital 
+                SET jenis_arsip = ?, tingkat_perkembangan = ?, kurun_tahun = ?, media = ?, jumlah = ?, jangka_simpan = ?, lokasi_simpan = ?, metode_perlindungan = ?, keterangan = ?
+                WHERE id_arsip = ?
+            ");
 
-        $stmt->bind_param(
-            "ssssisssss",
-            $jenis_arsip,
-            $tingkat_perkembangan,
-            $kurun_tahun,
-            $media,
-            $jumlah,
-            $jangka_simpan,
-            $lokasi_simpan,
-            $metode_perlindungan,
-            $keterangan,
-            $filesJson
-        );
+            $stmt->bind_param(
+                "ssssissssi",
+                $jenis_arsip,
+                $tingkat_perkembangan,
+                $kurun_tahun,
+                $media,
+                $jumlah,
+                $jangka_simpan,
+                $lokasi_simpan,
+                $metode_perlindungan,
+                $keterangan,
+                $id_arsip
+            );
+        }
 
         if ($stmt->execute()) {
-            $response = ["success" => true, "message" => "Arsip berhasil ditambahkan."];
+            $response = ["success" => true, "message" => "Arsip berhasil diperbarui."];
         } else {
-            throw new Exception("Gagal menambahkan arsip.");
+            throw new Exception("Gagal memperbarui arsip.");
         }
 
         $stmt->close();
