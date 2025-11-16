@@ -26,6 +26,7 @@ if (!empty($id) && ctype_digit($id)) {
             "SELECT 
                 ia.id_item,
                 ia.nomor_item,
+                ia.uraian_singkat,
                 ia.uraian_informasi,
                 ia.tanggal,
                 ia.keterangan_skaad,
@@ -37,7 +38,7 @@ if (!empty($id) && ctype_digit($id)) {
                 ia.file_path
              FROM item_arsip ia
              JOIN arsip_aktif aa ON ia.id_arsip = aa.id_arsip
-             LEFT JOIN sub_sub_masalah ssm ON ia.id_subsub = ssm.id_subsub
+             LEFT JOIN sub_sub_masalah ssm ON aa.id_subsub = ssm.id_subsub
              WHERE ia.id_item = ?"
         );
         $stmt->bind_param("i", $idInt);
@@ -49,6 +50,7 @@ if (!empty($id) && ctype_digit($id)) {
                 'item' => $row['nomor_item'] ?? ($row['id_item'] ?? ''),
                 'kode' => $row['kode_subsub'] ?? '',
                 'uraian' => $row['uraian_informasi'] ?? '',
+                'uraian_singkat' => $row['uraian_singkat'] ?? '',
                 'tanggal' => $row['tanggal'] ?? '',
                 'jumlah' => $row['jumlah_item'] ?? '',
                 'skaad' => $row['keterangan_skaad'] ?? '',
@@ -84,7 +86,13 @@ if (!empty($id) && ctype_digit($id)) {
             </div>
 
             <div class="bg-white rounded-lg shadow-sm px-6 py-6 max-w-screen">
-                <form action="#" method="post" class="space-y-6" id="editFormAktif">
+                <div class="flex justify-between items-center mb-8">
+                    <a href="detail_aktif.php?id=<?php echo urlencode($id); ?>" class="flex items-center text-2xl border-b">
+                        <svg class="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" /></svg>
+                        Kembali
+                    </a>
+                </div>
+                <form action="#" method="post" class="space-y-6" id="editFormAktif" enctype="multipart/form-data">
                     <input type="hidden" name="id_item" id="id_item" value="<?php echo htmlspecialchars($id); ?>" />
                     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div>
@@ -102,12 +110,17 @@ if (!empty($id) && ctype_digit($id)) {
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Uraian Informasi Arsip</label>
-                            <input type="text" name="uraianInformasi" id="uraianInformasi" value="<?php echo htmlspecialchars($item['uraian']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                            <input type="text" name="uraianInformasi" id="uraianInformasi" value="<?php echo htmlspecialchars($item['uraian']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2" required>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700">Uraian Singkat</label>
+                            <textarea name="uraianSingkat" id="uraianSingkat" rows="3" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2" required><?php echo htmlspecialchars($item['uraian_singkat'] ?? ''); ?></textarea>
                         </div>
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Tanggal</label>
-                            <input type="date" name="tanggal" id="tanggal" value="<?php echo htmlspecialchars($item['tanggal']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2">
+                            <input type="date" name="tanggal" id="tanggal" value="<?php echo htmlspecialchars($item['tanggal']); ?>" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2" required>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Jumlah Item Arsip</label>
@@ -141,7 +154,7 @@ if (!empty($id) && ctype_digit($id)) {
                                                     <span class="text-sm text-gray-700"><?php echo htmlspecialchars($fname); ?></span>
                                                     <a href="<?php echo htmlspecialchars($href); ?>" target="_blank" class="text-sm text-cyan-700 hover:underline">Lihat</a>
                                                 </div>
-                                                <a href="delete_file_aktif.php?id=<?php echo urlencode($id); ?>&file=<?php echo urlencode($fname); ?>" class="border border-red-300 inline-flex bg-white hover:bg-red-50 text-red-600 rounded-md px-2 py-1 text-sm">Hapus</a>
+                                                <a href="../api/arsip/arsip_aktif/delete_file_aktif.php?id=<?php echo urlencode($id); ?>&file=<?php echo urlencode($fname); ?>" class="border border-red-300 inline-flex bg-white hover:bg-red-50 text-red-600 rounded-md px-2 py-1 text-sm">Hapus</a>
                                             </li>
                                         <?php endforeach; ?>
                                     </ul>
@@ -150,11 +163,20 @@ if (!empty($id) && ctype_digit($id)) {
                                 <p class="text-sm text-gray-500">Belum ada file terunggah.</p>
                             <?php endif; ?>
 
-                            <form action="upload_file_aktif.php?id=<?php echo urlencode($id); ?>" method="post" enctype="multipart/form-data" class="space-y-2">
-                                <label class="block text-sm font-medium text-gray-700">Tambah PDF baru</label>
-                                <input type="file" name="files[]" accept=".pdf" multiple class="border border-gray-300 rounded-md px-3 py-2" />
-                                <button type="submit" class="bg-cyan-600 hover:bg-cyan-600/90 text-white px-4 py-2 rounded-md">Upload</button>
-                            </form>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Upload Dokumen PDF</label>
+                            <div class="flex flex-col space-y-2">
+                                <div class="flex items-center justify-center w-full">
+                                    <label for="fileUploadAktif" class="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg cursor-pointer bg-gray-50 hover:bg-gray-100">
+                                        <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                            <svg class="w-8 h-8 mb-3 text-gray-500" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" /></svg>
+                                            <p class="mb-1 text-sm text-gray-500">Klik area ini untuk memulai upload file</p>
+                                            <p class="text-xs text-gray-500">PDF (Maksimal 1 File)</p>
+                                        </div>
+                                        <input id="fileUploadAktif" name="files[]" type="file" class="hidden" accept=".pdf" multiple />
+                                    </label>
+                                </div>
+                                <div id="fileListAktif" class="mt-2 space-y-2"></div>
+                            </div>
                         </div>
                     </div>
 
@@ -162,21 +184,7 @@ if (!empty($id) && ctype_digit($id)) {
                         <button type="submit" class="bg-cyan-600 hover:bg-cyan-600/90 text-white px-4 py-2 rounded-md">Simpan Perubahan</button>
                         <a href="detail_aktif.php?id=<?php echo urlencode($id); ?>" class="bg-gray-200 hover:bg-gray-300 text-gray-700 px-4 py-2 rounded-md">Batal</a>
                     </div>
-                </form>
-
-                <!-- <div class="mt-8">
-                    <h3 class="text-lg font-medium text-gray-900 mb-3">File Arsip (Preview PDF)</h3>
-                    <div class="border border-dashed border-gray-300 rounded-md p-4 bg-gray-50">
-                        <?php if (!empty($pdfUrl)) : ?>
-                            <iframe src="<?php echo htmlspecialchars($pdfUrl); ?>" class="w-full h-[500px]" title="Preview PDF"></iframe>
-                            <p class="text-sm text-gray-500 mt-2">Pratinjau dokumen PDF.</p>
-                        <?php else: ?>
-                            <div class="flex items-center justify-center h-64 text-gray-400">Preview PDF akan ditampilkan di sini.</div>
-                        <?php endif; ?>
-                    </div>
-                </div> -->
-
-                
+                </form>                
             </div>
         </div>
     </div>
@@ -185,9 +193,26 @@ if (!empty($id) && ctype_digit($id)) {
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('editFormAktif');
+    const fileInput = document.getElementById('fileUploadAktif');
+    const fileList = document.getElementById('fileListAktif');
+    if (fileInput && fileList) {
+        fileInput.addEventListener('change', function() {
+            fileList.innerHTML = '';
+            const files = Array.from(this.files);
+            files.forEach((file, index) => {
+                const div = document.createElement('div');
+                div.classList.add('flex','items-center','justify-between','p-2','border','rounded','bg-gray-50');
+                div.innerHTML = `<span class="text-sm text-gray-700">${index + 1}. ${file.name}</span><span class="text-xs text-gray-500">${(file.size / 1024).toFixed(1)} KB</span>`;
+                fileList.appendChild(div);
+            });
+        });
+    }
     if (!form) return;
     form.addEventListener('submit', async function(e) {
         e.preventDefault();
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const originalText = submitBtn ? submitBtn.textContent : '';
+        if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = 'Menyimpan...'; }
         const formData = new FormData(form);
         try {
             const res = await fetch('../api/arsip/arsip_aktif/proses_edit_arsip.php', { method: 'POST', body: formData });
@@ -202,6 +227,8 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (err) {
             console.error(err);
             alert('Terjadi kesalahan saat menyimpan perubahan.');
+        } finally {
+            if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = originalText; }
         }
     });
 });

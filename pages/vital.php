@@ -20,9 +20,11 @@ $where = "WHERE 1=1";
 
 if ($keyword !== '') {
     $keyword_safe = mysqli_real_escape_string($conn, $keyword);
-    $where .= " AND (v.kode_klasifikasi LIKE '%$keyword_safe%' 
-                OR v.jenis_arsip LIKE '%$keyword_safe%' 
-                OR v.tahun LIKE '%$keyword_safe%')";
+    $where .= " AND (v.jenis_arsip LIKE '%$keyword_safe%' 
+                OR v.kurun_tahun LIKE '%$keyword_safe%' 
+                OR v.media LIKE '%$keyword_safe%' 
+                OR v.lokasi_simpan LIKE '%$keyword_safe%' 
+                OR v.metode_perlindungan LIKE '%$keyword_safe%')";
 }
 
 if ($filter_media !== '') {
@@ -42,7 +44,7 @@ if ($filter_metode !== '') {
 
 if ($filter_kode !== '') {
     $kode_safe = mysqli_real_escape_string($conn, $filter_kode);
-    $where .= " AND v.kode_klasifikasi LIKE '%$kode_safe%'";
+    $where .= " AND v.jenis_arsip LIKE '%$kode_safe%'";
 }
 
 // Hitung total data
@@ -179,7 +181,7 @@ $metode_result = mysqli_query($conn, "SELECT DISTINCT metode_perlindungan FROM a
                                     <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Lokasi Simpan</th>
                                     <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Metode Perlindungan</th>
                                     <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan</th>
-                                    <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Detail</th>
+                                    <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Opsi</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -198,17 +200,20 @@ $metode_result = mysqli_query($conn, "SELECT DISTINCT metode_perlindungan FROM a
                                             <td class="px-3 py-4 text-center"><?= htmlspecialchars($row['metode_perlindungan']); ?></td>
                                             <td class="px-3 py-4"><?= htmlspecialchars($row['keterangan']); ?></td>
                                             <td class="px-3 py-4 text-center">
-                                                <a href="detail_vital.php?id=<?= $row['id_arsip'] ?>" 
-                                                class="action-button border border-gray-300 bg-white hover:bg-gray-100 inline-flex rounded-md p-1 shadow-sm"
-                                                title="Lihat Detail">
+                                                <a href="detail_vital.php?id=<?= $row['id_arsip'] ?>" class="action-button border border-gray-300 bg-white hover:bg-gray-100 inline-flex rounded-md p-1 shadow-sm" title="Lihat Detail">
                                                     <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
                                                 </a>
+                                                <?php if (function_exists('getUserRole') && getUserRole() === 'superadmin'): ?>
+                                                    <a href="../api/arsip/arsip_vital/delete_vital.php?id=<?= $row['id_arsip'] ?>" class="border border-red-300 inline-flex bg-white hover:bg-red-50 text-red-600 rounded-md p-1 shadow-sm" title="Hapus" onclick="return confirm('Yakin hapus arsip ini?');">
+                                                        <span class="material-symbols-outlined text-red-600 text-xs">delete</span>
+                                                    </a>
+                                                <?php endif; ?>
                                             </td>
                                         </tr>
                                     <?php endwhile; ?>
                                 <?php else: ?>
                                     <tr>
-                                        <td colspan="11" class="text-center py-4 text-gray-500">Tidak ada data arsip vital.</td>
+                                        <td colspan="12" class="text-center py-4 text-gray-500">Tidak ada data arsip vital.</td>
                                     </tr>
                                 <?php endif; ?>
                             </tbody>

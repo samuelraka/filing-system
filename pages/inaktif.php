@@ -283,6 +283,11 @@ $kat_result = mysqli_query($conn, "SELECT DISTINCT kategori_arsip FROM item_arsi
                                     }
                                 }
                                 ?>
+                                <?php if (empty($arsip_data)) : ?>
+                                <tr>
+                                    <td colspan="13" class="text-center py-4 text-gray-500">Tidak ada data arsip inaktif.</td>
+                                </tr>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>

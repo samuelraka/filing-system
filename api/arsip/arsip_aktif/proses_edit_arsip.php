@@ -8,6 +8,8 @@ ini_set('error_log', __DIR__ . "/../../../error_log.txt");
 
 include_once "../../../config/database.php";
 
+header('Content-Type: application/json');
+
 $conn->begin_transaction();
 
 try {

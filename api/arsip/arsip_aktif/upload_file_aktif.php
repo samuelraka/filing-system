@@ -1,25 +1,25 @@
 <?php
-include_once __DIR__ . '/../config/session.php';
-include_once __DIR__ . '/../config/database.php';
+include_once __DIR__ . '/../../../config/session.php';
+include_once __DIR__ . '/../../../config/database.php';
 
 if (!isAdminOrSuperAdmin()) {
-    header('Location: dashboard.php');
+    header('Location: ../../../dashboard.php');
     exit;
 }
 
 $id = isset($_GET['id']) ? $_GET['id'] : '';
 if (empty($id) || !ctype_digit($id)) {
-    header('Location: edit_aktif.php?id=' . urlencode($id) . '&status=invalid_id');
+    header('Location: ../../../pages/edit_aktif.php?id=' . urlencode($id) . '&status=invalid_id');
     exit;
 }
 
 if ($_SERVER['REQUEST_METHOD'] !== 'POST' || empty($_FILES['files'])) {
-    header('Location: edit_aktif.php?id=' . urlencode($id) . '&status=no_files');
+    header('Location: ../../../pages/edit_aktif.php?id=' . urlencode($id) . '&status=no_files');
     exit;
 }
 
 $idInt = intval($id);
-$targetDir = __DIR__ . '/../uploads/';
+$targetDir = __DIR__ . '/../../../uploads/';
 if (!is_dir($targetDir)) {
     @mkdir($targetDir, 0775, true);
 }
@@ -75,6 +75,6 @@ if (!empty($uploaded)) {
     $stmt->close();
 }
 
-header('Location: edit_aktif.php?id=' . urlencode($id) . '&status=uploaded');
+header('Location: ../../../pages/edit_aktif.php?id=' . urlencode($id) . '&status=uploaded');
 exit;
 ?>

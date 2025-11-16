@@ -9,7 +9,20 @@ $idParam = isset($_GET['id']) ? $_GET['id'] : null;
 $item = null;
 if ($idParam !== null && is_numeric($idParam)) {
     $id = (int)$idParam;
-    $stmt = $conn->prepare("SELECT id_arsip, jenis_arsip, tingkat_perkembangan, kurun_tahun, media, jumlah, jangka_simpan, lokasi_simpan, metode_perlindungan, keterangan, file_path FROM arsip_vital WHERE id_arsip = ?");
+
+    $hasJenis = false; $hasUraian = false; $hasKurunTahun = false; $hasKurunWaktu = false; $hasFilePath = false;
+    $r = $conn->query("SHOW COLUMNS FROM arsip_vital LIKE 'jenis_arsip'"); if ($r && $r->num_rows > 0) { $hasJenis = true; }
+    $r = $conn->query("SHOW COLUMNS FROM arsip_vital LIKE 'uraian_arsip'"); if ($r && $r->num_rows > 0) { $hasUraian = true; }
+    $r = $conn->query("SHOW COLUMNS FROM arsip_vital LIKE 'kurun_tahun'"); if ($r && $r->num_rows > 0) { $hasKurunTahun = true; }
+    $r = $conn->query("SHOW COLUMNS FROM arsip_vital LIKE 'kurun_waktu'"); if ($r && $r->num_rows > 0) { $hasKurunWaktu = true; }
+    $r = $conn->query("SHOW COLUMNS FROM arsip_vital LIKE 'file_path'"); if ($r && $r->num_rows > 0) { $hasFilePath = true; }
+
+    $colJenis = $hasJenis ? 'jenis_arsip' : ($hasUraian ? 'uraian_arsip' : 'jenis_arsip');
+    $colKurun = $hasKurunTahun ? 'kurun_tahun' : ($hasKurunWaktu ? 'kurun_waktu' : 'kurun_tahun');
+    $selFile = $hasFilePath ? 'file_path' : 'NULL AS file_path';
+
+    $sql = "SELECT id_arsip, $colJenis AS jenis_arsip, tingkat_perkembangan, $colKurun AS kurun_tahun, media, jumlah, jangka_simpan, lokasi_simpan, metode_perlindungan, keterangan, $selFile FROM arsip_vital WHERE id_arsip = ?";
+    $stmt = $conn->prepare($sql);
     if ($stmt) {
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -50,13 +63,17 @@ $pdfUrl = isset($_GET['file']) ? $_GET['file'] : '';
                 <div class="flex items-center gap-3">
                     <h2 class="text-3xl font-medium text-slate-700">Edit Arsip Vital</h2>
                 </div>
-                <div class="flex items-center gap-3">
-                    <a href="detail_vital.php?id=<?php echo htmlspecialchars($item['id_arsip']); ?>" class="text-sm text-cyan-700 hover:underline">Kembali ke Detail</a>
-                    <a href="vital.php" class="text-sm text-slate-700 hover:underline">Kembali ke Arsip Vital</a>
-                </div>
             </div>
 
             <div class="bg-white rounded-lg shadow-sm px-6 py-6 max-w-screen">
+                <div class="flex justify-between items-center mb-8">
+                    <a href="detail_vital.php?id=<?php echo htmlspecialchars($item['id_arsip']); ?>" class="flex items-center text-2xl border-b">
+                        <svg class="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                        </svg>
+                        Kembali
+                    </a>
+                </div>
                 <?php if ($notFound): ?>
                     <div class="p-4 mb-6 rounded bg-yellow-50 text-yellow-700 border border-yellow-200">
                         Data arsip tidak ditemukan.
@@ -118,6 +135,30 @@ $pdfUrl = isset($_GET['file']) ? $_GET['file'] : '';
 
                     <!-- File Upload -->
                     <div>
+                        <h3 class="text-sm font-medium text-gray-700 mb-2">File saat ini</h3>
+                        <?php 
+                        $existingFiles = [];
+                        if (!empty($item['file_path'])) {
+                            $tmp = json_decode($item['file_path'], true);
+                            if (is_array($tmp)) { $existingFiles = $tmp; }
+                        }
+                        ?>
+                        <?php if (!empty($existingFiles)) : ?>
+                            <ul class="divide-y divide-gray-200 border rounded-md mb-4">
+                                <?php foreach ($existingFiles as $fname): ?>
+                                    <li class="flex items-center justify-between px-3 py-2">
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-sm text-gray-700"><?php echo htmlspecialchars($fname); ?></span>
+                                            <a href="../uploads/arsip_vital/<?php echo htmlspecialchars($fname); ?>" target="_blank" class="text-sm text-cyan-700 hover:underline">Lihat</a>
+                                        </div>
+                                        <a href="../api/arsip/arsip_vital/delete_file.php?id=<?php echo urlencode($item['id_arsip']); ?>&file=<?php echo urlencode($fname); ?>" class="border border-red-300 inline-flex bg-white hover:bg-red-50 text-red-600 rounded-md px-2 py-1 text-sm">Hapus</a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php else: ?>
+                            <p class="text-sm text-gray-500 mb-4">Belum ada file terunggah.</p>
+                        <?php endif; ?>
+
                         <label class="block text-sm font-medium text-gray-700 mb-1">Upload Dokumen PDF</label>
                         <div class="flex flex-col space-y-2">
                             <div class="flex items-center justify-center w-full">

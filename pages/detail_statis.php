@@ -36,9 +36,28 @@ if ($id > 0) {
                 'file_path' => $row['file_path'] ?? ''
             ];
         } else {
-            $notFound = true;
+            $stmt->close();
+            $stmt2 = $conn->prepare("SELECT id_arsip_statis, id_subsub, jenis_arsip, tahun, jumlah, tingkat_perkembangan, keterangan, file_path FROM arsip_statis WHERE id_arsip_statis = ?");
+            $stmt2->bind_param("i", $id);
+            $stmt2->execute();
+            $res2 = $stmt2->get_result();
+            if ($row = $res2->fetch_assoc()) {
+                $item = [
+                    'no' => (string)($row['id_arsip_statis'] ?? $id),
+                    'kode' => (string)($row['id_subsub'] ?? ''),
+                    'jenis' => $row['jenis_arsip'] ?? '',
+                    'tahun' => $row['tahun'] ?? '',
+                    'jumlah' => $row['jumlah'] ?? '',
+                    'perkembangan' => $row['tingkat_perkembangan'] ?? '',
+                    'keterangan' => $row['keterangan'] ?? '',
+                    'file_path' => $row['file_path'] ?? ''
+                ];
+            } else {
+                $notFound = true;
+            }
+            $stmt2->close();
         }
-        $stmt->close();
+        if ($stmt) { $stmt->close(); }
     } catch (Exception $e) {
         $notFound = true;
     }
@@ -140,26 +159,16 @@ if ($id > 0) {
                                                 </svg>
                                                 <span class="text-sm text-gray-700"><?php echo htmlspecialchars($file); ?></span>
                                             </div>
-                                            <a href="../api/arsip/arsip_statis/download_file.php?file=<?php echo urlencode($file); ?>&id=<?php echo $id; ?>" class="bg-cyan-600 hover:bg-cyan-600/90 text-white px-3 py-1 rounded text-sm inline-flex items-center gap-1">
+                                            <a href="../uploads/arsip_statis/<?php echo htmlspecialchars($file); ?>" target="_blank" class="bg-cyan-600 hover:bg-cyan-600/90 text-white px-3 py-1 rounded text-sm inline-flex items-center gap-1">
                                                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                                    <polyline points="7 10 12 15 17 10"></polyline>
-                                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7"></path>
+                                                    <path d="M10 3h5v5"></path>
                                                 </svg>
-                                                Download
+                                                Lihat
                                             </a>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
-                            </div>
-
-                            <!-- PDF Preview -->
-                            <div class="border border-gray-300 rounded-md p-4 bg-gray-50">
-                                <h4 class="text-sm font-medium text-gray-700 mb-3">Preview PDF</h4>
-                                <div class="bg-white rounded-md overflow-hidden">
-                                    <iframe src="../uploads/arsip_statis/<?php echo htmlspecialchars($files[0]); ?>" class="w-full h-[600px]" title="Preview PDF"></iframe>
-                                </div>
-                                <p class="text-xs text-gray-500 mt-2">Menampilkan file pertama. Gunakan tombol download untuk mengakses file lainnya.</p>
                             </div>
                         </div>
                     <?php else: ?>

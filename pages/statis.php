@@ -153,7 +153,7 @@ $tahun_result = mysqli_query($conn, "SELECT DISTINCT tahun FROM arsip_statis ORD
                                     <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Jumlah</th>
                                     <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Tingkat Perkembangan</th>
                                     <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Keterangan</th>
-                                    <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Detail</th>
+                                    <th class="px-3 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">Opsi</th>
                                 </tr>
                             </thead>
                             <tbody class="bg-white divide-y divide-gray-200">
@@ -171,9 +171,23 @@ $tahun_result = mysqli_query($conn, "SELECT DISTINCT tahun FROM arsip_statis ORD
                                         <a href="detail_statis.php?id=<?= $row['id_arsip_statis'] ?>" class="action-button border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm" title="Lihat Detail">
                                             <span class="material-symbols-outlined text-gray-700 text-xs">quick_reference_all</span>
                                         </a>
+                                        <?php if (function_exists('getUserRole') && getUserRole() === 'superadmin'): ?>
+                                            <form action="../api/arsip/arsip_statis/proses_statis.php" method="post" onsubmit="return confirm('Yakin hapus arsip ini?');" class="inline">
+                                                <input type="hidden" name="action" value="delete">
+                                                <input type="hidden" name="id_arsip_statis" value="<?= $row['id_arsip_statis'] ?>">
+                                                <button type="submit" class="border border-red-300 inline-flex bg-white hover:bg-red-50 text-red-600 rounded-md p-1 shadow-sm" title="Hapus">
+                                                    <span class="material-symbols-outlined text-red-600 text-xs">delete</span>
+                                                </button>
+                                            </form>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                                 <?php endwhile; ?>
+                                <?php if ($total_data == 0): ?>
+                                <tr>
+                                    <td colspan="10" class="text-center py-4 text-gray-500">Tidak ada data arsip statis.</td>
+                                </tr>
+                                <?php endif; ?>
                             </tbody>
                         </table>
                     </div>

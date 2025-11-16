@@ -74,9 +74,14 @@ include_once "../layouts/master/header.php";
                             </div>
 
                             <!-- Keterangan SKAAD -->
-                             <div>
+                            <div>
                                 <label for="keteranganSKAAD" class="block text-sm font-medium text-gray-700 mb-1">Keterangan SKAAD</label>
-                                <input type="text" id="keteranganSKAAD" name="keteranganSKAAD" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                <select id="keteranganSKAAD" name="keteranganSKAAD" class="w-full border border-gray-300 rounded-md py-2 px-3 focus:outline-none focus:ring-2 focus:ring-blue-500" required>
+                                    <option value="">Pilih Keterangan SKAAD</option>
+                                    <option value="Biasa">Biasa</option>
+                                    <option value="Rahasia">Rahasia</option>
+                                    <option value="Terbatas">Terbatas</option>
+                                </select>
                             </div>
                             <!-- <div>
                                 <label for="keteranganSKAAD" class="block text-sm font-medium text-gray-700 mb-1">Keterangan SKAAD</label>

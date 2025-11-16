@@ -1,26 +1,26 @@
 <?php
 // Delete handler for Arsip Inaktif items
-include_once __DIR__ . '/../config/session.php';
-include_once __DIR__ . '/../config/database.php';
+include_once __DIR__ . '/../../../config/session.php';
+include_once __DIR__ . '/../../../config/database.php';
 
 requireLogin();
 
 // Only admin or superadmin may delete
 if (!isAdminOrSuperAdmin()) {
-    header('Location: ../pages/inaktif.php?msg=forbidden');
+    header('Location: ../../../pages/inaktif.php?msg=forbidden');
     exit();
 }
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if ($id <= 0) {
-    header('Location: ../pages/inaktif.php?msg=invalid_id');
+    header('Location: ../../../pages/inaktif.php?msg=invalid_id');
     exit();
 }
 
 $conn->begin_transaction();
 try {
     // Find parent arsip for counter update
-    $stmt = $conn->prepare('SELECT id_arsip_inaktif FROM item_arsip_inaktif WHERE id_item_inaktif = ?');
+    $stmt = $conn->prepare('SELECT id_arsip FROM item_arsip_inaktif WHERE id_item = ?');
     $stmt->bind_param('i', $id);
     $stmt->execute();
     $res = $stmt->get_result();
@@ -28,11 +28,11 @@ try {
         throw new Exception('Item arsip inaktif tidak ditemukan');
     }
     $row = $res->fetch_assoc();
-    $id_arsip = intval($row['id_arsip_inaktif']);
+    $id_arsip = intval($row['id_arsip']);
     $stmt->close();
 
     // Delete item
-    $del = $conn->prepare('DELETE FROM item_arsip_inaktif WHERE id_item_inaktif = ?');
+    $del = $conn->prepare('DELETE FROM item_arsip_inaktif WHERE id_item = ?');
     $del->bind_param('i', $id);
     if (!$del->execute()) {
         throw new Exception('Gagal menghapus item arsip inaktif');
@@ -41,16 +41,16 @@ try {
 
     // Decrement jumlah_item counter safely
     if ($id_arsip > 0) {
-        $conn->query("UPDATE arsip_inaktif SET jumlah_item = GREATEST(jumlah_item - 1, 0) WHERE id_arsip_inaktif = $id_arsip");
+        $conn->query("UPDATE arsip_inaktif SET jumlah_item = GREATEST(jumlah_item - 1, 0) WHERE id_arsip = $id_arsip");
     }
 
     $conn->commit();
-    header('Location: ../pages/inaktif.php?msg=deleted');
+    header('Location: ../../../pages/inaktif.php?msg=deleted');
     exit();
 } catch (Exception $e) {
     $conn->rollback();
     error_log('[delete_inaktif] ' . $e->getMessage());
-    header('Location: ../pages/inaktif.php?msg=delete_error');
+    header('Location: ../../../pages/inaktif.php?msg=delete_error');
     exit();
 }
 ?>

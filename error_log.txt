@@ -400,3 +400,18 @@ Stack trace:
 [2025-11-14 06:07:32] LOGOUT: unknown
 [2025-11-14 10:00:18] LOGOUT: superadmin
 [2025-11-14 22:40:59] LOGOUT: unknown
+[2025-11-16 19:41:49] LOGOUT: unknown
+[2025-11-16 19:43:00] LOGOUT: unknown
+[16-Nov-2025 19:44:47 Europe/Berlin] Arsip baru ditambahkan: ID Arsip=1, Nomor Berkas=1, Nomor Item=1, Tanggal=2025-11-17, ID Subsub=1
+[16-Nov-2025 19:56:21 Europe/Berlin] Arsip baru ditambahkan: ID Arsip=1, Nomor Berkas=1, Nomor Item=2, Tanggal=2025-11-13, ID Subsub=1
+[16-Nov-2025 19:56:40 Europe/Berlin] Arsip baru ditambahkan: ID Arsip=2, Nomor Berkas=2, Nomor Item=1, Tanggal=2025-11-05, ID Subsub=1
+[16-Nov-2025 19:57:17 Europe/Berlin] Arsip baru ditambahkan: ID Arsip=3, Nomor Berkas=1, Nomor Item=1, Tanggal=2025-11-11, ID Subsub=2
+[2025-11-16 21:05:47] LOGOUT: unknown
+[16-Nov-2025 21:27:06 Europe/Berlin] Arsip baru ditambahkan: ID Arsip=3, Nomor Berkas=1, Nomor Item=2, Tanggal=2025-11-17, ID Subsub=2
+[16-Nov-2025 21:31:22 Europe/Berlin] Arsip diperbarui: ID Item=1, Tanggal=2025-11-17, SKAAD=Biasa
+[16-Nov-2025 21:32:27 Europe/Berlin] Arsip diperbarui: ID Item=1, Tanggal=2025-11-17, SKAAD=Biasa
+[16-Nov-2025 21:37:31 Europe/Berlin] Arsip diperbarui: ID Item=1, Tanggal=2025-11-17, SKAAD=Terbatas
+[16-Nov-2025 21:37:40 Europe/Berlin] Arsip diperbarui: ID Item=1, Tanggal=2025-11-17, SKAAD=Biasa
+[16-Nov-2025 21:41:19 Europe/Berlin] Arsip diperbarui: ID Item=1, Tanggal=2025-11-17, SKAAD=Biasa
+[16-Nov-2025 21:52:29 Europe/Berlin] Arsip diperbarui: ID Item=1, Tanggal=2025-11-17, SKAAD=Biasa
+[16-Nov-2025 21:54:45 Europe/Berlin] Arsip diperbarui: ID Item=1, Tanggal=2025-11-17, SKAAD=Biasa

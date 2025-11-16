@@ -9,7 +9,20 @@ $idParam = isset($_GET['id']) ? $_GET['id'] : null;
 $item = null;
 if ($idParam !== null && is_numeric($idParam)) {
     $id = (int)$idParam;
-    $stmt = $conn->prepare("SELECT id_arsip, jenis_arsip, tingkat_perkembangan, kurun_tahun, media, jumlah, jangka_simpan, lokasi_simpan, metode_perlindungan, keterangan, file_path FROM arsip_vital WHERE id_arsip = ?");
+
+    $hasJenis = false; $hasUraian = false; $hasKurunTahun = false; $hasKurunWaktu = false; $hasFilePath = false;
+    $r = $conn->query("SHOW COLUMNS FROM arsip_vital LIKE 'jenis_arsip'"); if ($r && $r->num_rows > 0) { $hasJenis = true; }
+    $r = $conn->query("SHOW COLUMNS FROM arsip_vital LIKE 'uraian_arsip'"); if ($r && $r->num_rows > 0) { $hasUraian = true; }
+    $r = $conn->query("SHOW COLUMNS FROM arsip_vital LIKE 'kurun_tahun'"); if ($r && $r->num_rows > 0) { $hasKurunTahun = true; }
+    $r = $conn->query("SHOW COLUMNS FROM arsip_vital LIKE 'kurun_waktu'"); if ($r && $r->num_rows > 0) { $hasKurunWaktu = true; }
+    $r = $conn->query("SHOW COLUMNS FROM arsip_vital LIKE 'file_path'"); if ($r && $r->num_rows > 0) { $hasFilePath = true; }
+
+    $colJenis = $hasJenis ? 'jenis_arsip' : ($hasUraian ? 'uraian_arsip' : 'jenis_arsip');
+    $colKurun = $hasKurunTahun ? 'kurun_tahun' : ($hasKurunWaktu ? 'kurun_waktu' : 'kurun_tahun');
+    $selFile = $hasFilePath ? 'file_path' : 'NULL AS file_path';
+
+    $sql = "SELECT id_arsip, $colJenis AS jenis_arsip, tingkat_perkembangan, $colKurun AS kurun_tahun, media, jumlah, jangka_simpan, lokasi_simpan, metode_perlindungan, keterangan, $selFile FROM arsip_vital WHERE id_arsip = ?";
+    $stmt = $conn->prepare($sql);
     if ($stmt) {
         $stmt->bind_param("i", $id);
         $stmt->execute();
@@ -149,26 +162,16 @@ $pdfUrl = isset($_GET['file']) ? $_GET['file'] : '';
                                                 </svg>
                                                 <span class="text-sm text-gray-700"><?php echo htmlspecialchars($file); ?></span>
                                             </div>
-                                            <a href="../api/arsip/arsip_vital/download_file.php?file=<?php echo urlencode($file); ?>&id=<?php echo $id; ?>" class="bg-cyan-600 hover:bg-cyan-600/90 text-white px-3 py-1 rounded text-sm inline-flex items-center gap-1">
+                                            <a href="../uploads/arsip_vital/<?php echo htmlspecialchars($file); ?>" target="_blank" class="bg-cyan-600 hover:bg-cyan-600/90 text-white px-3 py-1 rounded text-sm inline-flex items-center gap-1">
                                                 <svg class="w-4 h-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                                    <polyline points="7 10 12 15 17 10"></polyline>
-                                                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                                                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V7"></path>
+                                                    <path d="M10 3h5v5"></path>
                                                 </svg>
-                                                Download
+                                                Lihat
                                             </a>
                                         </div>
                                     <?php endforeach; ?>
                                 </div>
-                            </div>
-
-                            <!-- PDF Preview -->
-                            <div class="border border-gray-300 rounded-md p-4 bg-gray-50">
-                                <h4 class="text-sm font-medium text-gray-700 mb-3">Preview PDF</h4>
-                                <div class="bg-white rounded-md overflow-hidden">
-                                    <iframe src="../uploads/arsip_vital/<?php echo htmlspecialchars($files[0]); ?>" class="w-full h-[600px]" title="Preview PDF"></iframe>
-                                </div>
-                                <p class="text-xs text-gray-500 mt-2">Menampilkan file pertama. Gunakan tombol download untuk mengakses file lainnya.</p>
                             </div>
                         </div>
                     <?php else: ?>

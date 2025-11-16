@@ -72,6 +72,52 @@ try {
     }
     $stmt_update->close();
 
+    // Handle upload file baru (opsional)
+    if (!empty($_FILES['files']) && isset($_FILES['files']['name']) && is_array($_FILES['files']['name'])) {
+        $targetDir = __DIR__ . "/../../../uploads_inaktif/";
+        if (!is_dir($targetDir)) { @mkdir($targetDir, 0775, true); }
+
+        // Ambil file_path lama
+        $currentPath = '';
+        $stmtCur = $conn->prepare('SELECT file_path FROM item_arsip_inaktif WHERE id_item = ?');
+        $stmtCur->bind_param('i', $id_item_int);
+        $stmtCur->execute();
+        $resCur = $stmtCur->get_result();
+        if ($rowCur = $resCur->fetch_assoc()) { $currentPath = $rowCur['file_path'] ?? ''; }
+        $stmtCur->close();
+
+        $uploaded = [];
+        $count = count($_FILES['files']['name']);
+        for ($i = 0; $i < $count; $i++) {
+            $name = $_FILES['files']['name'][$i] ?? '';
+            $tmp = $_FILES['files']['tmp_name'][$i] ?? '';
+            $error = $_FILES['files']['error'][$i] ?? UPLOAD_ERR_NO_FILE;
+
+            if ($error !== UPLOAD_ERR_OK || empty($tmp)) { continue; }
+            $ext = strtolower(pathinfo($name, PATHINFO_EXTENSION));
+            if ($ext !== 'pdf') { continue; }
+
+            $base = pathinfo($name, PATHINFO_FILENAME);
+            $safeBase = preg_replace('/[^A-Za-z0-9_-]+/', '_', $base);
+            $unique = date('Ymd_His') . '_' . $id_item_int . '_' . substr(sha1(random_bytes(8)), 0, 8);
+            $finalName = $safeBase . '_' . $unique . '.pdf';
+            $dest = $targetDir . $finalName;
+
+            if (move_uploaded_file($tmp, $dest)) { $uploaded[] = $finalName; }
+        }
+
+        if (!empty($uploaded)) {
+            $list = array_filter(array_map('trim', explode(',', $currentPath)));
+            $list = array_merge($list, $uploaded);
+            $newPath = implode(',', $list);
+
+            $stmtUp = $conn->prepare('UPDATE item_arsip_inaktif SET file_path = ? WHERE id_item = ?');
+            $stmtUp->bind_param('si', $newPath, $id_item_int);
+            $stmtUp->execute();
+            $stmtUp->close();
+        }
+    }
+
     echo json_encode([
         "success" => true,
         "message" => "Perubahan arsip inaktif berhasil disimpan."

@@ -141,6 +141,82 @@ INSERT INTO `user` (`id_user`, `nama`, `email`, `username`, `password`, `role`, 
 (7, 'Samuel Raka Yustianto', 'samuelrakayustianto@gmail.com', 'usrZZRYC', '$2y$10$AuwLNOY4dFSXNcoiZZfmuOZQdoYfl9EuYLX6xtr1AfX4YFHL0XdEe', 'admin', '2025-10-24 00:16:18', NULL),
 (8, 'Pengguna 2', 'azza@gmail.com', 'usr0XX2K', '$2y$10$p8VKUL6kLs2nEI5BbFhAQO16FT.9d1MlSUNc8dXXQWhDTCUw033uO', 'user', '2025-10-24 00:17:08', NULL);
 
+CREATE TABLE `arsip_aktif` (
+  `id_arsip` int(11) NOT NULL,
+  `id_subsub` int(11) NOT NULL,
+  `nomor_berkas` int(11) NOT NULL,
+  `jumlah_item` int(11) DEFAULT 0,
+  `keterangan` text DEFAULT NULL,
+  `created_at` datetime NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `item_arsip` (
+  `id_item` int(11) NOT NULL,
+  `id_arsip` int(11) NOT NULL,
+  `nomor_item` int(11) NOT NULL,
+  `tanggal` date NOT NULL,
+  `keterangan_skaad` varchar(100) DEFAULT NULL,
+  `uraian_singkat` text NOT NULL,
+  `uraian_informasi` text NOT NULL,
+  `file_path` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `arsip_inaktif` (
+  `id_arsip` int(11) NOT NULL,
+  `id_subsub` int(11) NOT NULL,
+  `nomor_berkas` int(11) NOT NULL,
+  `jumlah_item` int(11) DEFAULT 0,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `item_arsip_inaktif` (
+  `id_item` int(11) NOT NULL,
+  `id_arsip` int(11) NOT NULL,
+  `nomor_item` int(11) NOT NULL,
+  `kategori_arsip` varchar(100) NOT NULL,
+  `kurun_waktu` date NOT NULL,
+  `jangka_simpan` date NOT NULL,
+  `nomor_boks` varchar(50) NOT NULL,
+  `lokasi_simpan` varchar(100) NOT NULL,
+  `tingkat_perkembangan` varchar(100) DEFAULT NULL,
+  `uraian_singkat` varchar(255) NOT NULL,
+  `uraian_informasi` text NOT NULL,
+  `keterangan` text DEFAULT NULL,
+  `file_path` text DEFAULT NULL,
+  `created_at` datetime DEFAULT current_timestamp(),
+  `updated_at` datetime DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `arsip_statis` (
+  `id_arsip_statis` int(11) NOT NULL,
+  `id_subsub` int(11) NOT NULL,
+  `jenis_arsip` varchar(150) NOT NULL,
+  `tahun` year(4) NOT NULL,
+  `jumlah` int(11) DEFAULT 0,
+  `tingkat_perkembangan` enum('Asli','Salinan','Lengkap') NOT NULL,
+  `keterangan` text DEFAULT NULL,
+  `file_path` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+CREATE TABLE `arsip_vital` (
+  `id_arsip` int(11) NOT NULL,
+  `jenis_arsip` varchar(255) NOT NULL,
+  `tingkat_perkembangan` varchar(100) NOT NULL,
+  `kurun_tahun` varchar(50) NOT NULL,
+  `media` varchar(100) NOT NULL,
+  `jumlah` int(11) DEFAULT 1,
+  `jangka_simpan` varchar(100) NOT NULL,
+  `lokasi_simpan` varchar(150) NOT NULL,
+  `metode_perlindungan` varchar(255) DEFAULT NULL,
+  `keterangan` text DEFAULT NULL,
+  `file_path` text DEFAULT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp()
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
 --
 -- Indexes for dumped tables
 --
@@ -187,6 +263,29 @@ ALTER TABLE `user`
   ADD UNIQUE KEY `email` (`email`),
   ADD UNIQUE KEY `username` (`username`);
 
+ALTER TABLE `arsip_aktif`
+  ADD PRIMARY KEY (`id_arsip`),
+  ADD KEY `id_subsub` (`id_subsub`);
+
+ALTER TABLE `item_arsip`
+  ADD PRIMARY KEY (`id_item`),
+  ADD KEY `id_arsip` (`id_arsip`);
+
+ALTER TABLE `arsip_inaktif`
+  ADD PRIMARY KEY (`id_arsip`),
+  ADD KEY `id_subsub` (`id_subsub`);
+
+ALTER TABLE `item_arsip_inaktif`
+  ADD PRIMARY KEY (`id_item`),
+  ADD KEY `id_arsip` (`id_arsip`);
+
+ALTER TABLE `arsip_statis`
+  ADD PRIMARY KEY (`id_arsip_statis`),
+  ADD KEY `fk_subsub_arsipstatis` (`id_subsub`);
+
+ALTER TABLE `arsip_vital`
+  ADD PRIMARY KEY (`id_arsip`);
+
 --
 -- AUTO_INCREMENT for dumped tables
 --
@@ -227,6 +326,24 @@ ALTER TABLE `unit_pengolah`
 ALTER TABLE `user`
   MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
+ALTER TABLE `arsip_aktif`
+  MODIFY `id_arsip` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `item_arsip`
+  MODIFY `id_item` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `arsip_inaktif`
+  MODIFY `id_arsip` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `item_arsip_inaktif`
+  MODIFY `id_item` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `arsip_statis`
+  MODIFY `id_arsip_statis` int(11) NOT NULL AUTO_INCREMENT;
+
+ALTER TABLE `arsip_vital`
+  MODIFY `id_arsip` int(11) NOT NULL AUTO_INCREMENT;
+
 --
 -- Constraints for dumped tables
 --
@@ -249,6 +366,21 @@ ALTER TABLE `sub_masalah`
 --
 ALTER TABLE `sub_sub_masalah`
   ADD CONSTRAINT `sub_sub_masalah_ibfk_1` FOREIGN KEY (`id_sub`) REFERENCES `sub_masalah` (`id_sub`) ON DELETE CASCADE;
+
+ALTER TABLE `arsip_aktif`
+  ADD CONSTRAINT `arsip_aktif_ibfk_1` FOREIGN KEY (`id_subsub`) REFERENCES `sub_sub_masalah` (`id_subsub`) ON DELETE CASCADE;
+
+ALTER TABLE `item_arsip`
+  ADD CONSTRAINT `item_arsip_ibfk_1` FOREIGN KEY (`id_arsip`) REFERENCES `arsip_aktif` (`id_arsip`) ON DELETE CASCADE;
+
+ALTER TABLE `arsip_inaktif`
+  ADD CONSTRAINT `arsip_inaktif_ibfk_1` FOREIGN KEY (`id_subsub`) REFERENCES `sub_sub_masalah` (`id_subsub`);
+
+ALTER TABLE `item_arsip_inaktif`
+  ADD CONSTRAINT `item_arsip_inaktif_ibfk_1` FOREIGN KEY (`id_arsip`) REFERENCES `arsip_inaktif` (`id_arsip`);
+
+ALTER TABLE `arsip_statis`
+  ADD CONSTRAINT `fk_subsub_arsipstatis` FOREIGN KEY (`id_subsub`) REFERENCES `sub_sub_masalah` (`id_subsub`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

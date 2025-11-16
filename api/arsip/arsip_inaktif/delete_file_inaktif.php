@@ -1,9 +1,9 @@
 <?php
-include_once __DIR__ . '/../config/session.php';
-include_once __DIR__ . '/../config/database.php';
+include_once __DIR__ . '/../../../config/session.php';
+include_once __DIR__ . '/../../../config/database.php';
 
 if (!isAdminOrSuperAdmin()) {
-    header('Location: dashboard.php');
+    header('Location: ../../../dashboard.php');
     exit;
 }
 
@@ -11,12 +11,12 @@ $id = isset($_GET['id']) ? $_GET['id'] : '';
 $file = isset($_GET['file']) ? $_GET['file'] : '';
 
 if (empty($id) || !ctype_digit($id) || empty($file)) {
-    header('Location: edit_inaktif.php?id=' . urlencode($id) . '&status=invalid');
+    header('Location: ../../../pages/edit_inaktif.php?id=' . urlencode($id) . '&status=invalid');
     exit;
 }
 
 $idInt = intval($id);
-$targetDir = __DIR__ . '/../uploads_inaktif/';
+$targetDir = __DIR__ . '/../../../uploads_inaktif/';
 
 // Ambil file_path saat ini
 $current = '';
@@ -55,6 +55,6 @@ if ($found) {
     }
 }
 
-header('Location: edit_inaktif.php?id=' . urlencode($id) . '&status=deleted');
+header('Location: ../../../pages/edit_inaktif.php?id=' . urlencode($id) . '&status=deleted');
 exit;
 ?>

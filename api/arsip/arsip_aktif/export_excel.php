@@ -255,19 +255,19 @@ foreach ($groups as $group) {
 
     // Group heading rows (merged, bold)
     $sheet->mergeCells("A{$r}:H{$r}");
-    $sheet->setCellValue("A{$r}", 'Pokok Masalah : ' . ($m['kode_pokok'] ?? '') . '. ' . ($m['topik_pokok'] ?? ''));
+    $sheet->setCellValue("A{$r}", 'Pokok Masalah : ' . ($m['kode_pokok'] ?? '') . '.' . ($m['topik_pokok'] ?? ''));
     $sheet->getStyle("A{$r}")->getFont()->setBold(true);
     $sheet->getStyle("A{$r}:H{$r}")->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
     $r++;
 
     $sheet->mergeCells("A{$r}:H{$r}");
-    $sheet->setCellValue("A{$r}", 'Sub Masalah : ' . ($m['kode_pokok'] ?? '') . '. ' . ($m['kode_sub'] ?? '') . '. ' . ($m['topik_sub'] ?? ''));
+    $sheet->setCellValue("A{$r}", 'Sub Masalah : ' . ($m['kode_pokok'] ?? '') . '.' . ($m['kode_sub'] ?? '') . '.' . ($m['topik_sub'] ?? ''));
     $sheet->getStyle("A{$r}")->getFont()->setBold(true);
     $sheet->getStyle("A{$r}:H{$r}")->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
     $r++;
 
     $sheet->mergeCells("A{$r}:H{$r}");
-    $sheet->setCellValue("A{$r}", 'Sub-Sub Masalah : ' . ($m['kode_pokok'] ?? '') . '. ' . ($m['kode_sub'] ?? '') . '. ' . ($m['kode_subsub'] ?? '') . '. ' . ($m['topik_subsub'] ?? ''));
+    $sheet->setCellValue("A{$r}", 'Sub-Sub Masalah : ' . ($m['kode_pokok'] ?? '') . '.' . ($m['kode_sub'] ?? '') . '.' . ($m['kode_subsub'] ?? '') . '.' . ($m['topik_subsub'] ?? ''));
     $sheet->getStyle("A{$r}")->getFont()->setBold(true);
     $sheet->getStyle("A{$r}:H{$r}")->getBorders()->getOutline()->setBorderStyle(Border::BORDER_THIN);
     $r++;

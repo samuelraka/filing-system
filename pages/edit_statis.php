@@ -19,7 +19,7 @@ $item = [
 
 if ($id > 0) {
     try {
-        $stmt = $conn->prepare("SELECT a.id_arsip_statis, a.id_subsub, s.kode_subsub, a.jenis_arsip, a.tahun, a.jumlah, a.tingkat_perkembangan, a.keterangan FROM arsip_statis a LEFT JOIN sub_sub_masalah s ON a.id_subsub = s.id_subsub WHERE a.id_arsip_statis = ?");
+        $stmt = $conn->prepare("SELECT a.id_arsip_statis, a.id_subsub, s.kode_subsub, a.jenis_arsip, a.tahun, a.jumlah, a.tingkat_perkembangan, a.keterangan, a.file_path FROM arsip_statis a LEFT JOIN sub_sub_masalah s ON a.id_subsub = s.id_subsub WHERE a.id_arsip_statis = ?");
         $stmt->bind_param("i", $id);
         $stmt->execute();
         $res = $stmt->get_result();
@@ -32,7 +32,8 @@ if ($id > 0) {
                 'tahun' => $row['tahun'] ?? '',
                 'jumlah' => $row['jumlah'] ?? '',
                 'perkembangan' => $row['tingkat_perkembangan'] ?? '',
-                'keterangan' => $row['keterangan'] ?? ''
+                'keterangan' => $row['keterangan'] ?? '',
+                'file_path' => $row['file_path'] ?? ''
             ];
         }
         $stmt->close();
@@ -53,13 +54,17 @@ if ($id > 0) {
                 <div class="flex items-center gap-3">
                     <h2 class="text-3xl font-medium text-slate-700">Edit Arsip Statis</h2>
                 </div>
-                <div class="flex items-center gap-3">
-                    <a href="detail_statis.php?id=<?php echo $id; ?>" class="text-sm text-cyan-700 hover:underline">Kembali ke Detail</a>
-                    <a href="statis.php" class="text-sm text-slate-700 hover:underline">Kembali ke Arsip Statis</a>
-                </div>
             </div>
 
             <div class="bg-white rounded-lg shadow-sm px-6 py-6 max-w-screen">
+                <div class="flex justify-between items-center mb-8">
+                    <a href="detail_statis.php?id=<?php echo $id; ?>" class="flex items-center text-2xl border-b">
+                        <svg class="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+                        </svg>
+                        Kembali
+                    </a>
+                </div>
                 <form action="../api/arsip/arsip_statis/proses_statis.php" method="post" class="space-y-6" enctype="multipart/form-data">
                     <input type="hidden" name="action" value="update">
                     <input type="hidden" name="id_arsip_statis" value="<?php echo htmlspecialchars($id); ?>">
@@ -100,6 +105,32 @@ if ($id > 0) {
                             <label class="block text-sm font-medium text-gray-700">Keterangan</label>
                             <textarea name="keterangan" rows="3" class="mt-1 w-full border border-gray-300 rounded-md px-3 py-2"><?php echo htmlspecialchars($item['keterangan']); ?></textarea>
                         </div>
+                    </div>
+
+                    <div class="mt-6">
+                        <h3 class="text-sm font-medium text-gray-700 mb-2">File saat ini</h3>
+                        <?php 
+                        $existingFiles = [];
+                        if (!empty($item['file_path'])) {
+                            $tmp = json_decode($item['file_path'], true);
+                            if (is_array($tmp)) { $existingFiles = $tmp; }
+                        }
+                        ?>
+                        <?php if (!empty($existingFiles)) : ?>
+                            <ul class="divide-y divide-gray-200 border rounded-md mb-4">
+                                <?php foreach ($existingFiles as $fname): ?>
+                                    <li class="flex items-center justify-between px-3 py-2">
+                                        <div class="flex items-center gap-3">
+                                            <span class="text-sm text-gray-700"><?php echo htmlspecialchars($fname); ?></span>
+                                            <a href="../uploads/arsip_statis/<?php echo htmlspecialchars($fname); ?>" target="_blank" class="text-sm text-cyan-700 hover:underline">Lihat</a>
+                                        </div>
+                                        <a href="../api/arsip/arsip_statis/delete_file.php?id=<?php echo urlencode($id); ?>&file=<?php echo urlencode($fname); ?>" class="border border-red-300 inline-flex bg-white hover:bg-red-50 text-red-600 rounded-md px-2 py-1 text-sm">Hapus</a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php else: ?>
+                            <p class="text-sm text-gray-500 mb-4">Belum ada file terunggah.</p>
+                        <?php endif; ?>
                     </div>
 
                     <!-- File Upload -->

@@ -1,19 +1,19 @@
 <?php
 // Delete handler for Arsip Aktif items
-include_once __DIR__ . '/../config/session.php';
-include_once __DIR__ . '/../config/database.php';
+include_once __DIR__ . '/../../../config/session.php';
+include_once __DIR__ . '/../../../config/database.php';
 
 requireLogin();
 
 // Only admin or superadmin may delete
 if (!isAdminOrSuperAdmin()) {
-    header('Location: ../pages/aktif.php?msg=forbidden');
+    header('Location: ../../../pages/aktif.php?msg=forbidden');
     exit();
 }
 
 $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 if ($id <= 0) {
-    header('Location: ../pages/aktif.php?msg=invalid_id');
+    header('Location: ../../../pages/aktif.php?msg=invalid_id');
     exit();
 }
 
@@ -53,12 +53,12 @@ try {
     }
 
     $conn->commit();
-    header('Location: ../pages/aktif.php?msg=deleted');
+    header('Location: ../../../pages/aktif.php?msg=deleted');
     exit();
 } catch (Exception $e) {
     $conn->rollback();
     error_log('[delete_aktif] ' . $e->getMessage());
-    header('Location: ../pages/aktif.php?msg=delete_error');
+    header('Location: ../../../pages/aktif.php?msg=delete_error');
     exit();
 }
 ?>

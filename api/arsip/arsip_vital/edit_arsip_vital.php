@@ -73,14 +73,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $keterangan = $_POST['keterangan'] ?? '';
 
     try {
+        $hasJenis = false; $hasUraian = false; $hasKurunTahun = false; $hasKurunWaktu = false; $hasFilePath = false;
+        $r = $conn->query("SHOW COLUMNS FROM arsip_vital LIKE 'jenis_arsip'"); if ($r && $r->num_rows > 0) { $hasJenis = true; }
+        $r = $conn->query("SHOW COLUMNS FROM arsip_vital LIKE 'uraian_arsip'"); if ($r && $r->num_rows > 0) { $hasUraian = true; }
+        $r = $conn->query("SHOW COLUMNS FROM arsip_vital LIKE 'kurun_tahun'"); if ($r && $r->num_rows > 0) { $hasKurunTahun = true; }
+        $r = $conn->query("SHOW COLUMNS FROM arsip_vital LIKE 'kurun_waktu'"); if ($r && $r->num_rows > 0) { $hasKurunWaktu = true; }
+        $r = $conn->query("SHOW COLUMNS FROM arsip_vital LIKE 'file_path'"); if ($r && $r->num_rows > 0) { $hasFilePath = true; }
+        $colJenis = $hasJenis ? 'jenis_arsip' : ($hasUraian ? 'uraian_arsip' : 'jenis_arsip');
+        $colKurun = $hasKurunTahun ? 'kurun_tahun' : ($hasKurunWaktu ? 'kurun_waktu' : 'kurun_tahun');
+
         // Handle file upload jika ada
         $uploadedFiles = handleFileUpload($_FILES['files'] ?? []);
         
-        if (!empty($uploadedFiles)) {
-            $filesJson = json_encode($uploadedFiles);
+        if ($hasFilePath && !empty($uploadedFiles)) {
+            $existing = [];
+            $stmtCur = $conn->prepare("SELECT file_path FROM arsip_vital WHERE id_arsip = ?");
+            if ($stmtCur) {
+                $stmtCur->bind_param("i", $id_arsip);
+                $stmtCur->execute();
+                $resCur = $stmtCur->get_result();
+                if ($rowCur = $resCur->fetch_assoc()) {
+                    $dec = json_decode($rowCur['file_path'], true);
+                    if (is_array($dec)) { $existing = $dec; }
+                }
+                $stmtCur->close();
+            }
+            $merged = array_values(array_unique(array_merge($existing, $uploadedFiles)));
+            $filesJson = json_encode($merged);
             $stmt = $conn->prepare("
                 UPDATE arsip_vital 
-                SET jenis_arsip = ?, tingkat_perkembangan = ?, kurun_tahun = ?, media = ?, jumlah = ?, jangka_simpan = ?, lokasi_simpan = ?, metode_perlindungan = ?, keterangan = ?, file_path = ?
+                SET $colJenis = ?, tingkat_perkembangan = ?, $colKurun = ?, media = ?, jumlah = ?, jangka_simpan = ?, lokasi_simpan = ?, metode_perlindungan = ?, keterangan = ?, file_path = ?
                 WHERE id_arsip = ?
             ");
 
@@ -101,7 +123,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         } else {
             $stmt = $conn->prepare("
                 UPDATE arsip_vital 
-                SET jenis_arsip = ?, tingkat_perkembangan = ?, kurun_tahun = ?, media = ?, jumlah = ?, jangka_simpan = ?, lokasi_simpan = ?, metode_perlindungan = ?, keterangan = ?
+                SET $colJenis = ?, tingkat_perkembangan = ?, $colKurun = ?, media = ?, jumlah = ?, jangka_simpan = ?, lokasi_simpan = ?, metode_perlindungan = ?, keterangan = ?
                 WHERE id_arsip = ?
             ");
 

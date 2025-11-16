@@ -4,8 +4,8 @@ ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 ini_set("error_log", __DIR__ . "/../../../error_log.txt");
 
-// Koneksi ke database
 require_once("../../../config/database.php");
+include_once("../../../config/session.php");
 
 // Pastikan method POST
 if ($_SERVER["REQUEST_METHOD"] !== "POST") {
@@ -24,6 +24,17 @@ $keterangan = $_POST['keterangan'] ?? '';
 $allowed = ['insert', 'update', 'delete'];
 if (!in_array($action, $allowed)) {
     die("Aksi tidak diizinkan!");
+}
+
+if ($action === 'delete') {
+    if (!isLoggedIn()) {
+        header('Location: ../../../login.php');
+        exit;
+    }
+    if (function_exists('getUserRole') ? (getUserRole() !== 'superadmin') : (($_SESSION['user_role'] ?? '') !== 'superadmin')) {
+        header('Location: ../../../pages/statis.php?msg=forbidden');
+        exit;
+    }
 }
 
 // Fungsi untuk menangani upload file
@@ -98,11 +109,25 @@ try {
         exit();
 
     } elseif ($action === 'update') {
-        // Handle file upload jika ada
         $uploadedFiles = handleFileUpload($_FILES['files'] ?? []);
-        
+
         if (!empty($uploadedFiles)) {
-            $filesJson = json_encode($uploadedFiles);
+            $existing = [];
+            $stmtCur = $conn->prepare("SELECT file_path FROM arsip_statis WHERE id_arsip_statis = ?");
+            if ($stmtCur) {
+                $stmtCur->bind_param("i", $id);
+                $stmtCur->execute();
+                $resCur = $stmtCur->get_result();
+                if ($rowCur = $resCur->fetch_assoc()) {
+                    $dec = json_decode($rowCur['file_path'] ?? '[]', true);
+                    if (is_array($dec)) { $existing = $dec; }
+                }
+                $stmtCur->close();
+            }
+
+            $merged = array_values(array_unique(array_merge($existing, $uploadedFiles)));
+            $filesJson = json_encode($merged);
+
             $query = "UPDATE arsip_statis 
                       SET id_subsub = ?, jenis_arsip = ?, tahun = ?, jumlah = ?, tingkat_perkembangan = ?, keterangan = ?, file_path = ?
                       WHERE id_arsip_statis = ?";
