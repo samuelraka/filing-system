@@ -415,3 +415,352 @@ Stack trace:
 [16-Nov-2025 21:41:19 Europe/Berlin] Arsip diperbarui: ID Item=1, Tanggal=2025-11-17, SKAAD=Biasa
 [16-Nov-2025 21:52:29 Europe/Berlin] Arsip diperbarui: ID Item=1, Tanggal=2025-11-17, SKAAD=Biasa
 [16-Nov-2025 21:54:45 Europe/Berlin] Arsip diperbarui: ID Item=1, Tanggal=2025-11-17, SKAAD=Biasa
+[16-Nov-2025 22:50:17 Europe/Berlin] Arsip diperbarui: ID Item=3, Tanggal=2025-11-05, SKAAD=Terbatas
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 3
+Nama: User Staf Umum
+Email: user@poltekes.ac.id
+Username: stafumum
+Role: user
+ID Unit: 
+Nama Unit: 
+------------------------------------
+[2025-11-16 22:55:48] Update user ID 3 - Nama: User Staf Umum, Email: user@poltekes.ac.id, Role: user, Unit: 1
+[2025-11-16 22:55:48] 🔍 Data diterima update_user: Array
+(
+    [id_user] => 3
+    [name] => User Staf Umum
+    [email] => user@poltekes.ac.id
+    [unit_pengolah] => 1
+    [role] => user
+    [password] => 
+)
+
+[2025-11-16 22:55:48] Profil user ID 3 diperbarui ke unit ID 1
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 3
+Nama: User Staf Umum
+Email: user@poltekes.ac.id
+Username: stafumum
+Role: user
+ID Unit: 1
+Nama Unit: Unit A
+------------------------------------
+[2025-11-16 22:57:57] Update user ID 3 - Nama: User Staf Umum 1, Email: user@poltekes.ac.id, Role: user, Unit: 1
+[2025-11-16 22:57:57] 🔍 Data diterima update_user: Array
+(
+    [id_user] => 3
+    [name] => User Staf Umum 1
+    [email] => user@poltekes.ac.id
+    [unit_pengolah] => 1
+    [role] => user
+    [password] => 
+)
+
+[2025-11-16 22:57:57] Profil user ID 3 diperbarui ke unit ID 1
+[2025-11-16 22:59:13] LOGOUT: unknown
+[2025-11-18 04:12:28] LOGOUT: unknown
+[2025-11-24 08:43:45] LOGOUT: unknown
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 7
+Nama: Samuel Raka Yustianto
+Email: samuelrakayustianto@gmail.com
+Username: usrZZRYC
+Role: admin
+ID Unit: 2
+Nama Unit: Unit B
+------------------------------------
+[2025-11-24 10:49:15] LOGOUT: unknown
+[2025-11-24 11:30:29] LOGOUT: unknown
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 7
+Nama: Samuel Raka Yustianto
+Email: samuelrakayustianto@gmail.com
+Username: usrZZRYC
+Role: admin
+ID Unit: 2
+Nama Unit: Unit B
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 7
+Nama: Samuel Raka Yustianto
+Email: samuelrakayustianto@gmail.com
+Username: usrZZRYC
+Role: admin
+ID Unit: 2
+Nama Unit: Unit B
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 1
+Nama: Super Admin Utama
+Email: superadmin@poltekes.ac.id
+Username: superadmin
+Role: superadmin
+ID Unit: 
+Nama Unit: 
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 7
+Nama: Samuel Raka Yustianto
+Email: samuelrakayustianto@gmail.com
+Username: usrZZRYC
+Role: admin
+ID Unit: 2
+Nama Unit: Unit B
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 7
+Nama: Samuel Raka Yustianto
+Email: samuelrakayustianto@gmail.com
+Username: usrZZRYC
+Role: admin
+ID Unit: 2
+Nama Unit: Unit B
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 7
+Nama: Samuel Raka Yustianto
+Email: samuelrakayustianto@gmail.com
+Username: usrZZRYC
+Role: admin
+ID Unit: 2
+Nama Unit: Unit B
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 7
+Nama: Samuel Raka Yustianto
+Email: samuelrakayustianto@gmail.com
+Username: usrZZRYC
+Role: admin
+ID Unit: 2
+Nama Unit: Unit B
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 7
+Nama: Samuel Raka Yustianto
+Email: samuelrakayustianto@gmail.com
+Username: usrZZRYC
+Role: admin
+ID Unit: 2
+Nama Unit: Unit B
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 7
+Nama: Samuel Raka Yustianto
+Email: samuelrakayustianto@gmail.com
+Username: usrZZRYC
+Role: admin
+ID Unit: 2
+Nama Unit: Unit B
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 8
+Nama: Pengguna 2
+Email: azza@gmail.com
+Username: usr0XX2K
+Role: user
+ID Unit: 1
+Nama Unit: Unit A
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 8
+Nama: Pengguna 2
+Email: azza@gmail.com
+Username: usr0XX2K
+Role: user
+ID Unit: 1
+Nama Unit: Unit A
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 7
+Nama: Samuel Raka Yustianto
+Email: samuelrakayustianto@gmail.com
+Username: usrZZRYC
+Role: admin
+ID Unit: 2
+Nama Unit: Unit B
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 7
+Nama: Samuel Raka Yustianto
+Email: samuelrakayustianto@gmail.com
+Username: usrZZRYC
+Role: admin
+ID Unit: 2
+Nama Unit: Unit B
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 7
+Nama: Samuel Raka Yustianto
+Email: samuelrakayustianto@gmail.com
+Username: usrZZRYC
+Role: admin
+ID Unit: 2
+Nama Unit: Unit B
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 8
+Nama: Pengguna 2
+Email: azza@gmail.com
+Username: usr0XX2K
+Role: user
+ID Unit: 1
+Nama Unit: Unit A
+------------------------------------
+[2025-11-24 12:43:50] Update user ID 8 - Nama: Pengguna 2, Email: azza@gmail.com, Role: user, Unit: 1
+[2025-11-24 12:43:50] 🔍 Data diterima update_user: Array
+(
+    [id_user] => 8
+    [name] => Pengguna 2
+    [email] => azza@gmail.com
+    [unit_pengolah] => 1
+    [role] => user
+    [password] => 
+)
+
+[2025-11-24 12:43:50] Profil user ID 8 diperbarui ke unit ID 1
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 8
+Nama: Pengguna 2
+Email: azza@gmail.com
+Username: usr0XX2K
+Role: user
+ID Unit: 1
+Nama Unit: Unit A
+------------------------------------
+[2025-11-24 12:43:56] Update user ID 8 - Nama: Pengguna 2, Email: azza@gmail.com, Role: user, Unit: 1
+[2025-11-24 12:43:56] 🔍 Data diterima update_user: Array
+(
+    [id_user] => 8
+    [name] => Pengguna 2
+    [email] => azza@gmail.com
+    [unit_pengolah] => 1
+    [role] => user
+    [password] => 
+)
+
+[2025-11-24 12:43:56] Profil user ID 8 diperbarui ke unit ID 1
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 8
+Nama: Pengguna 2
+Email: azza@gmail.com
+Username: usr0XX2K
+Role: user
+ID Unit: 1
+Nama Unit: Unit A
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 8
+Nama: Pengguna 2
+Email: azza@gmail.com
+Username: usr0XX2K
+Role: user
+ID Unit: 1
+Nama Unit: Unit A
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 8
+Nama: Pengguna 2
+Email: azza@gmail.com
+Username: usr0XX2K
+Role: user
+ID Unit: 1
+Nama Unit: Unit A
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 7
+Nama: Samuel Raka Yustianto
+Email: samuelrakayustianto@gmail.com
+Username: usrZZRYC
+Role: admin
+ID Unit: 2
+Nama Unit: Unit B
+------------------------------------
+[2025-11-24 13:05:57] LOGOUT: unknown
+[2025-11-24 13:59:13] LOGOUT: unknown
+[2025-11-24 14:01:41] LOGOUT: unknown
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 7
+Nama: Samuel Raka Yustianto
+Email: samuelrakayustianto@gmail.com
+Username: usrZZRYC
+Role: admin
+ID Unit: 2
+Nama Unit: Unit B
+------------------------------------
+[2025-11-24 19:27:52] Update user ID 7 - Nama: Samuel Raka Yustianto, Email: samuelrakayustianto@gmail.com, Role: admin, Unit: 2
+[2025-11-24 19:27:52] 🔍 Data diterima update_user: Array
+(
+    [id_user] => 7
+    [name] => Samuel Raka Yustianto
+    [email] => samuelrakayustianto@gmail.com
+    [unit_pengolah] => 2
+    [role] => admin
+    [password] => 
+)
+
+[2025-11-24 19:27:52] Profil user ID 7 diperbarui ke unit ID 2
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 7
+Nama: Samuel Raka Yustianto
+Email: samuelrakayustianto@gmail.com
+Username: usrZZRYC
+Role: admin
+ID Unit: 2
+Nama Unit: Unit B
+------------------------------------
+[2025-11-25 03:29:52] Update user ID 7 - Nama: Samuel Raka Yustianto, Email: samuelrakayustianto@gmail.com, Role: admin, Unit: 2
+[2025-11-25 03:29:52] 🔍 Data diterima update_user: Array
+(
+    [id_user] => 7
+    [name] => Samuel Raka Yustianto
+    [email] => samuelrakayustianto@gmail.com
+    [unit_pengolah] => 2
+    [role] => admin
+    [password] => 
+)
+
+[2025-11-25 03:29:52] Profil user ID 7 diperbarui ke unit ID 2
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 7
+Nama: Samuel Raka Yustianto
+Email: samuelrakayustianto@gmail.com
+Username: usrZZRYC
+Role: admin
+ID Unit: 2
+Nama Unit: Unit B
+------------------------------------
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 7
+Nama: Samuel Raka Yustianto
+Email: samuelrakayustianto@gmail.com
+Username: usrZZRYC
+Role: admin
+ID Unit: 2
+Nama Unit: Unit B
+------------------------------------
+[2025-11-25 03:30:01] Update user ID 7 - Nama: Samuel Raka Yustianto, Email: samuelrakayustianto@gmail.com, Role: admin, Unit: 2
+[2025-11-25 03:30:01] Profil user ID 7 diperbarui ke unit ID 2
+[get_user.php] ✅ Data user berhasil diambil:
+ID User: 7
+Nama: Samuel Raka Yustianto
+Email: samuelrakayustianto@gmail.com
+Username: usrZZRYC
+Role: admin
+ID Unit: 2
+Nama Unit: Unit B
+------------------------------------
+[2025-11-25 03:30:05] Update user ID 7 - Nama: Samuel Raka Yustianto, Email: samuelrakayustianto@gmail.com, Role: admin, Unit: 2
+[2025-11-25 03:30:05] 🔍 Data diterima update_user: Array
+(
+    [id_user] => 7
+    [name] => Samuel Raka Yustianto
+    [email] => samuelrakayustianto@gmail.com
+    [unit_pengolah] => 2
+    [role] => admin
+    [password] => 
+)
+
+[2025-11-25 03:30:05] Profil user ID 7 diperbarui ke unit ID 2
+[2025-11-25 03:30:54] Berhasil tambah user ID: 9 (usrAHUAW) oleh superadmin
+[25-Nov-2025 03:31:50 Europe/Berlin] PHP Notice:  session_start(): Ignoring session_start() because a session is already active in C:\Users\Legion\Documents\Work\Joki\Filing System\filing-system\config\session.php on line 5

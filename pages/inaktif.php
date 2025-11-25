@@ -124,14 +124,6 @@ $kat_result = mysqli_query($conn, "SELECT DISTINCT kategori_arsip FROM item_arsi
                     </a>
                 </div>
                 <div class="flex items-center gap-x-4">
-                    <div class="relative w-64">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <svg class="h-4 w-4 text-gray-400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
-                                <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd" />
-                            </svg>
-                        </div>
-                        <input type="text" id="searchInput" placeholder="Nomor Berkas, Kode Klasifikasi, Uraian Arsip, Nomor Kotak" class="w-full pl-8 pr-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-[#0092B8]">
-                    </div>
                     <div class="relative flex items-center">
                         <button id="filtersBtn" class="border border-gray-300 bg-white text-slate-700 px-4 py-2 rounded-md flex items-center hover:bg-gray-100">
                             <svg class="h-4 w-4 mr-1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor">
@@ -262,13 +254,13 @@ $kat_result = mysqli_query($conn, "SELECT DISTINCT kategori_arsip FROM item_arsi
                                             <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-500'>" . htmlspecialchars($item['nomor_item']) . "</td>
                                             <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['kode_klasifikasi']) . "</td>
                                             <td class='px-3 py-4 whitespace-nowrap text-left text-sm text-gray-900'>" . htmlspecialchars($item['uraian_informasi']) . "</td>
-                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['kurun_waktu']) . "</td>
+                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . ($item['kurun_waktu'] ? date('d-m-Y', strtotime($item['kurun_waktu'])) : '') . "</td>
                                             <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['tingkat_perkembangan']) . "</td>
                                             <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['jumlah_item']) . "</td>
                                             <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['keterangan']) . "</td>
                                             <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['nomor_boks']) . "</td>
                                             <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['lokasi_simpan']) . "</td>
-                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['jangka_simpan']) . "</td>
+                                            <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . ($item['jangka_simpan'] ? date('d-m-Y', strtotime($item['jangka_simpan'])) : '') . "</td>
                                             <td class='px-3 py-4 whitespace-nowrap text-sm text-gray-900'>" . htmlspecialchars($item['kategori_arsip']) . "</td>
                                             <td class='px-3 py-4 whitespace-nowrap text-center text-sm font-medium'>
                                                 <a href='detail_inaktif.php?id=" . urlencode($item['id_item']) . "' class='border border-gray-300 inline-flex bg-white hover:bg-gray-100 rounded-md p-1 shadow-sm' title='Lihat Detail'>
@@ -336,17 +328,6 @@ filtersBtn.addEventListener('click', () => {
     } else {
         filterDropdown.classList.add('hidden', 'opacity-0', 'translate-y-2', 'pointer-events-none');
         filterDropdown.classList.remove('opacity-100', 'translate-y-0');
-    }
-});
-
-// Search by Enter
-document.getElementById('searchInput').addEventListener('keypress', function(e){
-    if(e.key === 'Enter'){
-        const search = e.target.value.trim();
-        const params = new URLSearchParams(window.location.search);
-        params.set('search', search);
-        params.set('page', 1); // reset halaman
-        window.location.search = params.toString();
     }
 });
 

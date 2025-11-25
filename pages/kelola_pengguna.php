@@ -12,7 +12,7 @@ if (!isset($_SESSION['user_role'])) {
 $role = $_SESSION['user_role'];
 
 // Query dasar ambil semua user
-$query = "SELECT id_user, nama, email, username, role FROM user";
+$query = "SELECT u.id_user, u.nama, u.email, u.username, u.role, COALESCE(up.nama_unit, '') AS nama_unit, COALESCE(p.id_unit, '') AS id_unit FROM user u LEFT JOIN profil p ON p.id_user = u.id_user LEFT JOIN unit_pengolah up ON p.id_unit = up.id_unit";
 
 // Filter sesuai role login
 if ($role === 'admin') {
@@ -84,7 +84,7 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
                                             <?= htmlspecialchars($user['nama']) ?>
                                         </td>
                                         <td class="py-4 px-4 whitespace-nowrap text-sm text-gray-500">
-                                            -
+                                            <?= htmlspecialchars($user['nama_unit'] ?: '-') ?>
                                         </td>
                                         <td class="py-4 px-4 whitespace-nowrap text-sm text-gray-500">
                                             <?= htmlspecialchars($user['email']) ?>

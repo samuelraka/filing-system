@@ -27,21 +27,34 @@ try {
         throw new Exception("Password baru dan konfirmasi tidak cocok.");
     }
 
-    // Ambil password lama
     $stmt = $conn->prepare("SELECT password FROM user WHERE id_user = ?");
     $stmt->bind_param("i", $userId);
     $stmt->execute();
     $result = $stmt->get_result();
     $user = $result->fetch_assoc();
+    $stmt->close();
 
-    if (!$user || $currentPassword !== $user['password']) {
+    if (!$user) {
+        throw new Exception("User tidak ditemukan.");
+    }
+
+    $stored = (string)($user['password'] ?? '');
+    $info = password_get_info($stored);
+    $valid = false;
+    if ($info['algo'] !== 0) {
+        $valid = password_verify($currentPassword, $stored);
+    } else {
+        $valid = ($currentPassword === $stored);
+    }
+    if (!$valid) {
         throw new Exception("Password lama salah.");
     }
 
-    // Update password
+    $newHash = password_hash($newPassword, PASSWORD_DEFAULT);
     $update = $conn->prepare("UPDATE user SET password = ? WHERE id_user = ?");
-    $update->bind_param("si", $newPassword, $userId);
+    $update->bind_param("si", $newHash, $userId);
     $update->execute();
+    $update->close();
 
     echo json_encode(['success' => true, 'message' => 'Password berhasil diubah.']);
 } catch (Exception $e) {

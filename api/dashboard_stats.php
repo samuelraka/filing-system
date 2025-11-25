@@ -17,13 +17,15 @@ if (isset($_GET['activity'])) {
         if ($vitalColCheck && $vitalColCheck->num_rows > 0) { $vitalHasCreated = true; }
 
         $labelsWeekly = [];
-        for ($i = 6; $i >= 0; $i--) { $labelsWeekly[] = date('Y-m-d', strtotime("-$i days")); }
+        for ($i = 6; $i >= 0; $i--) { $labelsWeekly[] = date('d-m-Y', strtotime("-$i days")); }
         $weeklyAktif = array_fill(0, count($labelsWeekly), 0);
         $weeklyInaktif = array_fill(0, count($labelsWeekly), 0);
         $weeklyStatis = array_fill(0, count($labelsWeekly), 0);
         $weeklyVital = array_fill(0, count($labelsWeekly), 0);
         $startWeekly = date('Y-m-d', strtotime('-6 days'));
         $endWeekly = date('Y-m-d');
+        $startWeeklyLabel = date('d-m-Y', strtotime('-6 days'));
+        $endWeeklyLabel = date('d-m-Y');
         $res = $conn->query("SELECT DATE(created_at) d, COUNT(*) c FROM arsip_aktif WHERE DATE(created_at) BETWEEN '$startWeekly' AND '$endWeekly' GROUP BY d");
         if ($res) { while ($r = $res->fetch_assoc()) { $idx = array_search($r['d'], $labelsWeekly); if ($idx !== false) { $weeklyAktif[$idx] = (int)$r['c']; } } }
         $res = $conn->query("SELECT DATE(created_at) d, COUNT(*) c FROM arsip_inaktif WHERE DATE(created_at) BETWEEN '$startWeekly' AND '$endWeekly' GROUP BY d");
@@ -82,7 +84,7 @@ if (isset($_GET['activity'])) {
             'yearly' => ['aktif' => array_sum($yearlyAktif), 'inaktif' => array_sum($yearlyInaktif), 'statis' => array_sum($yearlyStatis), 'vital' => array_sum($yearlyVital)],
         ];
 
-        echo json_encode(['cards' => $cards, 'activityData' => $activityData, 'statsData' => $statsData, 'weeklyLabel' => 'Data from ' . $startWeekly . ' to ' . $endWeekly]);
+        echo json_encode(['cards' => $cards, 'activityData' => $activityData, 'statsData' => $statsData, 'weeklyLabel' => 'Data from ' . $startWeeklyLabel . ' to ' . $endWeeklyLabel]);
         exit;
     } catch (Throwable $e) {
         echo json_encode(['cards' => ['aktif' => 0, 'inaktif' => 0, 'statis' => 0, 'vital' => 0], 'activityData' => ['weekly' => ['labels' => [], 'aktif' => [], 'inaktif' => [], 'statis' => [], 'vital' => []], 'monthly' => ['labels' => [], 'aktif' => [], 'inaktif' => [], 'statis' => [], 'vital' => []], 'yearly' => ['labels' => [], 'aktif' => [], 'inaktif' => [], 'statis' => [], 'vital' => []]], 'statsData' => ['weekly' => ['aktif' => 0, 'inaktif' => 0, 'statis' => 0, 'vital' => 0], 'monthly' => ['aktif' => 0, 'inaktif' => 0, 'statis' => 0, 'vital' => 0], 'yearly' => ['aktif' => 0, 'inaktif' => 0, 'statis' => 0, 'vital' => 0]], 'weeklyLabel' => 'Data from - to -']);
@@ -95,6 +97,9 @@ $end = $_GET['end'] ?? null;
 
 $startDate = $start ? date('Y-m-d', strtotime($start)) : null;
 $endDate = $end ? date('Y-m-d', strtotime($end)) : null;
+// labels for UI
+$startLabel = $startDate ? date('d-m-Y', strtotime($startDate)) : '';
+$endLabel = $endDate ? date('d-m-Y', strtotime($endDate)) : '';
 
 if (!$startDate || !$endDate) {
     echo json_encode(['aktif' => 0, 'inaktif' => 0, 'statis' => 0, 'vital' => 0, 'label' => 'Invalid date']);
@@ -120,6 +125,6 @@ try {
     }
 } catch (Throwable $e) {}
 
-$label = ($startDate === $endDate) ? ('Data from ' . $startDate) : ('Data from ' . $startDate . ' to ' . $endDate);
+$label = ($startDate === $endDate) ? ('Data from ' . $startLabel) : ('Data from ' . $startLabel . ' to ' . $endLabel);
 echo json_encode(['aktif' => $aktif, 'inaktif' => $inaktif, 'statis' => $statis, 'vital' => $vital, 'label' => $label]);
 ?>

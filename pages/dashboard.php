@@ -20,32 +20,32 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
             <!-- Stats Cards -->
             <section class="grid grid-cols-4 gap-6">
                 <div class="bg-white rounded-xl shadow-sm p-6 flex flex-col items-start">
-                    <div class="text-slate-500 font-semibold mb-1">Aktif</div>
+                    <div class="text-slate-500 font-semibold mb-1">Arsip Aktif</div>
                     <div class="flex items-end gap-2">
                         <span id="countAktif" class="text-3xl font-bold text-slate-700">0</span>
-                        <span class="bg-green-50 text-green-600 px-2 py-0.5 rounded-full text-xs">Aktif</span>
                     </div>
+                    <a href="aktif.php" class="mt-3 text-sm px-3 py-1 rounded bg-cyan-600 text-white hover:bg-cyan-600/90">Lihat Data</a>
                 </div>
                 <div class="bg-white rounded-xl shadow-sm p-6 flex flex-col items-start">
-                    <div class="text-slate-500 font-semibold mb-1">Inaktif</div>
+                    <div class="text-slate-500 font-semibold mb-1">Arsip Inaktif</div>
                     <div class="flex items-end gap-2">
                         <span id="countInaktif" class="text-3xl font-bold text-slate-700">0</span>
-                        <span class="bg-yellow-50 text-yellow-600 px-2 py-0.5 rounded-full text-xs">Inaktif</span>
                     </div>
+                    <a href="inaktif.php" class="mt-3 text-sm px-3 py-1 rounded bg-cyan-600 text-white hover:bg-cyan-600/90">Lihat Data</a>
                 </div>
                 <div class="bg-white rounded-xl shadow-sm p-6 flex flex-col items-start">
-                    <div class="text-slate-500 font-semibold mb-1">Statis</div>
+                    <div class="text-slate-500 font-semibold mb-1">Arsip Statis</div>
                     <div class="flex items-end gap-2">
                         <span id="countStatis" class="text-3xl font-bold text-slate-700">0</span>
-                        <span class="bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full text-xs">Statis</span>
                     </div>
+                    <a href="statis.php" class="mt-3 text-sm px-3 py-1 rounded bg-cyan-600 text-white hover:bg-cyan-600/90">Lihat Data</a>
                 </div>
                 <div class="bg-white rounded-xl shadow-sm p-6 flex flex-col items-start">
-                    <div class="text-slate-500 font-semibold mb-1">Vital</div>
+                    <div class="text-slate-500 font-semibold mb-1">Arsip Vital</div>
                     <div class="flex items-end gap-2">
                         <span id="countVital" class="text-3xl font-bold text-slate-700">0</span>
-                        <span class="bg-red-50 text-red-600 px-2 py-0.5 rounded-full text-xs">Vital</span>
                     </div>
+                    <a href="vital.php" class="mt-3 text-sm px-3 py-1 rounded bg-cyan-600 text-white hover:bg-cyan-600/90">Lihat Data</a>
                 </div>
             </section>
             <!-- Chart Section (Placeholder) -->

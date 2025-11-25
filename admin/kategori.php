@@ -452,13 +452,16 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
 
 
 <script>
+// Buka modal berdasarkan ID
 function openModal(modalId) {
     document.getElementById(modalId).classList.remove('hidden');
 }
 
+// Tutup modal berdasarkan ID
 function closeModal(modalId) {
     document.getElementById(modalId).classList.add('hidden');
 }
+// Ganti konten tab dan perbarui gaya tombol tab aktif
 function showTab(tabName) {
     // Hide all tab contents
     const tabContents = document.querySelectorAll('.tab-content');
@@ -482,14 +485,14 @@ function showTab(tabName) {
     activeButton.classList.remove('border-transparent', 'text-gray-500');
 }
 
-// Set initial active tab styles
+// Inisialisasi gaya tab aktif saat halaman dimuat
 document.addEventListener('DOMContentLoaded', function() {
     const initialActiveTab = document.getElementById('tab-pokok-masalah');
     initialActiveTab.classList.add('border-cyan-600', 'text-cyan-600');
     initialActiveTab.classList.remove('border-transparent', 'text-gray-500');
 });
 
-//Bagian Pokok Masalah
+// Tangani submit Tambah Pokok Masalah via AJAX, tampilkan notifikasi SweetAlert
 document.getElementById('tambahPokokMasalahForm').addEventListener('submit', async function(e) {
     e.preventDefault();
 
@@ -497,7 +500,12 @@ document.getElementById('tambahPokokMasalahForm').addEventListener('submit', asy
     const nama = document.getElementById('nama_pokok_masalah').value.trim();
 
     if (!kode || !nama) {
-        alert('Semua field wajib diisi.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Form belum lengkap',
+            text: 'Semua field wajib diisi.',
+            confirmButtonColor: '#0092B8'
+        });
         return;
     }
 
@@ -512,21 +520,37 @@ document.getElementById('tambahPokokMasalahForm').addEventListener('submit', asy
         });
 
         const data = await response.json();
-        alert(data.message);
-
         if (data.success) {
-            // reset form & tutup modal
-            e.target.reset();
-            closeModal('tambahPokokMasalahModal');
-            // reload data tabel jika perlu
-            if (typeof loadPokokMasalah === 'function') loadPokokMasalah();
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: data.message,
+                confirmButtonColor: '#0092B8'
+            }).then(() => {
+                e.target.reset();
+                closeModal('tambahPokokMasalahModal');
+                if (typeof loadPokokMasalah === 'function') loadPokokMasalah();
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: data.message,
+                confirmButtonColor: '#0092B8'
+            });
         }
     } catch (error) {
         console.error(error);
-        alert('Terjadi kesalahan saat menambahkan data.');
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops…',
+            text: 'Terjadi kesalahan saat menambahkan data.',
+            confirmButtonColor: '#0092B8'
+        });
     }
 });
 
+    // Ikat handler edit/hapus untuk Pokok Masalah
     document.addEventListener("DOMContentLoaded", () => {
         const modalEdit = document.getElementById("modalEditPokokMasalah");
         const modalDelete = document.getElementById("modalDeletePokokMasalah");
@@ -539,6 +563,7 @@ document.getElementById('tambahPokokMasalahForm').addEventListener('submit', asy
         let deleteId = null;
 
         // === OPEN EDIT MODAL ===
+        // Buka modal edit untuk Pokok Masalah yang dipilih
         document.querySelectorAll(".btnEdit").forEach(btn => {
             btn.addEventListener("click", () => {
             editId.value = btn.dataset.id;
@@ -549,11 +574,13 @@ document.getElementById('tambahPokokMasalahForm').addEventListener('submit', asy
         });
 
         // === CLOSE EDIT MODAL ===
+        // Tutup modal edit Pokok Masalah
         document.getElementById("closeEdit").addEventListener("click", () => {
             modalEdit.classList.add("hidden");
         });
 
         // === SUBMIT EDIT FORM ===
+        // Kirim perubahan Pokok Masalah via AJAX, tampilkan notifikasi SweetAlert
         formEdit.addEventListener("submit", async (e) => {
             e.preventDefault();
             const data = {
@@ -567,11 +594,25 @@ document.getElementById('tambahPokokMasalahForm').addEventListener('submit', asy
             body: JSON.stringify(data)
             });
             const result = await res.json();
-            alert(result.message);
-            if (result.success) location.reload();
+            if (result.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: result.message,
+                    confirmButtonColor: '#0092B8'
+                }).then(() => { location.reload(); });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: result.message,
+                    confirmButtonColor: '#0092B8'
+                });
+            }
         });
 
         // === OPEN DELETE MODAL ===
+        // Buka modal konfirmasi hapus untuk Pokok Masalah
         document.querySelectorAll(".btnDelete").forEach(btn => {
             btn.addEventListener("click", () => {
             deleteId = btn.dataset.id;
@@ -580,11 +621,13 @@ document.getElementById('tambahPokokMasalahForm').addEventListener('submit', asy
         });
 
         // === CANCEL DELETE ===
+        // Batalkan hapus dan sembunyikan modal Pokok Masalah
         document.getElementById("cancelDelete").addEventListener("click", () => {
             modalDelete.classList.add("hidden");
         });
 
         // === CONFIRM DELETE ===
+        // Konfirmasi hapus Pokok Masalah via AJAX, tampilkan notifikasi SweetAlert
         document.getElementById("confirmDelete").addEventListener("click", async () => {
             const res = await fetch("../api/pokok_masalah/delete_pokok_masalah.php", {
             method: "POST",
@@ -592,13 +635,27 @@ document.getElementById('tambahPokokMasalahForm').addEventListener('submit', asy
             body: JSON.stringify({ id_pokok_masalah: deleteId })
             });
             const result = await res.json();
-            alert(result.message);
-            if (result.success) location.reload();
+            if (result.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: result.message,
+                    confirmButtonColor: '#0092B8'
+                }).then(() => { location.reload(); });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: result.message,
+                    confirmButtonColor: '#0092B8'
+                });
+            }
         });
     });
 
+// Ikat handler tambah/edit/hapus untuk Sub Masalah
 document.addEventListener("DOMContentLoaded", () => {
-  // === TAMBAH SUB MASALAH ===
+  // Tangani submit Tambah Sub Masalah via AJAX
   const formTambah = document.getElementById("formTambahSubMasalah");
   formTambah.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -615,11 +672,24 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const result = await res.json();
-    alert(result.message);
-    if (result.success) location.reload();
+    if (result.success) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: result.message,
+            confirmButtonColor: '#0092B8'
+        }).then(() => { location.reload(); });
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: result.message,
+            confirmButtonColor: '#0092B8'
+        });
+    }
   });
 
-  // === EDIT SUB MASALAH ===
+  // Buka modal edit Sub Masalah dan isi field
   const modalEditSub = document.getElementById("editSubMasalahModal");
   const formEditSub = document.getElementById("formEditSubMasalah");
 
@@ -633,6 +703,7 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   });
 
+  // Kirim perubahan Sub Masalah via AJAX, tampilkan notifikasi SweetAlert
   formEditSub.addEventListener("submit", async (e) => {
     e.preventDefault();
     const data = {
@@ -649,13 +720,26 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const result = await res.json();
-    alert(result.message);
-    if (result.success) location.reload();
+    if (result.success) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: result.message,
+            confirmButtonColor: '#0092B8'
+        }).then(() => { location.reload(); });
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: result.message,
+            confirmButtonColor: '#0092B8'
+        });
+    }
   });
 
   const modalDeleteSub = document.getElementById("modalDeleteSubMasalah");
 
-  // === OPEN DELETE MODAL ===
+  // Buka modal konfirmasi hapus untuk Sub Masalah
   document.querySelectorAll(".btnSubDelete").forEach(btn => {
     btn.addEventListener("click", () => {
         deleteId = btn.dataset.id;
@@ -663,12 +747,12 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // === CANCEL DELETE ===
+    // Batalkan hapus dan sembunyikan modal Sub Masalah
     document.getElementById("cancelSubDelete").addEventListener("click", () => {
         modalDeleteSub.classList.add("hidden");
     });
 
-    // === CONFIRM DELETE ===
+    // Konfirmasi hapus Sub Masalah via AJAX, tampilkan notifikasi SweetAlert
     document.getElementById("confirmSubDelete").addEventListener("click", async () => {
         const res = await fetch("../api/sub_masalah/delete_sub_masalah.php", {
         method: "POST",
@@ -676,13 +760,27 @@ document.addEventListener("DOMContentLoaded", () => {
         body: JSON.stringify({ id_sub_masalah: deleteId })
         });
         const result = await res.json();
-        alert(result.message);
-        if (result.success) location.reload();
+        if (result.success) {
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: result.message,
+                confirmButtonColor: '#0092B8'
+            }).then(() => { location.reload(); });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: result.message,
+                confirmButtonColor: '#0092B8'
+            });
+        }
     });
 });
 
+// Ikat handler tambah/edit/hapus untuk Sub-Sub Masalah
 document.addEventListener("DOMContentLoaded", () => {
-  // === TAMBAH SUB MASALAH ===
+  // Tangani submit Tambah Sub-Sub Masalah via AJAX
   const formTambahSubSubMasalah = document.getElementById("tambahSubSubMasalahForm");
   formTambahSubSubMasalah.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -699,11 +797,24 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const result = await res.json();
-    alert(result.message);
-    if (result.success) location.reload();
+    if (result.success) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: result.message,
+            confirmButtonColor: '#0092B8'
+        }).then(() => { location.reload(); });
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: result.message,
+            confirmButtonColor: '#0092B8'
+        });
+    }
   });
 
-    // === EDIT SUB SUB MASALAH ===
+    // Buka modal edit Sub-Sub Masalah dan isi field
     const modalEditSubSubMasalah = document.getElementById("modalEditSubSubMasalah");
     const formEditSubSubMasalah = document.getElementById("formEditSubSubMasalah");
 
@@ -726,7 +837,7 @@ document.addEventListener("DOMContentLoaded", () => {
     modalEditSubSubMasalah.classList.add("hidden");
     });
 
-    // submit edit
+    // Kirim perubahan Sub-Sub Masalah via AJAX, tampilkan notifikasi SweetAlert
     formEditSubSubMasalah.addEventListener("submit", async (e) => {
     e.preventDefault();
     const data = {
@@ -743,13 +854,26 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     const result = await res.json();
-    alert(result.message);
-    if (result.success) location.reload();
+    if (result.success) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: result.message,
+            confirmButtonColor: '#0092B8'
+        }).then(() => { location.reload(); });
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: result.message,
+            confirmButtonColor: '#0092B8'
+        });
+    }
     });
 
   const modalDeleteSubSubMasalah = document.getElementById("modalDeleteSubSubMasalah");
 
-  // === OPEN DELETE MODAL ===
+  // Buka modal konfirmasi hapus untuk Sub-Sub Masalah
   document.querySelectorAll(".btnSubSubDelete").forEach(btn => {
     btn.addEventListener("click", () => {
         deleteId = btn.dataset.id;
@@ -757,21 +881,34 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     });
 
-    // === CANCEL DELETE ===
+    // Batalkan hapus dan sembunyikan modal Sub-Sub Masalah
     document.getElementById("cancelSubSubDelete").addEventListener("click", () => {
         modalDeleteSubSubMasalah.classList.add("hidden");
     });
 
-    // === CONFIRM DELETE ===
+    // Konfirmasi hapus Sub-Sub Masalah via AJAX, tampilkan notifikasi SweetAlert
     document.getElementById("confirmSubSubDelete").addEventListener("click", async () => {
         const res = await fetch("../api/sub_sub_masalah/delete_sub_sub_masalah.php", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ id_sub_sub_masalah: deleteId })
         });
-        const result = await res.json();
-        alert(result.message);
-        if (result.success) location.reload();
+    const result = await res.json();
+    if (result.success) {
+        Swal.fire({
+            icon: 'success',
+            title: 'Berhasil',
+            text: result.message,
+            confirmButtonColor: '#0092B8'
+        }).then(() => { location.reload(); });
+    } else {
+        Swal.fire({
+            icon: 'error',
+            title: 'Gagal',
+            text: result.message,
+            confirmButtonColor: '#0092B8'
+        });
+    }
     });
 });
 

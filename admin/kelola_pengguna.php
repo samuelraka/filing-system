@@ -12,7 +12,7 @@ if (!isset($_SESSION['user_role'])) {
 $role = $_SESSION['user_role'];
 
 // Query dasar ambil semua user
-$query = "SELECT id_user, nama, email, username, role FROM user";
+$query = "SELECT u.id_user, u.nama, u.email, u.username, u.role, COALESCE(up.nama_unit, '') AS nama_unit, COALESCE(p.id_unit, '') AS id_unit FROM user u LEFT JOIN profil p ON p.id_user = u.id_user LEFT JOIN unit_pengolah up ON p.id_unit = up.id_unit";
 
 // Filter sesuai role login
 if ($role === 'admin') {
@@ -75,7 +75,6 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
                                 <th class="py-3 px-4 text-left font-medium text-xs uppercase tracking-wider">Email</th>
                                 <th class="py-3 px-4 text-left font-medium text-xs uppercase tracking-wider">Role</th>
                                 <th class="py-3 px-4 text-left font-medium text-xs uppercase tracking-wider">Username</th>
-                                <th class="py-3 px-4 text-left font-medium text-xs uppercase tracking-wider">Password</th>
                                 <th class="py-3 px-4 text-left font-medium text-xs uppercase tracking-wider">Aksi</th>
                             </tr>
                         </thead>
@@ -87,7 +86,7 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
                                             <?= htmlspecialchars($user['nama']) ?>
                                         </td>
                                         <td class="py-4 px-4 whitespace-nowrap text-sm text-gray-500">
-                                            -
+                                            <?= htmlspecialchars($user['nama_unit'] ?: '-') ?>
                                         </td>
                                         <td class="py-4 px-4 whitespace-nowrap text-sm text-gray-500">
                                             <?= htmlspecialchars($user['email']) ?>
@@ -104,9 +103,6 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
                                         </td>
                                         <td class="py-4 px-4 whitespace-nowrap text-sm text-gray-500">
                                             <?= htmlspecialchars($user['username']) ?>
-                                        </td>
-                                        <td class="py-4 px-4 whitespace-nowrap text-sm text-gray-500">
-                                            ********
                                         </td>
                                         <td class="py-4 px-4 whitespace-nowrap text-sm font-medium">
                                             <button class="text-cyan-600 hover:text-cyan-900 mr-3"
@@ -280,7 +276,6 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
           <label for="edit_role" class="block text-sm font-medium text-gray-700">Role</label>
             <select id="edit_role" name="role" class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm">
                 <?php if ($_SESSION['user_role'] === 'superadmin'): ?>
-                    <option value="superadmin">Super Admin</option>
                     <option value="admin">Admin</option>
                     <option value="user">User</option>
                 <?php elseif ($_SESSION['user_role'] === 'admin'): ?>
@@ -293,12 +288,12 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
         <div class="mb-6">
             <label for="edit_password" class="block text-sm font-medium text-gray-700">Password</label>
             <div class="flex gap-2">
-                <input type="text" name="password" id="edit_password" readonly
-                    class="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm">
                 <button type="button" onclick="generatePassword()"
-                    class="px-3 py-2 bg-cyan-600 text-white rounded-md hover:bg-cyan-700">
-                    Reset
+                    class="px-3 py-2 mt-1 bg-slate-700 text-white rounded-md hover:bg-slate-800">
+                    Reset Password
                 </button>
+                <input type="text" name="password" id="edit_password" readonly
+                    class="mt-1 block flex-1 px-3 py-2 border border-gray-300 rounded-md shadow-sm bg-gray-100 focus:outline-none focus:ring-cyan-500 focus:border-cyan-500 sm:text-sm">
             </div>
         </div>
 
@@ -316,6 +311,7 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
 </div>
 
 <script>
+    // Buka modal berdasarkan ID dan isi nilai awal untuk form tambah
     function openModal(modalId) {
         document.getElementById(modalId).classList.remove('hidden');
         if (modalId === 'tambahPenggunaModal') {
@@ -324,15 +320,18 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
         }
     }
 
+    // Tutup modal berdasarkan ID
     function closeModal(modalId) {
         document.getElementById(modalId).classList.add('hidden');
     }
+    // Buat username acak dengan prefix 'usr'
     function generateUsername() {
     const randomPart = Math.random().toString(36).substring(2, 7).toUpperCase(); // contoh: "A7C3F"
     const username = "usr" + randomPart; // hasil: usrA7C3F
     document.getElementById("username").value = username;
     }
 
+    // Buat password acak yang kuat untuk alur tambah/edit
     function generatePassword() {
         const upper = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         const lower = "abcdefghijklmnopqrstuvwxyz";
@@ -346,17 +345,19 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
         password += numbers[Math.floor(Math.random() * numbers.length)];
         password += symbols[Math.floor(Math.random() * symbols.length)];
 
-        // isi sisa karakter acak hingga panjang 8
         while (password.length < 8) {
             password += all[Math.floor(Math.random() * all.length)];
         }
 
-        // acak ulang urutan agar tidak berurutan jenisnya
         password = password.split('').sort(() => 0.5 - Math.random()).join('');
 
-        document.getElementById("password").value = password;
+        const addInput = document.getElementById("password");
+        if (addInput) addInput.value = password;
+        const editInput = document.getElementById("edit_password");
+        if (editInput) editInput.value = password;
     }
 
+    // Tangani submit Form Tambah Pengguna via AJAX, tampilkan notifikasi SweetAlert
     document.getElementById("formTambahPengguna").addEventListener("submit", async function (e) {
         e.preventDefault(); // mencegah reload form
 
@@ -377,26 +378,48 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
             });
 
             const data = await res.json();
-            alert(data.message);
-
             if (data.success) {
-                closeModal('tambahPenggunaModal');
-                // optional: refresh halaman agar tabel update
-                setTimeout(() => location.reload(), 800);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: data.message,
+                    confirmButtonColor: '#0092B8'
+                }).then(() => {
+                    closeModal('tambahPenggunaModal');
+                    setTimeout(() => location.reload(), 800);
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: data.message,
+                    confirmButtonColor: '#0092B8'
+                });
             }
         } catch (error) {
-            alert("Terjadi kesalahan saat menambah pengguna.");
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops…',
+                text: 'Terjadi kesalahan saat menambah pengguna.',
+                confirmButtonColor: '#0092B8'
+            });
             console.error(error);
         }
     });
 
+    // Ambil data pengguna berdasar ID dan buka modal Edit dengan data yang terisi
     async function editPengguna(id_user) {
         try {
             const res = await fetch(`../api/user/get_user.php?id_user=${id_user}`);
             const data = await res.json();
 
             if (!data.success) {
-                alert(data.message);
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: data.message,
+                    confirmButtonColor: '#0092B8'
+                });
                 return;
             }
 
@@ -425,11 +448,17 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
 
         } catch (error) {
             console.error("Error saat mengambil data pengguna:", error);
-            alert("Terjadi kesalahan saat mengambil data pengguna.");
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops…',
+                text: 'Terjadi kesalahan saat mengambil data pengguna.',
+                confirmButtonColor: '#0092B8'
+            });
         }
     }
 
 
+    // Tangani submit Form Edit Pengguna via AJAX, tampilkan notifikasi SweetAlert
     document.getElementById("formEditPengguna").addEventListener("submit", async function (e) {
     e.preventDefault();
 
@@ -450,23 +479,51 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
         });
 
         const data = await res.json();
-        alert(data.message);
-
         if (data.success) {
-        closeModal("editPenggunaModal");
-        setTimeout(() => location.reload(), 800);
+            Swal.fire({
+                icon: 'success',
+                title: 'Berhasil',
+                text: data.message,
+                confirmButtonColor: '#0092B8'
+            }).then(() => {
+                closeModal('editPenggunaModal');
+                setTimeout(() => location.reload(), 800);
+            });
+        } else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal',
+                text: data.message,
+                confirmButtonColor: '#0092B8'
+            });
         }
     } catch (err) {
         console.error("Error:", err);
-        alert("Terjadi kesalahan saat mengupdate pengguna.");
+        Swal.fire({
+            icon: 'error',
+            title: 'Oops…',
+            text: 'Terjadi kesalahan saat mengupdate pengguna.',
+            confirmButtonColor: '#0092B8'
+        });
     }
     });
 
+    // Ikat tombol Hapus: minta konfirmasi via SweetAlert, panggil API, lalu tampilkan hasil
     document.querySelectorAll('.btnDelete').forEach(button => {
         button.addEventListener('click', async (e) => {
             const id = e.currentTarget.getAttribute('data-id');
 
-            if (!confirm('Apakah Anda yakin ingin menghapus pengguna ini?')) return;
+            const ok = await Swal.fire({
+                title: 'Hapus Pengguna?',
+                text: 'Apakah Anda yakin ingin menghapus pengguna ini?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Hapus',
+                cancelButtonText: 'Batal',
+                confirmButtonColor: '#dc2626',
+                cancelButtonColor: '#6b7280'
+            }).then(r => r.isConfirmed);
+            if (!ok) return;
 
             try {
             const res = await fetch('../api/user/delete_user.php', {
@@ -476,14 +533,31 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
             });
 
             const data = await res.json();
-            alert(data.message);
-
             if (data.success) {
-                setTimeout(() => location.reload(), 800);
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: data.message,
+                    confirmButtonColor: '#0092B8'
+                }).then(() => {
+                    setTimeout(() => location.reload(), 800);
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: data.message,
+                    confirmButtonColor: '#0092B8'
+                });
             }
             } catch (err) {
             console.error('❌ Error saat menghapus:', err);
-            alert('Terjadi kesalahan saat menghapus pengguna.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops…',
+                text: 'Terjadi kesalahan saat menghapus pengguna.',
+                confirmButtonColor: '#0092B8'
+            });
             }
         });
         });

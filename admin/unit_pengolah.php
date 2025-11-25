@@ -141,14 +141,17 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
 
 
 <script>
+    // Buka modal berdasarkan ID
     function openModal(modalId) {
         document.getElementById(modalId).classList.remove('hidden');
     }
 
+    // Tutup modal berdasarkan ID
     function closeModal(modalId) {
         document.getElementById(modalId).classList.add('hidden');
     }
 
+    // Tangani submit Form Tambah Unit Pengolah via AJAX, tampilkan notifikasi SweetAlert
     document.getElementById('addUnitForm').addEventListener('submit', function(e) {
         e.preventDefault();
 
@@ -156,7 +159,12 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
         const nama_unit = document.getElementById('nama_unit').value.trim();
 
         if (!kode_unit || !nama_unit) {
-            alert('Kode unit dan nama unit wajib diisi.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Form belum lengkap',
+                text: 'Kode unit dan nama unit wajib diisi.',
+                confirmButtonColor: '#0092B8'
+            });
             return;
         }
 
@@ -169,17 +177,36 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
         })
         .then(res => res.json())
         .then(data => {
-            alert(data.message);
             if (data.success) {
-                closeModal('tambahUnitPengolahModal');
-                location.reload();
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: data.message,
+                    confirmButtonColor: '#0092B8'
+                }).then(() => {
+                    closeModal('tambahUnitPengolahModal');
+                    location.reload();
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: data.message,
+                    confirmButtonColor: '#0092B8'
+                });
             }
         })
         .catch(err => {
             console.error('Error:', err);
-            alert('Terjadi kesalahan saat menyimpan data.');
+            Swal.fire({
+                icon: 'error',
+                title: 'Oops…',
+                text: 'Terjadi kesalahan saat menyimpan data.',
+                confirmButtonColor: '#0092B8'
+            });
         });
     });
+    // Ikat handler edit/hapus saat DOM siap
     document.addEventListener("DOMContentLoaded", () => {
         const modalEdit = document.getElementById("modalEdit");
         const modalDelete = document.getElementById("modalDelete");
@@ -220,8 +247,21 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
             body: JSON.stringify(data)
             });
             const result = await res.json();
-            alert(result.message);
-            if (result.success) location.reload();
+            if (result.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: result.message,
+                    confirmButtonColor: '#0092B8'
+                }).then(() => { location.reload(); });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: result.message,
+                    confirmButtonColor: '#0092B8'
+                });
+            }
         });
 
         // === OPEN DELETE MODAL ===
@@ -245,8 +285,21 @@ include __DIR__ . '/../layouts/components/sidebar_dynamic.php';
             body: JSON.stringify({ id_unit: deleteId })
             });
             const result = await res.json();
-            alert(result.message);
-            if (result.success) location.reload();
+            if (result.success) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil',
+                    text: result.message,
+                    confirmButtonColor: '#0092B8'
+                }).then(() => { location.reload(); });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Gagal',
+                    text: result.message,
+                    confirmButtonColor: '#0092B8'
+                });
+            }
         });
     });
 </script>

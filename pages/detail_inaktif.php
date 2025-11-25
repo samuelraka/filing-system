@@ -130,7 +130,7 @@ if (!empty($id)) {
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Kurun Waktu</label>
-                            <input type="text" value="<?php echo htmlspecialchars($item['kurun']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
+                            <input type="text" value="<?php echo $item['kurun'] ? date('d-m-Y', strtotime($item['kurun'])) : ''; ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Tingkat Perkembangan</label>
@@ -161,7 +161,7 @@ if (!empty($id)) {
 
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Jangka Simpan dan Nasib Akhir</label>
-                            <input type="text" value="<?php echo htmlspecialchars($item['jangka']); ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
+                            <input type="text" value="<?php echo $item['jangka'] ? date('d-m-Y', strtotime($item['jangka'])) : ''; ?>" disabled class="mt-1 w-full border border-gray-200 bg-gray-50 rounded-md px-3 py-2">
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Kategori Arsip</label>

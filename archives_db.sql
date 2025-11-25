@@ -54,8 +54,8 @@ CREATE TABLE `profil` (
 --
 
 INSERT INTO `profil` (`id_profil`, `id_user`, `id_unit`, `created_at`, `updated_at`) VALUES
-(1, 7, 2, '2025-10-24 00:16:18', NULL),
-(2, 8, 1, '2025-10-24 00:17:08', NULL);
+(1, 2, 1, '2025-10-24 00:16:18', NULL),
+(2, 3, 1, '2025-10-24 00:17:08', NULL);
 
 -- --------------------------------------------------------
 
@@ -132,14 +132,9 @@ CREATE TABLE `user` (
 --
 
 INSERT INTO `user` (`id_user`, `nama`, `email`, `username`, `password`, `role`, `created_at`, `updated_at`) VALUES
-(1, 'Super Admin Utama', 'superadmin@poltekes.ac.id', 'superadmin', 'Superadmin123', 'superadmin', '2025-10-21 21:47:05', '2025-10-22 10:47:11'),
-(2, 'Admin Arsip', 'admin@poltekes.ac.id', 'admin', '12345', 'admin', '2025-10-21 21:47:05', '2025-10-22 07:40:13'),
-(3, 'User Staf Umum', 'user@poltekes.ac.id', 'stafumum', '$2y$10$3nF6p8QwLrM9yV0cJ4z7HkB8rT2sX3gV9mW6eU2oD4iP1jN5qK3c', 'user', '2025-10-21 21:47:05', NULL),
-(4, 'Super Admin Kedua', 'superadmin2@poltekes.ac.id', 'superadmin2', '$2y$10$FssyoN1P0B2X7H1olcBaVucVjW7BMMtP7y63J5QfZpHu9K8hN2kzC', 'superadmin', '2025-10-21 23:15:08', NULL),
-(5, 'Admin Arsip Kedua', 'admin2@poltekes.ac.id', 'admin2', '$2y$10$FssyoN1P0B2X7H1olcBaVucVjW7BMMtP7y63J5QfZpHu9K8hN2kzC', 'admin', '2025-10-21 23:15:08', NULL),
-(6, 'User Staf Umum Kedua', 'user2@poltekes.ac.id', 'stafumum2', '$2y$10$FssyoN1P0B2X7H1olcBaVucVjW7BMMtP7y63J5QfZpHu9K8hN2kzC', 'user', '2025-10-21 23:15:08', NULL),
-(7, 'Samuel Raka Yustianto', 'samuelrakayustianto@gmail.com', 'usrZZRYC', '$2y$10$AuwLNOY4dFSXNcoiZZfmuOZQdoYfl9EuYLX6xtr1AfX4YFHL0XdEe', 'admin', '2025-10-24 00:16:18', NULL),
-(8, 'Pengguna 2', 'azza@gmail.com', 'usr0XX2K', '$2y$10$p8VKUL6kLs2nEI5BbFhAQO16FT.9d1MlSUNc8dXXQWhDTCUw033uO', 'user', '2025-10-24 00:17:08', NULL);
+(1, 'Super Admin Utama', 'superadmin@poltekes.ac.id', 'superadmin', '$2y$10$NQVpVoTDupVm77ClETbNpuqQIOqCf0h8Hg2AsAiNECsONQkOp0j92', 'superadmin', '2025-10-21 21:47:05', NULL),
+(2, 'Admin Arsip', 'admin@poltekes.ac.id', 'admin', '$2y$10$vMERO6.niA5IxSRpPtUDDOnewbEqHyS2BBCIw7wY3ScUVnh5tBQnu', 'admin', '2025-10-21 21:47:05', NULL),
+(3, 'User Staf Umum', 'user@poltekes.ac.id', 'user', '$2y$10$Z/ykzNY3ctkaUriEEfeAyuZUDYQfPMokk.0z/suVXxck49WINRg1K', 'user', '2025-10-21 21:47:05', NULL);
 
 CREATE TABLE `arsip_aktif` (
   `id_arsip` int(11) NOT NULL,
@@ -324,7 +319,7 @@ ALTER TABLE `unit_pengolah`
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id_user` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 ALTER TABLE `arsip_aktif`
   MODIFY `id_arsip` int(11) NOT NULL AUTO_INCREMENT;

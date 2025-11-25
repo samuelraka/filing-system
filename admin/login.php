@@ -1,44 +1,35 @@
 <?php
-// login.php
-// Clean login page using AJAX handler
-include_once __DIR__ . '/config/session.php';
-
-// Handle logout request
-if (isset($_GET['logout']) && $_GET['logout'] === 'true') {
-    logout();
-}
-
-// Redirect if already logged in
-if (isLoggedIn()) {
-    header('Location: pages/dashboard.php');
-    exit();
-}
-
-include __DIR__ . '/layouts/master/header.php';
+include __DIR__ . '/../layouts/master/header.php';
 ?>
 
 <div class="min-h-screen relative">
-    <img src="assets/images/poltekkes-bg2.jpeg" alt="Background" class="absolute inset-0 w-full h-full object-cover">
+    <img src="../assets/images/poltekkes-bg2.jpeg" alt="Background" class="absolute inset-0 w-full h-full object-cover">
     <div class="absolute inset-0 bg-white/60"></div>
 
     <div class="relative z-10 flex items-center justify-center min-h-screen px-4">
         <div class="w-full max-w-md bg-white border border-gray-200 rounded-2xl shadow-xl p-8">
             <div class="flex items-center justify-between mb-6">
-                <img src="assets/images/kemenkes-logo2.png" alt="Kemenkes Logo" class="h-12 md:h-16 object-contain">
+                <img src="../assets/images/kemenkes-logo2.png" alt="Kemenkes Logo" class="h-12 md:h-16 object-contain">
                 <div class="text-center">
                     <div class="font-bold text-2xl text-gray-900">Arsip Digital Online</div>
                     <div class="font-semibold text-lg text-gray-900">Politeknik Kesehatan Palangka Raya</div>
                 </div>
-                <img src="assets/images/polkesraya-logo.png" alt="Polkesraya Logo" class="h-12 md:h-16 object-contain">
+                <img src="../assets/images/polkesraya-logo.png" alt="Polkesraya Logo" class="h-12 md:h-16 object-contain">
             </div>
+
+            <?php if (isset($error)): ?>
+            <div class="mb-4 p-3 bg-red-50 border border-red-200 rounded-md text-red-700">
+                <p class="text-sm"><?php echo $error; ?></p>
+            </div>
+            <?php endif; ?>
 
             <div id="messageContainer" class="mb-2"></div>
 
-            <form class="space-y-5" id="loginForm">
+            <form class="space-y-5" id="loginForm" method="POST">
                 <div>
                     <label for="username" class="block text-sm font-medium mb-1 text-gray-700">Username</label>
                     <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
                             <span class="material-icons text-gray-400 text-base">person</span>
                         </div>
                         <input id="username" name="username" type="text" required class="w-full pl-10 pr-4 py-3 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500" placeholder="Masukkan Username">
@@ -48,7 +39,7 @@ include __DIR__ . '/layouts/master/header.php';
                 <div>
                     <label for="password" class="block text-sm font-medium mb-1 text-gray-700">Password</label>
                     <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none z-10">
                             <span class="material-icons text-gray-400 text-base">lock</span>
                         </div>
                         <input id="password" name="password" type="password" required class="w-full pl-10 pr-4 py-3 rounded-lg bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500 focus:border-cyan-500" placeholder="Masukkan Password">
@@ -80,17 +71,14 @@ document.addEventListener('DOMContentLoaded', function() {
     const loginBtn = document.getElementById('loginBtn');
     const loginBtnText = document.getElementById('loginBtnText');
     const messageContainer = document.getElementById('messageContainer');
-    
-    // Toggle password visibility
+
     togglePassword.addEventListener('click', function() {
         const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
         passwordInput.setAttribute('type', type);
-        
         const icon = this.querySelector('.material-icons');
         icon.textContent = type === 'password' ? 'visibility' : 'visibility_off';
     });
-    
-    // Show message function
+
     function showMessage(message, type = 'error') {
         const bgColor = type === 'success' ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800';
         messageContainer.innerHTML = `
@@ -98,107 +86,62 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p class="text-sm">${message}</p>
             </div>
         `;
-        
-        // Auto-hide after 5 seconds
-        setTimeout(() => {
-            messageContainer.innerHTML = '';
-        }, 5000);
+        setTimeout(() => { messageContainer.innerHTML = ''; }, 5000);
     }
-    
-    // Show error for field
+
     function showFieldError(inputElement, errorId, message) {
         inputElement.classList.add('border-red-500', 'ring-red-500');
         const errorElement = document.getElementById(errorId);
         errorElement.textContent = message;
         errorElement.classList.remove('hidden');
     }
-    
-    // Clear field errors
+
     function clearFieldErrors() {
         document.getElementById('emailError').classList.add('hidden');
         document.getElementById('passwordError').classList.add('hidden');
         usernameInput.classList.remove('border-red-500', 'ring-red-500');
         passwordInput.classList.remove('border-red-500', 'ring-red-500');
     }
-    
-    // Set loading state
+
     function setLoading(loading) {
-        if (loading) {
-            loginBtn.disabled = true;
-            loginBtnText.textContent = 'Loading...';
-        } else {
-            loginBtn.disabled = false;
-            loginBtnText.textContent = 'Masuk';
-        }
+        if (loading) { loginBtn.disabled = true; loginBtnText.textContent = 'Loading...'; }
+        else { loginBtn.disabled = false; loginBtnText.textContent = 'Masuk'; }
     }
-    
-    // Form submission
+
     loginForm.addEventListener('submit', function(e) {
         e.preventDefault();
-        
         clearFieldErrors();
-        
+
         const username = document.getElementById('username').value.trim();
         const password = passwordInput.value;
-        
-        // Client-side validation
+
         let isValid = true;
-        
-        if (!username) {
-            showFieldError(document.getElementById('username'), 'emailError', 'Username harus diisi');
-            isValid = false;
-        }
-        
-        if (!password) {
-            showFieldError(passwordInput, 'passwordError', 'Password harus diisi');
-            isValid = false;
-        }
-        
-        if (!isValid) {
-            return;
-        }
-        
-        // Show loading state
+        if (!username) { showFieldError(document.getElementById('username'), 'emailError', 'Username harus diisi'); isValid = false; }
+        if (!password) { showFieldError(passwordInput, 'passwordError', 'Password harus diisi'); isValid = false; }
+        if (!isValid) { return; }
+
         setLoading(true);
         messageContainer.innerHTML = '';
-        
-        fetch('api/login.php', {
+
+        fetch('../api/login.php', {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                username: username,
-                password: password
-            })
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username: username, password: password })
         })
         .then(response => response.json())
         .then(data => {
             setLoading(false);
-            
             if (data.success) {
                 showMessage(data.message, 'success');
-                
-                // Store user info in session storage (for demo purposes)
                 sessionStorage.setItem('user', JSON.stringify(data.user));
-                
-                // Redirect after successful login
-                setTimeout(() => {
-                    window.location.href = 'pages/dashboard.php';
-                }, 1000);
-            } else {
-                showMessage(data.message);
-            }
+                setTimeout(() => { window.location.href = '../pages/dashboard.php'; }, 1000);
+            } else { showMessage(data.message); }
         })
-        .catch(error => {
-            setLoading(false);
-            console.error('Login error:', error);
-            showMessage('Terjadi kesalahan. Silakan coba lagi.');
-        });
+        .catch(error => { setLoading(false); console.error('Login error:', error); showMessage('Terjadi kesalahan. Silakan coba lagi.'); });
     });
 });
 </script>
 
 <?php
-include __DIR__ . '/layouts/master/footer.php';
+include __DIR__ . '/../layouts/master/footer.php';
 ?>

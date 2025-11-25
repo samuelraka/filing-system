@@ -7,7 +7,9 @@
     <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined">
     <link rel="stylesheet" href="../../assets/css/tailwind.css">
+    <link rel="icon" type="image/png" href="../../assets/images/kemenkes-logo.png">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <title></title>
 </head>
 <body class="m-0 p-0 overflow-y-auto overflow-x-auto w-screen h-screen bg-gray-100">
